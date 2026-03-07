@@ -1,2 +1,1 @@
-# spectrum-sample
-Spectrum Sample
+# Spectrum Sample
