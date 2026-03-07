@@ -6,8 +6,6 @@
   * Watchlist
   * Watched
 * List of favorites
-* Add a review on read books
-* Streaming Availability: Integration to show which platforms (Netflix, HBO, etc.) currently host the movie.
 * Release Calendar Sync: A calendar view showing upcoming release dates for movies in your "Anticipated" list.
 
 Properties
@@ -27,8 +25,9 @@ Properties
 * IMDB rating and open IMDB page
 * Box office
 * Tech specs
-* Add/remove to favorites
-* Marked as watched/unwatched
+* Favorite?
+* Watched?
+* Streaming availability
 * Watch trailer
 
 APIs
