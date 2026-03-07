@@ -35,7 +35,7 @@
   * Watch trailer
 
 ### Release Calendar Sync
-* A calendar view showing upcoming release dates for movies in your "Anticipated" list
+* A calendar view with upcoming release dates for movies
 
 ## APIs
 https://developer.themoviedb.org/docs/getting-started
