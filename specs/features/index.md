@@ -34,9 +34,10 @@
   * Streaming availability
   * Watch trailer
 
-### Release Calendar Sync: A calendar view showing upcoming release dates for movies in your "Anticipated" list.
+### Release Calendar Sync
+* A calendar view showing upcoming release dates for movies in your "Anticipated" list
 
-APIs
+## APIs
 https://developer.themoviedb.org/docs/getting-started
 https://www.omdbapi.com
 https://imdbapi.dev
