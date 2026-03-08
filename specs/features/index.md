@@ -8,11 +8,13 @@
 * Open the details of an entry
 * Filters on various fields
 * Grid vs. list view
+* **Key components:** SearchBar, TrendingCarousel, PopularGrid, MovieCard
 
 ### Library
 * Toggle between watchlist and watched
 * View details of movies in your library
 * Open the details of an entry
+* **Key components:** TabToggle (watchlist/watched/lists), FilterBar, SortDropdown, EntryGrid
 
 ### Entry details
 * Properties
@@ -37,12 +39,18 @@
   * Streaming availability
   * Watch trailer
 * Share link
+* **Key components:** HeroBackdrop, MetadataPanel, CastCarousel, TrailerEmbed, StreamingBadges, RatingStars
 
 ### Release Calendar Sync
 * A calendar view with upcoming release dates for movies
+* **Key components:** CalendarGrid, ReleaseCard
 
 ### Recommendations
 * "If you liked X" suggestions + trending/popular sections (both powered by TMDB endpoints)
+
+### Stats
+* Overview charts and lists for the user's library
+* **Key components:** StatCards, GenreChart, MonthlyChart, TopRated list
 
 ### Settings
 * Theme toggle (dark/light)
