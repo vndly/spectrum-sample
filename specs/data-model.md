@@ -7,11 +7,9 @@
 
 ## Models
 
-| Model | Purpose |
-|-------|---------|
-| `Movie` | TMDB movie data (title, year, genres, cast, images, etc.) |
-| `TVShow` | TMDB TV show data (title, seasons, episodes, cast, images, etc.) |
-| `LibraryEntry` | User data per title: rating, watchlist status, lists, tags, watch dates |
+- **`Movie`** — TMDB movie data (title, year, genres, cast, images, etc.)
+- **`TVShow`** — TMDB TV show data (title, seasons, episodes, cast, images, etc.)
+- **`LibraryEntry`** — User data per title: rating, watchlist status, lists, tags, watch dates
 
 ## localStorage Schema
 
