@@ -5,8 +5,8 @@ A personal, offline-first movie and TV tracker.
 ## 1. Core Principles
 
 - **Privacy first** — All user data stays in localStorage. No accounts, no server, no telemetry.
-- **Dark cinematic aesthetic** — Immersive dark backgrounds, hero images, and rich media.
-- **TMDB-powered** — [TMDB](https://developer.themoviedb.org/docs/getting-started) is the sole data API: images, trailers, streaming, trending, and recommendations.
+- **TMDB-powered** — See [API spec](api.md) for details.
+- **Dark cinematic aesthetic** — See [UI/UX spec](ui-ux.md) for details.
 
 ## 2. Tech Stack
 
