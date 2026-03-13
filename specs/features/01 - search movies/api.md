@@ -1,0 +1,1 @@
+request/response shapes, validation, error cases, curl examples

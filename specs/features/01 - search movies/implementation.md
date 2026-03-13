@@ -1,0 +1,1 @@
+There we could document all the technical implementation details of that requirement. So if we need to change something in the requirement we already have the summarized context next to it. Focuses on how
