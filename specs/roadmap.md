@@ -63,3 +63,16 @@
 https://developer.themoviedb.org/docs/getting-started
 https://www.omdbapi.com
 https://imdbapi.dev
+
+### Order
+1. Menu scaffold and navigation
+2. Home screen: search
+3. Entry details: basic info and images
+4. Home screen: trending and popular sections 
+5. Library: watchlist and watched tabs
+6. Home screen: filters and grid/list view
+7. Library: sort and filter within the user's saved items
+8. Stats: charts and insights over the library (needs library data first)
+9. Recommendations: "if you liked X" + TMDB suggestions
+10. Release Calendar Sync: calendar view for upcoming releases
+11. Settings: theme, language, region, import/export
