@@ -1,4 +1,4 @@
-# Design & UX
+# UI & UX
 
 - **Dark cinematic aesthetic** — Immersive dark backgrounds, hero images, and rich media.
 - **Transitions** — Subtle and smooth: fade-ins, gentle slide-ins, soft route transitions (~200-300ms).
