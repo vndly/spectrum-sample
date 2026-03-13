@@ -1,0 +1,1 @@
+Explains the basic folder structure of the project explaining what's in each folder and how to use it.

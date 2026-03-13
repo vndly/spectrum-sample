@@ -1,0 +1,1 @@
+A high-level vision document describing the product’s "Why," target audience, and long-term goals.

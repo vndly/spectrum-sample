@@ -1,0 +1,1 @@
+Describes the structural flow of data, folder organization, and how different layers (Services, Controllers, UI) interact.
