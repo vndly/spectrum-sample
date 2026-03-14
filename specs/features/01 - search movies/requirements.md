@@ -93,6 +93,13 @@ Automated Testing: npm run test:e2e must pass with 100% coverage on sync logic.
 
 Load Testing: Use K6 to simulate 1,000 concurrent socket connections.
 
+## Acceptance Criteria
+
+- [ ] The task list loads within 2 seconds
+- [ ] Tasks are sorted by due date in ascending order
+- [ ] Overdue tasks are visually highlighted
+- [ ] Empty state shows a message when no tasks exist
+
 **Deliverables**
 - Project scaffold (React/Next.js)
 - Basic component structure
