@@ -1,10 +1,18 @@
-A high-level vision document describing the product’s "Why," target audience, and long-term goals.
+## Product Vision Document
+
+[Short introduction]
 
 ## Vision
-[1-2 sentences describing what you're building]
+[What you're building?]
 
 ## Mission
-[1-2 sentences describing how you're building it]
+[Why are you building it?]
 
 ## Problem Statement
 [What problem are you solving?]
+
+## Solution Statement
+[How are you solving it?]
+
+## Target Audience
+[Who are you building this for?]
