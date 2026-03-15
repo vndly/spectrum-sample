@@ -11,3 +11,4 @@
 - **UI/UX**: Always use the `frontend-design` skill when changing the UI.
 - **Code Review**: After completing code changes, run `/delta-review` before responding.
 - **Doc Maintenance**: After changes, check if `CLAUDE.md` needs updating.
+- **Index Files**: When editing any `index.md` file, automatically apply the `format-index` skill to ensure consistent formatting.
