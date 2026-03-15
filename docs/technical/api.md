@@ -97,3 +97,9 @@ curl -s "https://api.themoviedb.org/3/movie/popular?page=1" \
   "total_results": 10000
 }
 ```
+
+## APIs
+
+- [TMDB API](https://developer.themoviedb.org/docs/getting-started)
+- [OMDB API](https://www.omdbapi.com)
+- [IMDB API](https://imdbapi.dev)

@@ -5,7 +5,10 @@ description: MUST be applied whenever any index.md file is created or edited. Fo
 
 # Format Index
 
-When any `index.md` file is edited, ensure it follows this format:
+## Trigger Modes
+
+- **Auto-triggered** (no arguments): You detected that a specific `index.md` file was created or edited. Apply the format rules to that file only.
+- **Manual** (invoked as `/format-index`): Find **all** `index.md` files in the project using glob `**/index.md`, then read and reformat any that don't conform.
 
 ## Required Structure
 
