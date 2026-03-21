@@ -8,12 +8,11 @@
 ## Acceptance Criteria
 
 - [ ] `AppShell` component renders a sidebar on viewports ≥ 768 px and a bottom nav bar below 768 px
-- [ ] All 6 navigation-bar routes are navigable and render a placeholder view
+- [ ] All 5 navigation-bar routes are navigable and render a placeholder view
 - [ ] Active route indicator updates on navigation (both sidebar and bottom nav)
 - [ ] Browser back/forward buttons work correctly with Vue Router history mode
 - [ ] `ErrorBoundary` wraps the router outlet and displays a fallback UI on unhandled errors
 
 ## Key Decisions
 
-* **No lazy loading yet** — all route views are eagerly loaded in this phase; code-splitting is deferred to a performance phase
 * **Tailwind responsive utilities** — breakpoint-based show/hide for sidebar vs. bottom nav, no JavaScript resize listeners

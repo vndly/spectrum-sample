@@ -135,7 +135,7 @@ Composables are the public data-access layer for Presentation components. They o
 - **`useSearch(query)`** — Runs search queries via `tmdb.client.ts`, exposes reactive results.
 - **`useTrending()`** — Fetches trending titles via `tmdb.client.ts`.
 - **`usePopular()`** — Fetches popular titles via `tmdb.client.ts`.
-- **`useRecommendations(id)`** — Fetches recommended titles for a given entry via `tmdb.client.ts`.
+- **`useRecommendations()`** — Selects up to 5 seed entries from the user's library (highest-rated first) and fetches recommendations for each via `tmdb.client.ts`. Deduplicates results across seeds and excludes entries already in the library.
 - **`useUpcoming()`** — Fetches upcoming movie releases via `tmdb.client.ts`.
 - **`useStats()`** — Computes viewing statistics from library data via `storage.service.ts`.
 - **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`.
