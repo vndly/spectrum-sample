@@ -14,7 +14,7 @@ npx vitest --coverage   # Run with coverage report
 
 ## Test File Structure
 
-Test files live in a dedicated `tests/` folder at the project root, **mirroring** the `src/` directory structure. Files use the naming convention `*.test.ts` (or `*.test.vue` for component tests).
+Test files live in a dedicated `tests/` folder at the project root, **mirroring** the `src/` directory structure. Files use the naming convention `*.test.ts`.
 
 ```
 tests/
@@ -32,7 +32,7 @@ tests/
 └── presentation/
     └── components/
         └── common/
-            └── MovieCard.test.vue  # Component interaction tests (if needed)
+            └── MovieCard.test.ts   # Component interaction tests (if needed)
 ```
 
 ## What to Test

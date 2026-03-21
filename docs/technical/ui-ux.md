@@ -65,7 +65,7 @@ Design specification for the movie tracker interface. All styling uses Tailwind 
 | `/library`         | Library         | Bookmark icon |
 | `/settings`        | Settings        | Gear/cog icon |
 
-`/movie/:id`, `/tv/:id`, and `/stats` are not in the nav — accessed via card clicks and internal links.
+`/movie/:id`, `/tv/:id`, and `/stats` are not in the nav — accessed via card clicks and internal links. Stats is reached via a "View Stats" link on the Library screen (visible when the user has watched entries).
 
 ### Search Bar
 

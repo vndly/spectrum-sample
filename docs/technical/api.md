@@ -24,6 +24,33 @@ https://api.themoviedb.org/3
 
 TMDB allows approximately 40 requests per 10 seconds per API key.
 
+When the limit is exceeded:
+
+- TMDB responds with HTTP `429 Too Many Requests` and a `Retry-After` header (seconds)
+- The app retries the failed request using exponential backoff (1 s, 2 s, 4 s) up to 3 attempts
+- If all retries fail, a toast notification is shown: "Request limit reached. Please try again shortly." with a Retry action
+
+## Error Responses
+
+All TMDB endpoints return errors in the following shape:
+
+```ts
+interface TMDBError {
+  success: boolean           // false
+  status_code: number        // TMDB-specific error code
+  status_message: string     // Human-readable description
+}
+```
+
+Common HTTP status codes:
+
+| Status | Meaning                | App behavior                                          |
+| ------ | ---------------------- | ----------------------------------------------------- |
+| `401`  | Invalid or expired token | Surface error toast; prompt user to check API key in Settings |
+| `404`  | Resource not found     | Show inline "not found" message on the detail screen  |
+| `429`  | Rate limit exceeded    | Retry with exponential backoff (see Rate Limiting)    |
+| `500+` | TMDB server error      | Show error toast with Retry action                    |
+
 ## Image URLs
 
 TMDB returns relative image paths (e.g. `/kqjL17yufvn9OVLyXYpvtyrFfak.jpg`). To build a full URL:
