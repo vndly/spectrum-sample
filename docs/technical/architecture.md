@@ -137,6 +137,37 @@ Routes are defined in `src/presentation/router.ts` using Vue Router.
 
 **Navigation:** Sidebar on desktop, bottom navigation bar on mobile. Both link to the same routes.
 
+### Performance
+
+**Route lazy loading** — All route-level view components use dynamic imports so Vite splits them into separate chunks. Only the initially visited route is loaded upfront; remaining views are fetched on navigation.
+
+```ts
+// Example route definition in router.ts
+{
+  path: '/library',
+  component: () => import('./views/LibraryScreen.vue'),
+}
+```
+
+**No API caching** — Every navigation or action that needs TMDB data makes a fresh API request. There is no response cache, no request deduplication, and no stale-while-revalidate layer. This keeps the data layer simple and avoids cache-invalidation bugs. TMDB's rate limit (≈40 requests per 10 seconds) is well above typical usage.
+
+### Deep Linking
+
+Every route is directly navigable via URL. Navigating to `/movie/550` or `/tv/1396` works the same whether the user clicks a card or pastes the URL into the browser:
+
+1. Vue Router matches the `:id` param and lazy-loads the detail view component.
+2. The view's composable (`useMovie(id)` or `useTVShow(id)`) fetches data from TMDB using the route param.
+3. While loading, the view renders skeleton placeholders.
+4. On success, the view renders the full detail screen.
+
+**Error cases:**
+
+- **TMDB returns 404 (ID not found)** — The view shows a "not found" message with a link back to Home.
+- **Network error** — Toast notification with a retry option; the view stays in its error state.
+- **Non-numeric ID (e.g. `/movie/abc`)** — A navigation guard rejects the route and redirects to Home.
+
+**No offline handling** — The app requires a network connection. There is no service worker or offline fallback.
+
 ## Component Hierarchy
 
 ```

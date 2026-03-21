@@ -521,6 +521,54 @@ curl -s "https://api.themoviedb.org/3/movie/upcoming?region=US" \
   -H "Authorization: Bearer <TMDB_ACCESS_TOKEN>"
 ```
 
+### Genre Lists
+
+#### GET /genre/movie/list
+
+Returns the list of movie genre IDs and their display names. Used by the filter bar to resolve `genre_ids` from list endpoints into human-readable labels.
+
+**URL:** `https://api.themoviedb.org/3/genre/movie/list`
+
+| Parameter  | In    | Type   | Required | Default | Description             |
+| ---------- | ----- | ------ | -------- | ------- | ----------------------- |
+| `language` | query | string | No       | `en-US` | ISO 639-1 language code |
+
+**Response:**
+
+```ts
+interface GenreListResponse {
+  genres: Genre[]   // e.g. [{ id: 28, name: "Action" }, { id: 12, name: "Adventure" }]
+}
+```
+
+```bash
+curl -s "https://api.themoviedb.org/3/genre/movie/list" \
+  -H "Authorization: Bearer <TMDB_ACCESS_TOKEN>"
+```
+
+#### GET /genre/tv/list
+
+Returns the list of TV genre IDs and their display names. Same shape as the movie genre endpoint but with TV-specific genres.
+
+**URL:** `https://api.themoviedb.org/3/genre/tv/list`
+
+| Parameter  | In    | Type   | Required | Default | Description             |
+| ---------- | ----- | ------ | -------- | ------- | ----------------------- |
+| `language` | query | string | No       | `en-US` | ISO 639-1 language code |
+
+**Response:**
+
+```ts
+interface GenreListResponse {
+  genres: Genre[]   // e.g. [{ id: 10759, name: "Action & Adventure" }, { id: 16, name: "Animation" }]
+}
+```
+
+```bash
+curl -s "https://api.themoviedb.org/3/genre/tv/list" \
+  -H "Authorization: Bearer <TMDB_ACCESS_TOKEN>"
+```
+
 ---
 
 ## External API References

@@ -60,3 +60,38 @@ Every `.vue` file follows this block order:
 - **Desktop-first** — Base styles target desktop. Use Tailwind's responsive prefixes to override for smaller screens.
 - **Layout breakpoints** — Below `md`: bottom navigation bar, single-column layout. `md` and above: sidebar navigation, multi-column grids.
 - **Touch targets** — Interactive elements must be at least 44×44px on mobile to meet tap-target guidelines.
+
+## 10. Internationalization (i18n)
+
+Language handling has two separate layers:
+
+- **TMDB API responses** — All API calls pass the user's `Settings.language` value (ISO 639-1, e.g. `"en"`) as the `language` query parameter. TMDB returns localized titles, overviews, and genre names for supported languages. If a translation is unavailable, TMDB falls back to English automatically.
+- **UI strings** — All interface text (labels, button text, empty-state messages, error messages) is hardcoded in English. There is no i18n library (e.g. vue-i18n) and no translation files. UI strings do not change when the user switches language in Settings.
+
+The language setting in Settings controls TMDB content language only. Changing it affects movie titles, synopses, and genre names returned by the API, but the app shell, navigation labels, and system messages remain in English.
+
+## 11. Image Handling
+
+### Size Selection
+
+Use the smallest TMDB image size that looks sharp at the rendered dimensions. Larger sizes waste bandwidth without visible benefit.
+
+| Context             | Image Type | Size   | Rationale                                      |
+| ------------------- | ---------- | ------ | ---------------------------------------------- |
+| Movie/TV card grid  | Poster     | `w342` | Sharp on desktop grid cards and retina mobile   |
+| Detail page poster  | Poster     | `w500` | Larger display area on the detail screen        |
+| Hero banner         | Backdrop   | `w780` | Full-width banner; `original` only if needed    |
+| Cast headshots      | Profile    | `w185` | Small circular/square thumbnails                |
+| Gallery thumbnails  | Any        | `w185` | Compact horizontal row                          |
+
+### Lazy Loading
+
+Apply the native `loading="lazy"` attribute on all `<img>` elements below the fold. Hero banners and the first visible row of cards should load eagerly (no `loading` attribute or `loading="eager"`).
+
+### Fallback Placeholders
+
+TMDB returns `null` for `poster_path`, `backdrop_path`, and `profile_path` when no image exists. The app must handle this gracefully:
+
+- **Posters** — Show a neutral placeholder (e.g. a film-frame icon on a dark surface) matching the 2:3 aspect ratio.
+- **Backdrops** — Show a solid dark gradient matching the app background. Do not render a broken image.
+- **Profile photos** — Show a generic person silhouette icon.
