@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "type-check": "vue-tsc --noEmit",
-    "deploy": "firebase deploy --only hosting"
+    "deploy": "firebase deploy --only hosting",
+    "check": "npm run format && npm run lint:fix && npm run type-check && npm run test && npm run build"
   },
   "dependencies": {
     "lucide-vue-next": "^0.577.0",
