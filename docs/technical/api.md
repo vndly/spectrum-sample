@@ -355,7 +355,7 @@ interface Episode {
 
 ## Endpoints
 
-> **Language parameter:** The `language` column below shows TMDB's default value (`en-US`). However, the app sends the shorter ISO 639-1 format (e.g., `"en"`) per the [i18n convention](./conventions.md#10-internationalization-i18n). TMDB accepts both formats.
+> **Language parameter:** The `language` column below shows TMDB's default value (`en-US`). However, the app sends the shorter ISO 639-1 format (e.g., `"en"`) per the [i18n convention](./conventions.md#11-internationalization-i18n). `Settings.language` controls both UI translations and API content language. TMDB accepts both formats.
 
 ### Search
 

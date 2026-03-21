@@ -15,6 +15,8 @@ All types are defined as Zod schemas in `src/domain/` with TypeScript types infe
 | `STORAGE_KEY`            | `string` | localStorage key for all persisted data                      |
 | `MAX_RETRY_ATTEMPTS`     | `number` | Maximum retries for rate-limited API requests                |
 | `TOAST_DISMISS_MS`       | `number` | Auto-dismiss duration for toast notifications                |
+| `SUPPORTED_LANGUAGES`    | `readonly string[]` | Supported UI/content languages: `['en', 'es', 'fr']`          |
+| `DEFAULT_LANGUAGE`       | `string` | Default language when browser locale is unsupported (`'en'`) |
 
 ## Models
 
@@ -56,7 +58,7 @@ User preferences. Persisted in localStorage.
 ```ts
 interface Settings {
   theme: "dark" | "light"
-  language: string                  // ISO 639-1, e.g. "en"
+  language: string                  // ISO 639-1, e.g. "en" — controls both UI translations (vue-i18n) and media provider API content
   defaultHomeSection: "trending" | "popular" | "search"  // which section is scrolled-to on initial load
   preferredRegion: string           // ISO 3166-1, e.g. "US" — for streaming availability and release calendar region filtering
 }
@@ -162,6 +164,6 @@ Composables are the public data-access layer for Presentation components. They o
 - **`useUpcoming()`** — Fetches upcoming movie releases via `provider.client.ts`.
 - **`useStats()`** — Computes viewing statistics from library data via `storage.service.ts`.
 - **`useGenres()`** — Fetches movie and TV genre lists from the media provider on first call and caches the result in memory for the session. Returns a lookup map of genre ID → name for resolving `genre_ids` in list responses. Subsequent calls return the cached data without additional API requests.
-- **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`.
+- **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`. When `language` changes, also updates the vue-i18n global locale (`i18n.global.locale.value`) so all UI translations re-render immediately.
 - **`useLists()`** — Manages custom lists and list membership via `storage.service.ts`.
 - **`useRouteId()`** — Extracts and validates the numeric `:id` param from the current route. Used by both detail screens (`MovieDetailScreen`, `ShowDetailScreen`) to get a typed provider ID.

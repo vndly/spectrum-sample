@@ -58,6 +58,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **Domain Layer** | Layer 3 — Zod schemas, TypeScript types, and pure business logic. Zero framework dependencies. | Importable by Application and Infrastructure. Has no app imports of its own. |
 | **Infrastructure Layer** | Layer 4 — Media provider API client and localStorage wrapper. Plain TypeScript with no Vue dependencies. | Imports Domain only. |
 | **Composable** | A `use`-prefixed function in the Application layer that wraps Infrastructure calls with Vue reactivity. | Examples: `useMovie()`, `useLibrary()`, `useSearch()`. |
+| **vue-i18n** | The internationalization library used for UI translations. Registered as a Vue plugin in `main.ts`. Components access translations via `$t()` in templates or `useI18n()` in `<script setup>`. | Part of the Presentation layer toolset, analogous to Vue Router. |
 | **Standard Return Shape** | The consistent interface every composable exposes: `{ data, loading, error, refresh? }`. | Presentation components rely on this contract. |
 | **App Shell** | The root layout component: sidebar navigation on desktop, bottom navigation bar on mobile, plus the router outlet. | Component: `AppShell`. |
 | **Error Boundary** | A global catch-all that renders a "Something went wrong" fallback when an unhandled error occurs. | Wraps the App Shell in `App.vue`. |
@@ -110,3 +111,6 @@ Domain terminology used consistently across the codebase and documentation.
 | **Schema Migration** | The process of transforming old localStorage data to match a new schema version on app startup. | Handled by `storage.service.ts`. |
 | **Zod Schema** | A runtime validation definition that also infers the corresponding TypeScript type via `z.infer<>`. | Used at every data boundary: API responses, localStorage reads, and user input. |
 | **Settings** | User preferences stored in localStorage: theme, language, default home section, and preferred region. | Type: `Settings`. Defaults applied if missing keys are detected during Zod validation. |
+| **Supported Languages** | The set of languages the app supports for UI translations and media provider content: English (`en`), Spanish (`es`), French (`fr`). | Defined in `SUPPORTED_LANGUAGES` constant. English is the default and fallback. |
+| **Translation Key** | A dot-separated path (e.g., `nav.home`, `library.empty.title`) used to look up a translated string in the locale JSON files. | Keys are nested by feature area and use camelCase segments. |
+| **Fallback Locale** | The locale vue-i18n uses when a translation key is missing in the current language. Always `en` (English). | Configured in `src/presentation/i18n/index.ts`. |

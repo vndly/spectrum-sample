@@ -7,6 +7,7 @@
 - **Vue Router** — Official Vue router — handles SPA navigation, route guards, and lazy loading.
 - **Zod** — Runtime schema validation with TypeScript type inference (`z.infer<>`). Used at every data boundary (API responses, localStorage reads, user input).
 - **Tailwind CSS v4** (dark theme config) — Utility-first CSS that keeps styles co-located with markup. Dark theme configured via CSS-based `@theme` block in `src/assets/main.css` — no `tailwind.config.ts`.
+- **vue-i18n v10** — Official Vue internationalization library. Composition API mode (`legacy: false`) with pre-compiled messages via `@intlify/unplugin-vue-i18n`. Provides `$t()` in templates and `useI18n()` in `<script setup>`.
 - **lucide-vue-next** — Tree-shakeable icon library for navigation and UI icons.
 
 ## Dev Tooling
@@ -15,6 +16,7 @@
 - **ESLint** — Enforces code quality rules, including the no-`any` guardrail defined in conventions.
 - **Prettier** — Consistent code formatting across the project, integrated with ESLint.
 - **Vitest** — Vite-native test runner — fast, compatible with Vue components, and shares the same config as the dev build.
+- **@intlify/unplugin-vue-i18n** — Vite plugin that pre-compiles translation JSON at build time, stripping the runtime message compiler from production bundles.
 
 ## Infrastructure
 

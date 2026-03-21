@@ -95,12 +95,76 @@ See [Testing](./testing.md) for the full testing specification (runner, file str
 
 ## 11. Internationalization (i18n)
 
-Language handling has two separate layers:
+The app is fully internationalized. `Settings.language` (ISO 639-1, e.g. `"en"`) controls both **UI translations** and **media provider API content**. Supported languages: English (`en`), Spanish (`es`), French (`fr`). English is the default and fallback.
 
-- **Media provider API responses** — All API calls pass the user's `Settings.language` value (ISO 639-1, e.g. `"en"`) as the `language` query parameter. The media provider accepts both ISO 639-1 (`"en"`) and locale codes (`"en-US"`); the app uses the shorter ISO 639-1 format. The media provider returns localized titles, overviews, and genre names for supported languages. If a translation is unavailable, the media provider falls back to English automatically.
-- **UI strings** — All interface text (labels, button text, empty-state messages, error messages) is hardcoded in English. There is no i18n library (e.g. vue-i18n) and no translation files. UI strings do not change when the user switches language in Settings.
+### Library
 
-The language setting in Settings controls media provider content language only. Changing it affects movie titles, synopses, and genre names returned by the API, but the app shell, navigation labels, and system messages remain in English.
+[vue-i18n v10](https://vue-i18n.intlify.dev/) in Composition API mode (`legacy: false`) with `@intlify/unplugin-vue-i18n` for Vite build-time message compilation. The Vite plugin pre-compiles translation JSON at build time, stripping the runtime message compiler from production bundles.
+
+### Translation Files
+
+One JSON file per supported language, living in the Presentation layer:
+
+```
+src/presentation/i18n/
+├── index.ts              # Creates and exports the vue-i18n instance
+├── locales/
+│   ├── en.json           # English (canonical — must contain every key)
+│   ├── es.json           # Spanish
+│   └── fr.json           # French
+```
+
+Keys are nested by feature area, mirroring the component directory structure (e.g. `nav.home`, `library.empty.title`, `errors.loadFailed`). Use camelCase for key segments.
+
+`en.json` is the source of truth. `es.json` and `fr.json` must mirror the same key structure. Any missing key silently falls back to the English value.
+
+### Usage in Components
+
+No hardcoded user-facing strings in templates. All UI text must use `$t()` in templates or `t()` from `useI18n()` in `<script setup>`:
+
+```vue
+<template>
+  <h1>{{ $t('library.empty.title') }}</h1>
+</template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+const message = t('errors.generic')
+</script>
+```
+
+Components use vue-i18n's `useI18n()` directly — it is a Presentation layer tool, analogous to Vue Router's `useRoute()`. No wrapper composable is needed.
+
+### Configuration
+
+The vue-i18n instance is created in `src/presentation/i18n/index.ts` and registered as a plugin in `main.ts` alongside Vue Router:
+
+- `legacy: false` — Composition API mode
+- `fallbackLocale: 'en'` — missing translations fall back to English
+- `missingWarn` / `fallbackWarn` — enabled in dev mode only (suppressed in production)
+
+### Locale Switching
+
+When `Settings.language` changes:
+
+1. `useSettings()` writes the new value to localStorage.
+2. `useSettings()` updates `i18n.global.locale.value` — all `$t()` calls across mounted components re-evaluate immediately (no page reload).
+3. Subsequent API calls use the new language for media provider content (titles, synopses, genre names).
+
+### Browser Locale Detection
+
+On first visit (no stored settings in localStorage), the app reads `navigator.language`, extracts the ISO 639-1 prefix (e.g. `"es-ES"` → `"es"`), and checks if it matches a supported language. If it matches, that becomes the initial `Settings.language`. Otherwise, English is used. After the first visit, the stored preference always takes precedence.
+
+### Fallback Chain
+
+1. Look up the key in the current locale (e.g. `es`).
+2. If missing, look up the key in the fallback locale (`en`).
+3. If still missing (should never happen if English is complete), vue-i18n renders the raw key path (e.g. `library.empty.title`).
+
+### Media Provider API
+
+All API calls pass `Settings.language` as the `language` query parameter. The media provider accepts both ISO 639-1 (`"en"`) and locale codes (`"en-US"`); the app uses the shorter ISO 639-1 format. The media provider returns localized titles, overviews, and genre names. If a translation is unavailable, the media provider falls back to English automatically.
 
 ## 12. Image Handling
 

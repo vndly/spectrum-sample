@@ -10,9 +10,9 @@
 
 **Scripts:** `dev`, `build`, `preview`, `lint`, `lint:fix`, `format`, `format:check`, `test`, `test:coverage`, `type-check`
 
-**Production deps:** `vue@^3`, `vue-router@^4`, `zod`, `lucide-vue-next`
+**Production deps:** `vue@^3`, `vue-router@^4`, `zod`, `lucide-vue-next`, `vue-i18n@^10`
 
-**Dev deps:** `typescript@~5.7`, `vite@^6`, `vitest`, `@vitejs/plugin-vue`, `@tailwindcss/vite`, `tailwindcss`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-vue`, `prettier`, `eslint-config-prettier`, `vue-tsc`
+**Dev deps:** `typescript@~5.7`, `vite@^6`, `vitest`, `@vitejs/plugin-vue`, `@tailwindcss/vite`, `tailwindcss`, `@intlify/unplugin-vue-i18n`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-vue`, `prettier`, `eslint-config-prettier`, `vue-tsc`
 
 Run `npm install`.
 
@@ -26,7 +26,7 @@ Run `npm install`.
 
 ### Step 3 — Vite & Vitest configuration
 
-- [ ] Create `vite.config.ts` with `@vitejs/plugin-vue`, `@tailwindcss/vite` plugin, and `@` path alias → `./src`.
+- [ ] Create `vite.config.ts` with `@vitejs/plugin-vue`, `@tailwindcss/vite` plugin, `@intlify/unplugin-vue-i18n/vite` plugin (pointing at `src/presentation/i18n/locales/**`), and `@` path alias → `./src`.
 - [ ] Create `vitest.config.ts` — references `vite.config.ts`, configures test environment.
 
 ### Step 4 — ESLint + Prettier
@@ -61,6 +61,12 @@ src/
 ├── assets/
 │   └── main.css
 ├── presentation/
+│   └── i18n/
+│       ├── index.ts
+│       └── locales/
+│           ├── en.json
+│           ├── es.json
+│           └── fr.json
 ├── application/
 ├── domain/
 └── infrastructure/
@@ -84,7 +90,7 @@ Empty directories get `.gitkeep` files until real files are added.
 
 ### Step 9 — Vue entry point
 
-- [ ] Create `src/main.ts` — creates the Vue app, imports `./assets/main.css`, and mounts to `#app`. No router installed yet.
+- [ ] Create `src/main.ts` — creates the Vue app, imports `./assets/main.css`, registers the vue-i18n plugin, and mounts to `#app`. No router installed yet.
 - [ ] Create `src/App.vue` — minimal component with `bg-bg-primary` and `min-h-screen`. No router, no layout.
 
 ---

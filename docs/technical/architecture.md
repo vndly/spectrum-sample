@@ -8,7 +8,7 @@ The app follows a **4-layer client-only architecture**. Each layer has a clear r
 
 ```
 src/
-├── main.ts                    # App entry point — creates Vue app, registers router
+├── main.ts                    # App entry point — creates Vue app, registers router and i18n plugin
 ├── App.vue                    # Root component — error boundary + router outlet
 │
 ├── presentation/              # LAYER 1: UI — Vue SFCs, views, routing
@@ -23,6 +23,9 @@ src/
 │   │   ├── calendar/          # Release calendar
 │   │   ├── settings/          # User preferences
 │   │   └── error/             # Error boundary fallback
+│   ├── i18n/                  # Internationalization
+│   │   ├── index.ts           # Creates and exports the vue-i18n instance
+│   │   └── locales/           # One JSON file per supported language (en, es, fr)
 │   ├── views/                 # Route-level view components
 │   └── router.ts              # Vue Router config and navigation guards
 │
@@ -64,7 +67,7 @@ src/
 
 ### Presentation
 
-Vue 3 SFCs using `<script setup>` and Tailwind. Components call composables from the Application layer to access data — they never import Infrastructure or Domain directly. Route-level views live in `views/`, reusable UI pieces live in `components/` organized by feature area.
+Vue 3 SFCs using `<script setup>` and Tailwind. Components call composables from the Application layer to access data — they never import Infrastructure or Domain directly. Route-level views live in `views/`, reusable UI pieces live in `components/` organized by feature area. All UI text uses vue-i18n's `$t()` or `useI18n()` — see [Conventions § 11](./conventions.md#11-internationalization-i18n).
 
 ### Application
 

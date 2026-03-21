@@ -57,7 +57,7 @@ The project exists only as documentation — there is no source code, no build p
 
 | ID   | Requirement                    | Description                                                                                      | Priority |
 | :--- | :----------------------------- | :----------------------------------------------------------------------------------------------- | :------- |
-| S-01 | Package management             | `package.json` with all production and dev dependencies, `type: "module"`, npm scripts defined.  | P0       |
+| S-01 | Package management             | `package.json` with all production and dev dependencies (`vue-i18n`, `@intlify/unplugin-vue-i18n`, etc.), `type: "module"`, npm scripts defined. | P0       |
 | S-02 | TypeScript configuration       | Strict mode, ES2022 target, bundler module resolution, `@/*` path alias, project references.     | P0       |
 | S-03 | Vite dev server & build        | HMR dev server, production build, Vue and Tailwind plugins, `@` path alias.                      | P0       |
 | S-04 | ESLint + Prettier              | Flat config with strict TypeScript rules, Vue block order, no-`any`, Prettier integration.       | P0       |
@@ -68,6 +68,7 @@ The project exists only as documentation — there is no source code, no build p
 | S-09 | Environment variable typing    | `env.d.ts` declaring `VITE_MEDIA_PROVIDER_TOKEN` for typed access via `import.meta.env`.                   | P1       |
 | S-10 | Firebase hosting config        | `firebase.json` and `.firebaserc` (project: `plot-twisted`) with SPA rewrite and `dist` as public dir. | P1       |
 | S-11 | VS Code settings               | Format on save, ESLint auto-fix, Tailwind IntelliSense.                                          | P1       |
+| S-12 | i18n scaffolding               | vue-i18n instance in `src/presentation/i18n/index.ts`, translation JSON files for en/es/fr in `locales/`, Vite plugin configured, plugin registered in `main.ts`. | P0       |
 
 ## Non-Functional Requirements
 
