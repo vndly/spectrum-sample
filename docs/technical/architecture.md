@@ -130,16 +130,16 @@ User clicks "Add to Watchlist"
 
 Routes are defined in `src/presentation/router.ts` using Vue Router with `createWebHistory()` for clean URLs (no hash fragments).
 
-| Path                | View             | Purpose                          |
-| ------------------- | ---------------- | -------------------------------- |
-| `/`                 | Home             | Search bar, trending, popular    |
-| `/movie/:id`        | Movie details    | Full movie info, actions         |
-| `/show/:id`         | TV show details  | Full show info, actions          |
-| `/library`          | Library          | Watchlist, watched, custom lists |
-| `/stats`            | Stats            | Viewing history analytics        |
-| `/recommendations`  | Recommendations  | Personalized suggestions         |
-| `/calendar`         | Release calendar | Upcoming releases                |
-| `/settings`         | Settings         | Theme, language, data export     |
+| Path               | View             | Purpose                          |
+| ------------------ | ---------------- | -------------------------------- |
+| `/`                | Home             | Search bar, trending, popular    |
+| `/movie/:id`       | Movie details    | Full movie info, actions         |
+| `/show/:id`        | TV show details  | Full show info, actions          |
+| `/library`         | Library          | Watchlist, watched, custom lists |
+| `/stats`           | Stats            | Viewing history analytics        |
+| `/recommendations` | Recommendations  | Personalized suggestions         |
+| `/calendar`        | Release calendar | Upcoming releases                |
+| `/settings`        | Settings         | Theme, language, data export     |
 
 A catch-all route `/:pathMatch(.*)*` redirects unknown paths to `/`.
 
