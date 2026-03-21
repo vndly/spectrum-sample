@@ -26,14 +26,39 @@ VITE_TMDB_TOKEN=your_tmdb_read_access_token_here
 
 The `VITE_` prefix is required — Vite only exposes environment variables with this prefix to client-side code.
 
+`src/env.d.ts` declares `ImportMetaEnv` with `VITE_TMDB_TOKEN: string` so the token is typed when accessed via `import.meta.env.VITE_TMDB_TOKEN`.
+
+## TypeScript Configuration
+
+The project uses three tsconfig files with project references:
+
+- **`tsconfig.json`** — Root config with project references to `tsconfig.app.json` and `tsconfig.node.json`.
+- **`tsconfig.app.json`** — App source code. `strict: true`, `target: "ES2022"`, `module: "ESNext"`, `moduleResolution: "bundler"`, path alias `@/* → ./src/*`, `include: ["src/**/*"]`.
+- **`tsconfig.node.json`** — Tooling config files. Covers `vite.config.ts`, `vitest.config.ts`, `eslint.config.js`.
+
 ## Commands
 
 > **Note:** These commands will be available after the project is scaffolded and `package.json` is created (e.g., via `npm create vue@latest`). Until then, `npm install` and the scripts below will not work.
 
-| Command           | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| `npm run dev`     | Start the Vite dev server with hot module reload |
-| `npm run build`   | Production build to `dist/`                      |
-| `npm run preview` | Preview the production build locally             |
-| `npm run lint`    | Run ESLint across the project                    |
-| `npm run test`    | Run Vitest test suite                            |
+| Command                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `npm run dev`          | Start the Vite dev server with hot module reload |
+| `npm run build`        | Production build to `dist/`                      |
+| `npm run preview`      | Preview the production build locally             |
+| `npm run lint`         | Run ESLint across the project                    |
+| `npm run lint:fix`     | Run ESLint with auto-fix                         |
+| `npm run format`       | Format all files with Prettier                   |
+| `npm run format:check` | Check formatting without writing changes         |
+| `npm run test`         | Run Vitest test suite                            |
+| `npm run test:coverage`| Run Vitest with coverage report                  |
+| `npm run type-check`   | Run `vue-tsc` for TypeScript type checking       |
+
+## Editor Setup
+
+### VS Code
+
+`.vscode/settings.json` configures:
+
+- Format on save (Prettier)
+- ESLint auto-fix on save
+- Tailwind CSS IntelliSense

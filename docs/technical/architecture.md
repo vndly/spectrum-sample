@@ -30,12 +30,14 @@ src/
 │   └── use-library.ts          # Example: orchestrates Storage + Domain for library operations
 │
 ├── domain/                    # LAYER 3: Business rules — Zod schemas, types, pure logic (zero framework deps)
+│   ├── constants.ts           # App-wide constants (API URLs, storage key, retry limits, etc.)
 │   ├── movie.schema.ts        # Example: Zod schemas & inferred types for movies
 │   └── movie.logic.ts         # Example: pure functions (formatting, validation, business rules)
 │
 ├── infrastructure/            # LAYER 4: External integrations — API client, storage, config
 │   ├── tmdb.client.ts         # TMDB API client with auth and Zod response validation
-│   └── storage.service.ts     # Typed localStorage wrapper with Zod validation and schema migration
+│   ├── storage.service.ts     # Typed localStorage wrapper with Zod validation and schema migration
+│   └── image.helper.ts        # buildImageUrl(path, size) — constructs full TMDB image URLs
 │
 └── assets/                    # Static files and Tailwind entry CSS
 ```
@@ -75,6 +77,7 @@ Composables prefixed with `use` that orchestrate the Domain and Infrastructure l
 
 Pure TypeScript with zero dependencies on Vue, Vite, or Web APIs. Contains:
 
+- **Constants** (`constants.ts`) — App-wide constants: `API_BASE_URL`, `IMAGE_BASE_URL`, `TMDB_IMAGE_SIZES`, `CURRENT_SCHEMA_VERSION`, `STORAGE_KEY`, `MAX_RETRY_ATTEMPTS`, `TOAST_DISMISS_MS`.
 - **Zod schemas** (`.schema.ts`) — Define the shape of all data at boundaries (API responses, localStorage entries, user input). TypeScript types are inferred from schemas with `z.infer<>`.
 - **Business logic** (`.logic.ts`) — Stateless pure functions: date/number formatting, validation rules, derived computations (e.g., `isHighRated(movie)` returns true if rating > 8.0).
 
@@ -86,6 +89,7 @@ Plain TypeScript with no Vue dependencies. Handles all external integration, imp
 
 - **`tmdb.client.ts`** — TMDB API client with Bearer token auth and Zod response validation.
 - **`storage.service.ts`** — Typed localStorage wrapper with Zod validation on reads and schema migration between versions.
+- **`image.helper.ts`** — `buildImageUrl(path, size)` — returns a full TMDB image URL or `null` when no image path is available.
 
 ## Dependency Rules
 
@@ -122,7 +126,7 @@ User clicks "Add to Watchlist"
 
 ## Routing
 
-Routes are defined in `src/presentation/router.ts` using Vue Router.
+Routes are defined in `src/presentation/router.ts` using Vue Router with `createWebHistory()` for clean URLs (no hash fragments).
 
 | Path                | View             | Purpose                          |
 | ------------------- | ---------------- | -------------------------------- |
@@ -134,6 +138,10 @@ Routes are defined in `src/presentation/router.ts` using Vue Router.
 | `/recommendations`  | Recommendations  | Personalized suggestions         |
 | `/calendar`         | Release calendar | Upcoming releases                |
 | `/settings`         | Settings         | Theme, language, data export     |
+
+A catch-all route `/:pathMatch(.*)*` redirects unknown paths to `/`.
+
+Navigation guards on `/movie/:id` and `/tv/:id` reject non-numeric IDs and redirect to `/`.
 
 **Navigation:** Sidebar on desktop, bottom navigation bar on mobile. Both link to the same routes.
 

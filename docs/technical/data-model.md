@@ -2,6 +2,20 @@
 
 All types are defined as Zod schemas in `src/domain/` with TypeScript types inferred via `z.infer<>`. For TMDB API response types, see [API](./api.md#response-types).
 
+## Constants
+
+`src/domain/constants.ts` defines app-wide constants used across layers:
+
+| Constant                 | Type     | Description                                           |
+| ------------------------ | -------- | ----------------------------------------------------- |
+| `API_BASE_URL`           | `string` | TMDB API base URL (`https://api.themoviedb.org/3`)    |
+| `IMAGE_BASE_URL`         | `string` | TMDB image base URL (`https://image.tmdb.org/t/p/`)   |
+| `TMDB_IMAGE_SIZES`       | `object` | Available image sizes per type (poster, backdrop, etc.)|
+| `CURRENT_SCHEMA_VERSION` | `number` | Current localStorage schema version                   |
+| `STORAGE_KEY`            | `string` | localStorage key for all persisted data               |
+| `MAX_RETRY_ATTEMPTS`     | `number` | Maximum retries for rate-limited API requests          |
+| `TOAST_DISMISS_MS`       | `number` | Auto-dismiss duration for toast notifications          |
+
 ## Models
 
 ### LibraryEntry
@@ -123,6 +137,7 @@ Browsers typically enforce a 5–10 MB localStorage quota per origin. The app st
 
 - **`storage.service.ts`** — Typed localStorage wrapper with JSON serialization. Handles schema migration between versions. Validates all reads with Zod schemas.
 - **`tmdb.client.ts`** — API client for fetching movie/TV metadata. All responses are validated through Zod schemas before returning.
+- **`image.helper.ts`** — `buildImageUrl(path, size)` — returns a full TMDB image URL by combining `IMAGE_BASE_URL`, the requested size, and the relative path. Returns `null` when the path is `null` (no image available).
 
 ## Application (Composables)
 
@@ -149,3 +164,4 @@ Composables are the public data-access layer for Presentation components. They o
 - **`useGenres()`** — Fetches movie and TV genre lists from TMDB on first call and caches the result in memory for the session. Returns a lookup map of genre ID → name for resolving `genre_ids` in list responses. Subsequent calls return the cached data without additional API requests.
 - **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`.
 - **`useLists()`** — Manages custom lists and list membership via `storage.service.ts`.
+- **`useRouteId()`** — Extracts and validates the numeric `:id` param from the current route. Used by both detail screens (`MovieDetailScreen`, `TVShowDetailScreen`) to get a typed TMDB ID.

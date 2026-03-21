@@ -28,14 +28,33 @@ Every `.vue` file follows this block order:
 2. `<template>` — markup second
 3. `<style>` — styles last (rare — Tailwind covers most cases)
 
-## 5. Guardrails
+## 5. ESLint & Prettier
+
+### ESLint
+
+`eslint.config.js` uses the flat config format:
+
+- Extends `@eslint/js` recommended, `typescript-eslint` strict, `eslint-plugin-vue` recommended, `eslint-config-prettier`
+- `@typescript-eslint/no-explicit-any: "error"`
+- `vue/block-order: ["error", { order: ["script", "template", "style"] }]` — enforces the SFC block order defined in §4
+
+### Prettier
+
+`prettier.config.js`:
+
+- `semi: false` — no semicolons
+- `singleQuote: true`
+- `trailingComma: "all"`
+- `printWidth: 100`
+
+## 6. Guardrails
 
 - **No `any`** — Every `any` requires a suppressed lint rule and a documented reason.
 - **No server state** — All persistence is localStorage. No backend, no cookies, no IndexedDB.
 - **Typed everywhere** — All localStorage access goes through a typed service. Raw `JSON.parse` / `JSON.stringify` calls outside that service are prohibited.
 - **Tailwind only** — No inline styles or separate CSS files. All styling through Tailwind utility classes and the theme config.
 
-## 6. Testing
+## 7. Testing
 
 See [Testing](./testing.md) for the full testing specification (runner, file structure, coverage expectations, examples).
 
@@ -44,11 +63,11 @@ See [Testing](./testing.md) for the full testing specification (runner, file str
 - **No mocking localStorage** — Tests use a real `storage.service.ts` instance backed by a fresh in-memory store to keep behavior close to production.
 - **Arrange-Act-Assert** — Every test follows the AAA pattern with clear separation between setup, execution, and assertions.
 
-## 7. Documentation
+## 8. Documentation
 
 - **JSDoc required** — Every public class and function must have a JSDoc comment documenting its purpose, parameters, and return value.
 
-## 8. Naming Conventions
+## 9. Naming Conventions
 
 - **Files:** kebab-case (`movie-card.vue`, `use-movie.ts`). Domain and Infrastructure files use dot notation to encode the file's role: `<name>.<role>.ts` (e.g., `movie.schema.ts`, `movie.logic.ts`, `tmdb.client.ts`, `storage.service.ts`).
 - **Components:** PascalCase in templates and imports (`<MovieCard />`)
@@ -57,13 +76,13 @@ See [Testing](./testing.md) for the full testing specification (runner, file str
 - **Constants:** UPPER_SNAKE_CASE (`API_BASE_URL`, `MAX_SEARCH_RESULTS`)
 - **Variables/functions:** camelCase (`getMovie`, `isLoading`)
 
-## 9. Responsive Design
+## 10. Responsive Design
 
 - **Desktop-first** — Base styles target desktop. Use Tailwind's responsive prefixes to override for smaller screens.
 - **Layout breakpoints** — Below `md`: bottom navigation bar, single-column layout. `md` and above: sidebar navigation, multi-column grids.
 - **Touch targets** — Interactive elements must be at least 44×44px on mobile to meet tap-target guidelines.
 
-## 10. Internationalization (i18n)
+## 11. Internationalization (i18n)
 
 Language handling has two separate layers:
 
@@ -72,7 +91,7 @@ Language handling has two separate layers:
 
 The language setting in Settings controls TMDB content language only. Changing it affects movie titles, synopses, and genre names returned by the API, but the app shell, navigation labels, and system messages remain in English.
 
-## 11. Image Handling
+## 12. Image Handling
 
 ### Size Selection
 

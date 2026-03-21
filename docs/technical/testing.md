@@ -4,6 +4,14 @@
 
 The project uses [Vitest](https://vitest.dev/), a Vite-native test framework that shares the same config and transform pipeline as the dev build.
 
+`vitest.config.ts` settings:
+
+- `environment: "jsdom"` — DOM simulation for component tests
+- `globals: true` — `describe`, `it`, `expect` available without imports
+- `include: ["tests/**/*.test.ts"]`
+- `setupFiles: ["./tests/setup.ts"]` — runs `localStorage.clear()` before each test
+- Path alias `@` → `./src` (same as Vite config)
+
 ## Running Tests
 
 ```bash
@@ -51,7 +59,7 @@ tests/
 - **Application** — Cover state transitions: idle → loading → success, idle → loading → error.
 - **Presentation** — Only test components with complex interaction logic (e.g., multi-step forms). Simple rendering components do not need tests.
 
-See also [Conventions — Testing](./conventions.md#6-testing) for testing conventions (file naming, mocking strategy, AAA pattern).
+See also [Conventions — Testing](./conventions.md#7-testing) for testing conventions (file naming, mocking strategy, AAA pattern).
 
 ## Test Pattern
 

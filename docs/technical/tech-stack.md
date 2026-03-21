@@ -6,7 +6,8 @@
 - **Vue 3** (Composition API, `<script setup>`) — Lightweight, fast, and the Composition API pairs naturally with TypeScript for type-safe reactive logic.
 - **Vue Router** — Official Vue router — handles SPA navigation, route guards, and lazy loading.
 - **Zod** — Runtime schema validation with TypeScript type inference (`z.infer<>`). Used at every data boundary (API responses, localStorage reads, user input).
-- **Tailwind CSS** (dark theme config) — Utility-first CSS that keeps styles co-located with markup. Dark theme configured via `tailwind.config.ts`.
+- **Tailwind CSS v4** (dark theme config) — Utility-first CSS that keeps styles co-located with markup. Dark theme configured via CSS-based `@theme` block in `src/assets/main.css` — no `tailwind.config.ts`.
+- **lucide-vue-next** — Tree-shakeable icon library for navigation and UI icons.
 
 ## Dev Tooling
 

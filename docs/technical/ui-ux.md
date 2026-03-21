@@ -10,6 +10,7 @@ Design specification for the movie tracker interface. All styling uses Tailwind 
 - **Surface colors** — Cards and elevated surfaces use a slightly lighter shade than the background (`~slate-800` / `#1e293b`). Subtle shadow for depth — no harsh borders.
 - **Text colors** — Primary: white (`#ffffff`). Secondary (years, metadata): muted gray (`~slate-400`). Never use pure black text.
 - **Image-forward** — Posters, backdrops, and hero banners are the visual centerpiece. The UI is a frame for the media, not the other way around.
+- **Flash prevention** — The root `index.html` includes an inline `style="background-color: #0f1923"` on the `<div id="app">` element to prevent a white flash before CSS loads.
 
 ## 2. Typography
 
