@@ -61,6 +61,8 @@ Domain terminology used consistently across the codebase and documentation.
 | **Standard Return Shape** | The consistent interface every composable exposes: `{ data, loading, error, refresh? }`. | Presentation components rely on this contract. |
 | **App Shell** | The root layout component: sidebar navigation on desktop, bottom navigation bar on mobile, plus the router outlet. | Component: `AppShell`. |
 | **Error Boundary** | A global catch-all that renders a "Something went wrong" fallback when an unhandled error occurs. | Wraps the App Shell in `App.vue`. |
+| **HMR** | Hot Module Replacement — a Vite development feature that applies code changes in the browser instantly without a full page reload, preserving application state. | Enabled automatically by `vite dev`. Not present in production builds. |
+| **SPA** | Single Page Application — a web app that loads a single HTML page and dynamically updates content via client-side routing, avoiding full page reloads. | The app is deployed as an SPA. Firebase/hosting config uses SPA rewrite rules to direct all routes to `index.html`. |
 
 ---
 
@@ -77,6 +79,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **View Toggle** | A toggle control for switching between grid view (poster cards) and list view (compact rows). | Used on the Home screen. Preference persists in localStorage. |
 | **Filter Bar** | A row of controls for narrowing displayed entries by criteria (genre, year, etc.). | Used on Home and Library screens. |
 | **Sort Dropdown** | A control for changing the order of displayed entries (e.g., by popularity, date added). | Used on the Library screen. |
+| **CTA** | Call To Action — a UI element (typically a button or link) that prompts the user to take a specific action (e.g., "Add to Watchlist", "Try searching"). | Used in empty states, hero banners, and detail screens. Styled as a primary teal button. |
 
 ---
 
