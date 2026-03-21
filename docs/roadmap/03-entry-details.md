@@ -13,9 +13,8 @@
   * Writers
   * Cast
   * TMDB rating
-  * IMDB rating and open IMDB page
-  * Box office
-  * Tech specs
+  * IMDB link (via `imdb_id`)
+  * Box office (revenue/budget from TMDB)
   * Favorite?
   * 5 star rating
   * In watchlist / watched / none

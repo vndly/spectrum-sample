@@ -27,7 +27,7 @@ tests/
 │   └── storage.service.test.ts   # Tests for storage + migration
 │
 ├── application/
-│   └── useLibrary.test.ts        # Tests for composable logic
+│   └── use-library.test.ts        # Tests for composable logic
 │
 └── presentation/
     └── components/

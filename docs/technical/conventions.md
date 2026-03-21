@@ -37,7 +37,7 @@ Every `.vue` file follows this block order:
 
 ## 6. Testing
 
-- **Test file naming** — `*.test.ts` (or `*.test.vue` for component tests), co-located next to the source file they test.
+- **Test file naming** — `*.test.ts` (or `*.test.vue` for component tests), in a dedicated `tests/` folder at the project root mirroring the `src/` directory structure.
 - **What to test** — Application composables (data flow, loading/error states), Infrastructure (API calls, storage reads/writes, validation), and Domain (schemas, pure functions). Presentation components only need tests for non-trivial interaction logic.
 - **No mocking localStorage** — Tests use a real `storage.service.ts` instance backed by a fresh in-memory store to keep behavior close to production.
 - **Arrange-Act-Assert** — Every test follows the AAA pattern with clear separation between setup, execution, and assertions.
