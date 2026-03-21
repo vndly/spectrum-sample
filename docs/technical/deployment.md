@@ -37,6 +37,17 @@ firebase deploy --only hosting
 
 The CLI outputs the live URL after a successful deploy.
 
+## CI/CD
+
+There is no automated CI/CD pipeline. The project does not use GitHub Actions, pre-push hooks, or any other automated build/test/deploy workflow.
+
+The deploy process is fully manual:
+
+1. Run `npm run build` locally.
+2. Run `firebase deploy --only hosting`.
+
+Linting (`npm run lint`) and tests (`npm run test`) are available as local commands but are not enforced automatically before deploy.
+
 ## Rollback
 
 Firebase Hosting keeps a history of previous deploys. To roll back:

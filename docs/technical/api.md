@@ -44,12 +44,28 @@ interface TMDBError {
 
 Common HTTP status codes:
 
-| Status | Meaning                | App behavior                                          |
-| ------ | ---------------------- | ----------------------------------------------------- |
-| `401`  | Invalid or expired token | Surface error toast; prompt user to check API key in Settings |
-| `404`  | Resource not found     | Show inline "not found" message on the detail screen  |
-| `429`  | Rate limit exceeded    | Retry with exponential backoff (see Rate Limiting)    |
-| `500+` | TMDB server error      | Show error toast with Retry action                    |
+| Status | Meaning                | Retry        | App behavior                                          |
+| ------ | ---------------------- | ------------ | ----------------------------------------------------- |
+| `401`  | Invalid or expired token | No           | Surface error toast; prompt user to check API key in Settings |
+| `404`  | Resource not found     | No           | Show inline "not found" message on the detail screen  |
+| `429`  | Rate limit exceeded    | **Automatic** | Exponential backoff: 1 s, 2 s, 4 s — up to 3 attempts (see Rate Limiting) |
+| `500+` | TMDB server error      | Manual       | Show error toast with a Retry action the user can click |
+| Network error | Connection failure | Manual    | Show error toast with a Retry action the user can click |
+
+**Automatic vs manual retry:** Only `429` responses trigger automatic retry with exponential backoff. All other errors (server errors, network failures) surface a toast notification with a manual Retry action — the user decides whether to retry.
+
+## Pagination Strategy
+
+All paginated TMDB endpoints (search, trending, popular, recommendations, upcoming) return 20 results per page. The app **fetches page 1 only** — there is no infinite scroll, "load more" button, or multi-page fetching.
+
+This is sufficient because:
+
+- **Trending / Popular** — 20 items per section is more than enough for a personal tracker. Client-side filtering (by genre, media type, year range) narrows the set further without additional API calls.
+- **Search** — The first 20 results from `/search/multi` are shown. Users can refine their query for better matches rather than paginating through hundreds of results.
+- **Recommendations** — Up to 5 seed entries × 20 results each provides a large enough pool after deduplication.
+- **Upcoming** — 20 upcoming releases per page covers the near-term calendar view.
+
+The `PaginatedResponse` fields (`page`, `total_pages`, `total_results`) are available in the response type but are not used by any composable to request additional pages.
 
 ## Image URLs
 

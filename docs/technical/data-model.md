@@ -111,6 +111,14 @@ function migrateV1ToV2(data: SchemaV1): SchemaV2 {
 - **Do not increment** for additive optional fields where Zod's `.optional()` or `.default()` handles the missing value gracefully on read.
 - Each migration must be idempotent — running it twice on the same data produces the same result.
 
+## Storage Limits
+
+Browsers typically enforce a 5–10 MB localStorage quota per origin. The app stores all user data (library entries, custom lists, tags, settings) under a single localStorage key as serialized JSON.
+
+**Current handling:** There is no proactive quota monitoring or `QuotaExceededError` handling. If a write exceeds the browser's limit, the standard error convention applies — a toast notification alerts the user (e.g., "Storage issue detected. Some data may not be saved.").
+
+**Practical risk:** Low for typical usage. A library of several hundred entries with notes, tags, and watch dates is well under 1 MB of JSON. The quota would only become a concern with thousands of entries or very long notes fields.
+
 ## Infrastructure
 
 - **`storage.service.ts`** — Typed localStorage wrapper with JSON serialization. Handles schema migration between versions. Validates all reads with Zod schemas.
