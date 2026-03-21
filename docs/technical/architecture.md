@@ -27,7 +27,7 @@ src/
 │   └── router.ts              # Vue Router config and navigation guards
 │
 ├── application/               # LAYER 2: Orchestration — Composables coordinating Domain + Infrastructure
-│   └── useWatchlist.ts        # Example: orchestrates Storage + Domain for watchlist operations
+│   └── useLibrary.ts          # Example: orchestrates Storage + Domain for library operations
 │
 ├── domain/                    # LAYER 3: Business rules — Zod schemas, types, pure logic (zero framework deps)
 │   ├── movie.schema.ts        # Example: Zod schemas & inferred types for movies

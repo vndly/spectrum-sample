@@ -43,7 +43,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **Search** | Multi-search across movies and TV shows via TMDB's `/search/multi` endpoint. | Returns both movie and TV results; `"person"` results are discarded. |
 | **Trending** | Entries currently gaining popularity, fetched from TMDB's trending endpoints. | Configurable time window: `"day"` or `"week"`. Displayed in the Home screen's trending carousel. |
 | **Popular** | Entries with high overall popularity scores, fetched from TMDB's popular endpoints. | Displayed in the Home screen's popular grid. |
-| **Recommendations** | Entries suggested by TMDB based on similarity to a given entry. | Endpoint: `/movie/{id}/recommendations` or `/tv/{id}/recommendations`. Powers the Discover screen. |
+| **Recommendations** | Entries suggested by TMDB based on similarity to a given entry. | Endpoint: `/movie/{id}/recommendations` or `/tv/{id}/recommendations`. Powers the Recommendations screen. |
 | **Release Calendar** | A calendar view of upcoming movie theatrical releases. | Data source: TMDB `/movie/upcoming` endpoint, filterable by region. |
 | **Upcoming** | Movies with future theatrical release dates, as reported by TMDB. | Synonym for the data behind the Release Calendar. |
 
@@ -68,7 +68,7 @@ Domain terminology used consistently across the codebase and documentation.
 
 | Term | Definition | Notes |
 | :--- | :--- | :--- |
-| **Movie Card** | The primary card component displaying a poster, title, year, and rating badge. Used across Home, Discover, Library, and search results. | Component: `MovieCard`. Poster aspect ratio is 2:3. |
+| **Movie Card** | The primary card component displaying a poster, title, year, and rating badge. Used across Home, Recommendations, Library, and search results. | Component: `MovieCard`. Poster aspect ratio is 2:3. |
 | **Hero Banner** | A full-width backdrop image with title overlay, used in the trending carousel on the Home screen. | Includes gradient overlay, "Watchlist +" button, and dot pagination. |
 | **Entry Details** | The detail view for a single movie or TV show, showing full metadata, cast, trailer, and streaming availability. | Route: `/movie/:id` or `/tv/:id`. |
 | **Tab Toggle** | Horizontal text tabs for switching between content categories (e.g., Watchlist / Watched / Lists). | Active tab: white with underline. Inactive: muted gray. |

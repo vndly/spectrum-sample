@@ -57,19 +57,19 @@ Design specification for the movie tracker interface. All styling uses Tailwind 
 
 ### Nav Items
 
-| Route              | Label    | Icon           |
-| ------------------ | -------- | -------------- |
-| `/`                | Home     | House icon     |
-| `/recommendations` | Discover | Compass icon   |
-| `/calendar`        | Calendar | Calendar icon  |
-| `/library`         | Library  | Bookmark icon  |
-| `/settings`        | Settings | Gear/cog icon  |
+| Route              | Label           | Icon          |
+| ------------------ | --------------- | ------------- |
+| `/`                | Home            | House icon    |
+| `/recommendations` | Recommendations | Compass icon  |
+| `/calendar`        | Calendar        | Calendar icon |
+| `/library`         | Library         | Bookmark icon |
+| `/settings`        | Settings        | Gear/cog icon |
 
 `/movie/:id`, `/tv/:id`, and `/stats` are not in the nav — accessed via card clicks and internal links.
 
 ### Search Bar
 
-- Full-width input at the top of the content area, visible on all screens.
+- Full-width input at the top of the Home screen content area.
 - Search icon on the left, rounded corners, dark background (`~bg-slate-800`).
 - Placeholder: "Search for movies or TV shows..."
 - Focus state: subtle border glow in accent color.
@@ -78,7 +78,7 @@ Design specification for the movie tracker interface. All styling uses Tailwind 
 
 ### Movie Card
 
-The most-used component across Home, Discover, Library, and search results.
+The most-used component across Home, Recommendations, Library, and search results.
 
 - **Poster image** — Fills the card. `rounded-lg`, 2:3 aspect ratio (standard movie poster).
 - **Rating badge** — Top-right corner. Small teal pill with star icon + score (e.g., "8.4"). `text-xs font-bold`, white text, positioned `absolute top-2 right-2`.
@@ -97,7 +97,7 @@ The most-used component across Home, Discover, Library, and search results.
 
 ### Tab Toggle
 
-Horizontal row of text tabs (e.g., Library: All / Movies / TV Shows; Discover: Recommendations / Trending / Genres / Top Rated).
+Horizontal row of text tabs (e.g., Library: All / Movies / TV Shows; Recommendations: Trending / Genres / Top Rated).
 
 - Active tab: white text with underline or bold weight.
 - Inactive tabs: muted gray text.

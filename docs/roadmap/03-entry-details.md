@@ -2,7 +2,7 @@
 
 * Properties
   * Name
-  * Sinopsis
+  * Synopsis
   * Image (or images)
   * Type? (movie/tv)
   * Year
@@ -12,7 +12,7 @@
   * Directors
   * Writers
   * Cast
-  * Peggy rating
+  * TMDB rating
   * IMDB rating and open IMDB page
   * Box office
   * Tech specs

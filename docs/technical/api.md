@@ -526,5 +526,3 @@ curl -s "https://api.themoviedb.org/3/movie/upcoming?region=US" \
 ## External API References
 
 - [TMDB API](https://developer.themoviedb.org/docs/getting-started)
-- [OMDB API](https://www.omdbapi.com)
-- [IMDB API](https://imdbapi.dev)

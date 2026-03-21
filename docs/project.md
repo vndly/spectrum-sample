@@ -1,4 +1,4 @@
-## Product Vision Document
+# Product Vision Document
 
 A personal movie and TV show tracker that lets you discover, organize, and reflect on your viewing habits.
 
