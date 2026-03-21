@@ -75,18 +75,20 @@ Produce a report with two parts:
 
 ### Part 1: Findings by File
 
-For each file that has findings, list them grouped under the file path. Each finding includes:
+For each file that has findings, list them as bullet points grouped under the file path. Each finding is a bullet point that includes:
 
 - **Category** — one of: Accuracy, Consistency, Glossary, Cross-Reference, Completeness, Correctness, Clarity.
 - **Location** — the section or line where the issue is (if applicable).
 - **Issue** — what's wrong.
 - **Fix** — what should be done to resolve it.
 
+Use bullet points for all findings — do not use tables.
+
 If a file has no findings, omit it from the report.
 
 ### Part 2: Missing Documentation
 
-A list of topics or documents that should exist but don't, with a brief justification for each.
+A bullet-point list of topics or documents that should exist but don't, with a brief justification for each. Do not use tables.
 
 ## Behavior
 
