@@ -27,7 +27,7 @@ src/
 │   └── router.ts              # Vue Router config and navigation guards
 │
 ├── application/               # LAYER 2: Orchestration — Composables coordinating Domain + Infrastructure
-│   └── use-library.ts          # Example: orchestrates Storage + Domain for library operations
+│   └── use-library.ts         # Example: orchestrates Storage + Domain for library operations
 │
 ├── domain/                    # LAYER 3: Business rules — Zod schemas, types, pure logic (zero framework deps)
 │   ├── constants.ts           # App-wide constants (API URLs, storage key, retry limits, etc.)
@@ -45,19 +45,19 @@ src/
 ## Layers
 
 ```
-┌─────────────────────────────────────────┐
-│        Presentation (UI)                │  Vue SFCs + Tailwind + Router
-│      imports application only           │  Renders UI, emits events
-├─────────────────────────────────────────┤
-│     Application (Orchestration)         │  Vue composables (use* functions)
-│   imports domain + infrastructure       │  Coordinates data flow, exposes reactive state
-├─────────────────────────────────────────┤
-│         Domain (Business Rules)         │  Pure TypeScript + Zod
-│           no app imports                │  Schemas, types, business logic
-├─────────────────────────────────────────┤
-│    Infrastructure (External I/O)        │  Pure TypeScript — HTTP, localStorage
-│        imports domain only              │  No Vue dependencies
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│        Presentation (UI)            │  Vue SFCs + Tailwind + Router
+│      imports application only       │  Renders UI, emits events
+├─────────────────────────────────────┤
+│     Application (Orchestration)     │  Vue composables (use* functions)
+│   imports domain + infrastructure   │  Coordinates data flow, exposes reactive state
+├─────────────────────────────────────┤
+│       Domain (Business Rules)       │  Pure TypeScript + Zod
+│           no app imports            │  Schemas, types, business logic
+├─────────────────────────────────────┤
+│    Infrastructure (External I/O)    │  Pure TypeScript — HTTP, localStorage
+│        imports domain only          │  No Vue dependencies
+└─────────────────────────────────────┘
 ```
 
 ### Presentation
