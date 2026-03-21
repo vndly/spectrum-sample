@@ -38,8 +38,6 @@ The project uses three tsconfig files with project references:
 
 ## Commands
 
-> **Note:** These commands will be available after the project is scaffolded and `package.json` is created (e.g., via `npm create vue@latest`). Until then, `npm install` and the scripts below will not work.
-
 | Command                | Description                                      |
 | ---------------------- | ------------------------------------------------ |
 | `npm run dev`          | Start the Vite dev server with hot module reload |
