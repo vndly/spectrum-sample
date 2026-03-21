@@ -48,7 +48,7 @@ Every `.vue` file follows this block order:
 
 ## 8. Naming Conventions
 
-- **Files:** kebab-case (`movie-card.vue`, `api-service.ts`, `use-movie.ts`)
+- **Files:** kebab-case (`movie-card.vue`, `use-movie.ts`). Domain and Infrastructure files use dot notation to encode the file's role: `<name>.<role>.ts` (e.g., `movie.schema.ts`, `movie.logic.ts`, `tmdb.client.ts`, `storage.service.ts`).
 - **Components:** PascalCase in templates and imports (`<MovieCard />`)
 - **Composables:** camelCase prefixed with `use` (`useMovie`, `useLibrary`)
 - **Types/Interfaces:** PascalCase (`Movie`, `LibraryEntry`)

@@ -1,19 +1,5 @@
 # Docs Review
 
-## Things to Fix
-
-### 1. `file-structure.md` is nearly redundant
-
-It's 5 lines that `architecture.md` covers in much more detail. Either flesh it out to include config files, `tests/`, `docs/`, `public/`, etc., or remove it and let `architecture.md` own the folder structure.
-
-### 2. `conventions.md:51` example `api-service.ts`
-
-The actual infrastructure files use dot notation (`tmdb.client.ts`, `storage.service.ts`). The naming convention example should reflect this pattern, or clarify the dot-separator rule.
-
-### 3. Domain schema file naming
-
-Architecture shows `movie.schema.ts` and `movie.logic.ts` (dot notation), but there's no rule in conventions explaining when to use dots vs. hyphens in file names. Should be clarified.
-
 ## Things to Improve
 
 ### 1. Roadmap items are very thin

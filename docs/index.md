@@ -4,7 +4,6 @@
 
 1. **[Product Vision Document](./project.md)**: App purpose, problem statement, and guiding principles.
 2. **[Glossary](./glossary.md)**: Defines domain terms used consistently across the codebase.
-3. **[File Structure](./file-structure.md)**: Overview of the project's folder layout and navigation.
-4. **[Product](./product/)**: Detailed requirements, scenarios, and implementation plans per feature.
-5. **[Roadmap](./roadmap/)**: Phased implementation plan from scaffold to full feature set.
-6. **[Technical Docs](./technical/)**: Architecture, API design, data model, code conventions, and UI guidelines.
+3. **[Product](./product/)**: Detailed requirements, scenarios, and implementation plans per feature.
+4. **[Roadmap](./roadmap/)**: Phased implementation plan from scaffold to full feature set.
+5. **[Technical Docs](./technical/)**: Architecture, API design, data model, code conventions, and UI guidelines.
