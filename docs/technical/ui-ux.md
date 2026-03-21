@@ -1,6 +1,6 @@
 # UI & UX
 
-Design specification for the movie tracker interface. All styling uses Tailwind utility classes and the theme config — no inline styles or separate CSS files.
+Design specification for the app's interface. All styling uses Tailwind utility classes and the theme config — no inline styles or separate CSS files.
 
 ## 1. Visual Identity
 

@@ -6,7 +6,7 @@
 
 ### Step 1 — package.json & dependencies
 
-- [ ] Create `package.json` manually (`name: "movie-tracker"`, `version: "0.1.0"`, `private: true`, `type: "module"`).
+- [ ] Create `package.json` manually (`name: "plot-twisted"`, `version: "0.1.0"`, `private: true`, `type: "module"`).
 
 **Scripts:** `dev`, `build`, `preview`, `lint`, `lint:fix`, `format`, `format:check`, `type-check`
 
