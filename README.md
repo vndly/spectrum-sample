@@ -4,9 +4,6 @@
 - Read architecture.md before making any change in the code
 - Use testing.md whenever implementing or changing any test
 
-why a .gitignore file is needed?
-add favicon
-
 one command to do
 | `type-check` | Zero TypeScript errors |
 | `lint` | Zero ESLint errors |

@@ -90,6 +90,7 @@ Ignores: `dist/`, `coverage/`
 
 Root HTML entry at project root with:
 
+- Inline SVG favicon using the 📺 emoji (no external file needed)
 - `<div id="app">` mount point
 - Inline `style="background-color: #0f1923"` on `<body>` to prevent white flash
 - `<script type="module" src="/src/main.ts">`
