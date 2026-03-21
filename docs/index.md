@@ -2,7 +2,7 @@
 
 ## Contents
 
-1. **[Product Vision Document](./project.md)**: App purpose, vision, problem statement, and target audience.
+1. **[Project](./project.md)**: App purpose, vision, problem statement, and target audience.
 2. **[Glossary](./glossary.md)**: Defines domain terms used consistently across the codebase.
 3. **[Product](./product/)**: Detailed requirements, scenarios, and implementation plans per feature.
 4. **[Roadmap](./roadmap/)**: Phased implementation plan from scaffold to full feature set.
