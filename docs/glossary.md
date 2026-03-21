@@ -65,6 +65,11 @@ Domain terminology used consistently across the codebase and documentation.
 | **HMR** | Hot Module Replacement — a Vite development feature that applies code changes in the browser instantly without a full page reload, preserving application state. | Enabled automatically by `vite dev`. Not present in production builds. |
 | **SFC** | Single File Component — a Vue file (`.vue`) that co-locates a component's template, script, and styles in a single file. | All Presentation layer components use SFCs. |
 | **SPA** | Single Page Application — a web app that loads a single HTML page and dynamically updates content via client-side routing, avoiding full page reloads. | The app is deployed as an SPA. Firebase/hosting config uses SPA rewrite rules to direct all routes to `index.html`. |
+| **SSR** | Server-Side Rendering — a technique where the server generates the full HTML for each page request, sending a ready-to-display document to the browser. | The app does not use SSR; it is deployed as a client-side SPA. |
+| **SSG** | Static Site Generation — a build-time rendering strategy that pre-generates HTML pages as static files, served without a runtime server. | The app does not use SSG; it is deployed as a client-side SPA. |
+| **PWA** | Progressive Web App — a web application that uses modern browser features (service workers, manifests) to deliver app-like experiences including offline support and home-screen installation. | Not currently implemented; listed as a potential future enhancement. |
+| **XSS** | Cross-Site Scripting — a security vulnerability where an attacker injects malicious scripts into web pages viewed by other users. | Vue's template engine auto-escapes interpolated values. Avoid `v-html` with untrusted data. |
+| **AAA** | Arrange-Act-Assert — a testing pattern that structures each test into three phases: set up preconditions (Arrange), execute the behavior under test (Act), and verify the outcome (Assert). | All unit tests follow the AAA pattern. See [Testing](./technical/testing.md) for details. |
 
 ---
 
@@ -82,6 +87,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **Filter Bar** | A row of controls for narrowing displayed entries by criteria (genre, year, etc.). | Used on Home and Library screens. |
 | **Sort Dropdown** | A control for changing the order of displayed entries (e.g., by popularity, date added). | Used on the Library screen. |
 | **CTA** | Call To Action — a UI element (typically a button or link) that prompts the user to take a specific action (e.g., "Add to Watchlist", "Try searching"). | Used in empty states, hero banners, and detail screens. Styled as a primary teal button. |
+| **WCAG** | Web Content Accessibility Guidelines — a set of W3C recommendations for making web content more accessible to people with disabilities. | The app targets WCAG-informed best practices: semantic HTML, sufficient color contrast, and keyboard navigability. |
 
 ---
 
@@ -100,6 +106,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **Certification** | An age/content classification for a movie (e.g., "PG-13", "R"). | Found in `release_dates.results[].release_dates[].certification`. TV shows use Content Rating instead. |
 | **Vote Average** | The media provider's community rating on a 0–10 scale. | Field: `vote_average`. Not the same as the user's 1–5 star Rating. |
 | **Genre List** | The media provider endpoint that returns the full set of genre IDs and display names for a media type. | Endpoints: `/genre/movie/list` and `/genre/tv/list`. Used to resolve `genre_ids` (numeric) from list endpoints into human-readable genre names for the Filter Bar. Response type: `GenreListResponse`. |
+| **CORS** | Cross-Origin Resource Sharing — an HTTP mechanism that lets a server indicate which origins may load its resources, enforced by the browser via preflight requests. | Relevant to media provider API calls; the provider's servers include the necessary CORS headers. |
 
 ---
 
@@ -115,3 +122,5 @@ Domain terminology used consistently across the codebase and documentation.
 | **Supported Languages** | The set of languages the app supports for UI translations and media provider content: English (`en`), Spanish (`es`), French (`fr`). | Defined in `SUPPORTED_LANGUAGES` constant. English is the default and fallback. |
 | **Translation Key** | A dot-separated path (e.g., `nav.home`, `library.empty.title`) used to look up a translated string in the locale JSON files. | Keys are nested by feature area and use camelCase segments. |
 | **Fallback Locale** | The locale vue-i18n uses when a translation key is missing in the current language. Always `en` (English). | Configured in `src/presentation/i18n/index.ts`. |
+| **CDN** | Content Delivery Network — a geographically distributed network of servers that caches and serves static assets closer to users, reducing latency. | Firebase Hosting serves the built SPA via its global CDN. |
+| **PII** | Personally Identifiable Information — any data that could identify a specific individual (e.g., name, email, location). | The app stores no PII. All user data (library, settings) lives in the browser's localStorage and never leaves the device. |
