@@ -59,7 +59,7 @@ Every `.vue` file follows this block order:
 ## 6. Guardrails
 
 - **No `any`** — Every `any` requires a suppressed lint rule and a documented reason.
-- **No server state** — All persistence is localStorage. No backend, no cookies, no IndexedDB.
+- **No server state** — All persistence is localStorage. No backend, no cookies, no database.
 - **No API caching** — Every navigation or action that needs media provider data makes a fresh API request. There is no response cache, no request deduplication, and no stale-while-revalidate layer. This keeps the data layer simple and avoids cache-invalidation bugs. The media provider's rate limit (≈40 requests per 10 seconds) is well above typical usage. The one exception is `useGenres()`, which caches genre lists in memory for the session to avoid redundant lookups (see [Data Model — useGenres()](./data-model.md#application-composables)).
 - **No offline handling** — The app requires a network connection. There is no service worker or offline fallback.
 - **Typed everywhere** — All localStorage access goes through a typed service. Raw `JSON.parse` / `JSON.stringify` calls outside that service are prohibited.
