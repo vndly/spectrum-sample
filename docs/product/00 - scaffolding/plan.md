@@ -118,3 +118,4 @@ Empty directories get `.gitkeep` files until real files are added.
   - `npm run lint` — zero errors
   - `npm run test` — test suite runs (no tests yet, exits clean)
   - `npm run type-check` — zero TS errors
+  - `npm run format:check` — zero formatting issues
