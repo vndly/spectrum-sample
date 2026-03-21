@@ -97,10 +97,10 @@ yarn add your-package
 
 ### Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `timeout` | `number` | `5000` | Request timeout in milliseconds |
-| `retries` | `number` | `3` | Number of retry attempts on failure |
+| Option    | Type     | Default | Description                         |
+|-----------|----------|---------|-------------------------------------|
+| `timeout` | `number` | `5000`  | Request timeout in milliseconds     |
+| `retries` | `number` | `3`     | Number of retry attempts on failure |
 
 ### Advanced Usage
 
