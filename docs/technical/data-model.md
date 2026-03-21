@@ -153,7 +153,7 @@ Composables are the public data-access layer for Presentation components. They o
 ```
 
 - **`useMovie(id)`** — Fetches and exposes reactive movie data via `provider.client.ts`.
-- **`useTVShow(id)`** — Fetches and exposes reactive TV show data via `provider.client.ts`.
+- **`useShow(id)`** — Fetches and exposes reactive TV show data via `provider.client.ts`.
 - **`useLibrary()`** — Reads/writes library entries via `storage.service.ts`. Exposes watchlist, watched, favorites, etc.
 - **`useSearch(query)`** — Runs search queries via `provider.client.ts`, exposes reactive results.
 - **`useTrending()`** — Fetches trending titles via `provider.client.ts`.
@@ -164,4 +164,4 @@ Composables are the public data-access layer for Presentation components. They o
 - **`useGenres()`** — Fetches movie and TV genre lists from the media provider on first call and caches the result in memory for the session. Returns a lookup map of genre ID → name for resolving `genre_ids` in list responses. Subsequent calls return the cached data without additional API requests.
 - **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`.
 - **`useLists()`** — Manages custom lists and list membership via `storage.service.ts`.
-- **`useRouteId()`** — Extracts and validates the numeric `:id` param from the current route. Used by both detail screens (`MovieDetailScreen`, `TVShowDetailScreen`) to get a typed provider ID.
+- **`useRouteId()`** — Extracts and validates the numeric `:id` param from the current route. Used by both detail screens (`MovieDetailScreen`, `ShowDetailScreen`) to get a typed provider ID.

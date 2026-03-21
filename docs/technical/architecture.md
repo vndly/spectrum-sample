@@ -166,7 +166,7 @@ Navigation guards on `/movie/:id` and `/show/:id` reject non-numeric IDs and red
 Every route is directly navigable via URL. Navigating to `/movie/550` or `/show/1396` works the same whether the user clicks a card or pastes the URL into the browser:
 
 1. Vue Router matches the `:id` param and lazy-loads the detail view component.
-2. The view's composable (`useMovie(id)` or `useTVShow(id)`) fetches data from the media provider using the route param.
+2. The view's composable (`useMovie(id)` or `useShow(id)`) fetches data from the media provider using the route param.
 3. While loading, the view renders skeleton placeholders.
 4. On success, the view renders the full detail screen.
 

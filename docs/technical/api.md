@@ -167,12 +167,12 @@ interface MovieDetail {
 }
 ```
 
-### TVShowListItem
+### ShowListItem
 
 Returned by list endpoints: search, trending, popular, recommendations.
 
 ```ts
-interface TVShowListItem {
+interface ShowListItem {
   id: number
   name: string
   original_name: string
@@ -190,12 +190,12 @@ interface TVShowListItem {
 }
 ```
 
-### TVShowDetail
+### ShowDetail
 
 Returned by `/tv/{id}` with `append_to_response=credits,videos,watch/providers,content_ratings`.
 
 ```ts
-interface TVShowDetail {
+interface ShowDetail {
   id: number
   name: string
   original_name: string
@@ -372,7 +372,7 @@ Searches movies, TV shows, and people in a single request. The app filters resul
 | `page`          | query | int    | No       | `1`     | Page number (1–500)            |
 | `include_adult` | query | bool   | No       | `false` | Include adult content          |
 
-**Response:** `PaginatedResponse<MovieListItem | TVShowListItem>`
+**Response:** `PaginatedResponse<MovieListItem | ShowListItem>`
 
 Each result includes an extra `media_type` field (`"movie"`, `"tv"`, or `"person"`) not present in the individual list item types. The app uses this to distinguish result types and discards `"person"` results.
 
@@ -414,7 +414,7 @@ Returns trending TV shows for a given time window.
 | `language`    | query | string | No       | `en-US` | ISO 639-1 language code        |
 | `page`        | query | int    | No       | `1`     | Page number (1–500)            |
 
-**Response:** `PaginatedResponse<TVShowListItem>`
+**Response:** `PaginatedResponse<ShowListItem>`
 
 ```bash
 curl -s "https://api.themoviedb.org/3/trending/tv/week" \
@@ -452,7 +452,7 @@ Returns a paginated list of currently popular TV shows.
 | `language` | query | string | No       | `en-US` | ISO 639-1 language code |
 | `page`     | query | int    | No       | `1`     | Page number (1–500)     |
 
-**Response:** `PaginatedResponse<TVShowListItem>`
+**Response:** `PaginatedResponse<ShowListItem>`
 
 ```bash
 curl -s "https://api.themoviedb.org/3/tv/popular?page=1" \
@@ -496,7 +496,7 @@ Returns full details for a single TV show, including credits, videos, streaming 
 
 The app requests `append_to_response=credits,videos,watch/providers,content_ratings` to fetch all related data in a single call.
 
-**Response:** `TVShowDetail`
+**Response:** `ShowDetail`
 
 ```bash
 curl -s "https://api.themoviedb.org/3/tv/1396?append_to_response=credits,videos,watch/providers,content_ratings" \
@@ -536,7 +536,7 @@ Returns TV shows recommended based on a given show.
 | `language` | query | string | No       | `en-US` | ISO 639-1 language code |
 | `page`     | query | int    | No       | `1`     | Page number (1–500)     |
 
-**Response:** `PaginatedResponse<TVShowListItem>`
+**Response:** `PaginatedResponse<ShowListItem>`
 
 ```bash
 curl -s "https://api.themoviedb.org/3/tv/1396/recommendations" \

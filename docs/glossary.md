@@ -14,7 +14,7 @@ Domain terminology used consistently across the codebase and documentation.
 | **Media Type** | The content kind: `"movie"` or `"tv"`. | Stored on `LibraryEntry.mediaType`. Returned by the API as `media_type` in multi-search results. |
 | **Genre** | A media provider category such as "Action" or "Comedy", identified by numeric ID. | List endpoints return `genre_ids: number[]`; detail endpoints return full `Genre` objects with `id` and `name`. |
 | **Collection** | A media provider grouping of related movies (e.g., a franchise). | Only applies to movies. Found in `MovieDetail.belongs_to_collection`. |
-| **Episode** | A single installment of a TV show, belonging to a season. | Relevant in `TVShowDetail.next_episode_to_air`. |
+| **Episode** | A single installment of a TV show, belonging to a season. | Relevant in `ShowDetail.next_episode_to_air`. |
 
 ---
 
