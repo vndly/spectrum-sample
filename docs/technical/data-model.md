@@ -1,6 +1,6 @@
 # Data Model
 
-All types will be defined as Zod schemas in `src/domain/` with TypeScript types inferred via `z.infer<>`. For TMDB API response types, see [API](./api.md#response-types).
+All types are defined as Zod schemas in `src/domain/` with TypeScript types inferred via `z.infer<>`. For TMDB API response types, see [API](./api.md#response-types).
 
 ## Models
 

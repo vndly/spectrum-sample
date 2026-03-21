@@ -32,12 +32,12 @@ Design specification for the movie tracker interface. All styling uses Tailwind 
 | --------------------- | ------- | ----------------------------- |
 | Base (desktop)        | 5–6     | Wide desktop                  |
 | `max-xl` (< 1280px)   | 4–5     | Standard desktop              |
-| `max-lg` (< 1024px)   | 3–4     | Sidebar appears, multi-column |
+| `max-lg` (< 1024px)   | 3–4     | Sidebar visible, multi-column |
 | `max-md` (< 768px)    | 2–3     | Bottom nav, narrower layout   |
-| `max-sm` (< 640px)    | 2       | Single-column mobile layout   |
+| `max-sm` (< 640px)    | 2       | Two-column mobile layout      |
 
 - **Spacing** — `space-y-6` or `space-y-8` between major sections. `gap-4` between grid cards.
-- **Responsive behavior** — Desktop-first. Base styles target desktop; Tailwind breakpoints override for smaller screens. Below `md`: sidebar hidden, bottom nav bar visible, single-column layout. `md` and above: sidebar visible, multi-column grids.
+- **Responsive behavior** — Desktop-first. Base styles target desktop; Tailwind breakpoints override for smaller screens. Below `md`: sidebar hidden, bottom nav bar visible, two-column layout. `md` and above: sidebar visible, multi-column grids.
 
 ## 4. Navigation
 
@@ -92,7 +92,7 @@ The most-used component across Home, Recommendations, Library, and search result
 - Dark gradient overlay from bottom-left for text legibility.
 - Title: large bold white text (`text-2xl` to `text-3xl`), bottom-left.
 - "Watchlist +" button: teal accent, small pill.
-- "In Theaters Now >" text link on the right.
+- "In Theaters Now >" text link on the right, navigating to `/calendar` (Release Calendar).
 - Dot pagination indicators: small circles at bottom center. Active dot filled/white, inactive dots muted.
 
 ### Tab Toggle
@@ -144,6 +144,39 @@ Custom lists are managed from the Library screen's "Lists" tab and from entry de
 - **Rename list** — Long-press or context menu on a list row reveals a "Rename" option. Opens the same inline text input with the current name pre-filled.
 - **Delete list** — Long-press or context menu reveals a "Delete" option. Confirmation prompt before deletion. Deleting a list does not remove the entries from the library.
 - **Add to list** — On the entry detail screen, a "Add to List" button opens a dropdown/modal showing all custom lists with checkboxes. Toggling a checkbox adds or removes the entry from that list.
+
+### Stats Screen
+
+- **Stat Cards** — Row of summary cards at the top: total watched, total watchlist, average rating, total watch time. Each card is a dark surface with a bold number and a muted label beneath.
+- **Genre Chart** — Horizontal bar chart showing the number of watched entries per genre. Bars use the teal accent color. Genre labels on the left, counts on the right.
+- **Monthly Chart** — Vertical bar chart showing entries watched per month for the current year. X-axis: month abbreviations. Y-axis: count. Bars in teal accent.
+- **Top Rated List** — Ordered list of the user's highest-rated entries (5-star rating). Each row shows rank number, poster thumbnail, title, and star rating. Limited to the top 10.
+- **Layout** — Stat cards span the full width in a responsive grid (4 columns on desktop, 2 on tablet, 1 on mobile). Charts and list stack vertically below the cards with `space-y-6` spacing.
+
+### Recommendations Screen
+
+- **Filter Bar** — Horizontal row of filter chips at the top. Options: media type (All / Movies / TV Shows) and genre. Active filter uses teal accent background; inactive filters use dark surface.
+- **Entry Grid** — Standard `MovieCard[]` grid (same responsive columns as the Home screen). Cards show poster, rating badge, title, and year.
+- **Seed context** — A muted text line above the grid: "Based on your highest-rated titles." No individual seed entries are surfaced to the user — the composable handles seed selection internally.
+- **Layout** — Filter bar at the top, entry grid below. Same spacing and grid breakpoints as the Home screen's popular grid.
+
+### Release Calendar Screen
+
+- **Calendar layout** — Vertical list grouped by release week. Each week section has a sticky header showing the date range (e.g., "Mar 23 – Mar 29").
+- **Release Cards** — Horizontal row per entry within a week: poster thumbnail (small, `w92`), title, release date, and genre tags. Tapping a card navigates to `/movie/:id`.
+- **Date navigation** — Month/year selector at the top (dropdown or left/right arrows) to jump between months. Defaults to the current month.
+- **Region filter** — Uses the user's `Settings.preferredRegion` to filter releases. Displayed as a muted label (e.g., "Showing releases for US").
+- **Layout** — Date navigation at top, followed by week-grouped release card lists. Full content-area width, no sidebar-specific adjustments needed.
+
+### Settings Screen
+
+- **Layout** — Vertical stack of setting groups, each as a labeled row with the control on the right. Dark surface cards with `rounded-lg` and `p-4` padding, separated by `space-y-4`.
+- **Theme Toggle** — Label "Theme" on the left, toggle switch on the right. Switch uses teal accent when active (dark mode). Toggling applies the theme immediately.
+- **Language Select** — Label "Content Language" on the left, dropdown on the right showing the current ISO 639-1 language name (e.g., "English"). Selecting a language updates `Settings.language` and re-fetches TMDB content on next navigation.
+- **Region Select** — Label "Region" on the left, dropdown on the right showing the current region name (e.g., "United States"). Controls streaming availability and release calendar filtering.
+- **Home Section Select** — Label "Default Home Section" on the left, dropdown with options: Trending, Popular, Search. Controls which section is scrolled-to on initial Home screen load.
+- **Data Export** — Label "Export Data" on the left, primary teal button "Export JSON" on the right. Exports the full localStorage payload as a downloadable `.json` file.
+- **Data Import** — Label "Import Data" on the left, ghost button "Import JSON" on the right. Opens a file picker for a `.json` file. Shows a confirmation prompt before overwriting existing data.
 
 ## 6. Interaction Patterns
 

@@ -51,6 +51,8 @@ tests/
 - **Application** — Cover state transitions: idle → loading → success, idle → loading → error.
 - **Presentation** — Only test components with complex interaction logic (e.g., multi-step forms). Simple rendering components do not need tests.
 
+See also [Conventions — Testing](./conventions.md#6-testing) for testing conventions (file naming, mocking strategy, AAA pattern).
+
 ## Test Pattern
 
 Every test follows the **Arrange-Act-Assert** pattern:

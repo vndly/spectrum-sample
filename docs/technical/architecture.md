@@ -149,7 +149,7 @@ Routes are defined in `src/presentation/router.ts` using Vue Router.
 }
 ```
 
-**No API caching** — Every navigation or action that needs TMDB data makes a fresh API request. There is no response cache, no request deduplication, and no stale-while-revalidate layer. This keeps the data layer simple and avoids cache-invalidation bugs. TMDB's rate limit (≈40 requests per 10 seconds) is well above typical usage.
+**No API caching** — Every navigation or action that needs TMDB data makes a fresh API request. There is no response cache, no request deduplication, and no stale-while-revalidate layer. This keeps the data layer simple and avoids cache-invalidation bugs. TMDB's rate limit (≈40 requests per 10 seconds) is well above typical usage. The one exception is `useGenres()`, which caches genre lists in memory for the session to avoid redundant lookups (see [Data Model — useGenres()](./data-model.md#application-composables)).
 
 ### Deep Linking
 
@@ -176,7 +176,7 @@ App.vue
     └── AppShell (sidebar/bottom nav + router outlet)
         ├── / → HomeScreen
         │       ├── SearchBar → SearchResults → MovieCard[]
-        │       ├── TrendingCarousel → MovieCard[]
+        │       ├── TrendingCarousel → HeroBanner[]
         │       ├── PopularGrid → MovieCard[]
         │       ├── FilterBar
         │       └── ViewToggle
@@ -187,7 +187,8 @@ App.vue
         │       ├── CastCarousel
         │       ├── TrailerEmbed
         │       ├── StreamingBadges
-        │       └── RatingStars
+        │       ├── RatingStars
+        │       └── Gallery
         │
         ├── /library → LibraryScreen
         │       ├── TabToggle (watchlist / watched / lists)
