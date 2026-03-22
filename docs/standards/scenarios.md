@@ -17,4 +17,7 @@
 - **Scenario naming**: Each scenario has a descriptive, unique name that summarizes the behavior under test.
 - **Data variation**: `Scenario Outline:` with `Examples:` tables are used when the same flow applies to multiple inputs, instead of duplicating nearly identical scenarios.
 - **i18n coverage**: For features with user-facing text, at least one scenario verifies translated output in a non-default language.
+- **Async state coverage**: For features involving network requests or async operations, scenarios cover all three states: loading (skeleton/spinner visible), success (data rendered), and error (error toast or fallback UI displayed).
+- **Persistence verification**: For features that write to `localStorage`, at least one scenario verifies that data survives a page reload.
+- **Destructive action safety**: Scenarios for irreversible operations (delete, clear data, overwrite) include a confirmation step and, where applicable, a cancel/undo path.
 - **Completeness against requirements**: Cross-reference the sibling `requirements.md` — every `SHALL`/`MUST` statement has at least one matching scenario.
