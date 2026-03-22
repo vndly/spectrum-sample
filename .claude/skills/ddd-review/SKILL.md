@@ -1,13 +1,13 @@
 ---
 name: ddd-review
-description: Reviews feature/bug documentation folders against project technical reference, checking for correctness, completeness, consistency, and quality.
+description: Reviews feature, infrastructure, or bug-fix documentation folders against project technical reference, checking for correctness, completeness, consistency, and quality.
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Review
 
-You are a senior documentation reviewer. Your job is to rigorously review a feature or bug-fix documentation folder against the project's technical reference and codebase, finding every issue — from typos to architectural contradictions.
+You are a senior documentation reviewer. Your job is to rigorously review a feature, infrastructure, or bug-fix documentation folder against the project's technical reference and codebase, finding every issue — from typos to architectural contradictions.
 
 ## Trigger
 
@@ -15,7 +15,7 @@ On-demand only, invoked via `/ddd-review <folder-path>` (path relative to projec
 
 ## Scope
 
-- Reviews a single feature or bug-fix documentation folder against the project's technical reference (`docs/technical/`) and codebase.
+- Reviews a single feature, infrastructure, or bug-fix documentation folder against the project's technical reference (`docs/technical/`) and codebase.
 - **Report only** — does not modify any files.
 
 ## 1. Initialization
@@ -36,7 +36,7 @@ Use the Agent tool to spawn subagents in parallel to collect all necessary conte
 
 **Subagent B — Target folder**: Read all files in the user-provided folder.
 
-**Subagent C — Project context**: Read `CLAUDE.md`. Read the target folder's `requirements.md` to extract its dependency list. Then list all sibling feature folders in `docs/product/`, but only read the `requirements.md` of folders that are declared as dependencies. Return a brief summary of each relevant feature — not the full content — to avoid filling the context window.
+**Subagent C — Project context**: Read the target folder's `requirements.md` to extract its dependency list. Then list all sibling feature folders in `docs/product/`, but only read the `requirements.md` of folders that are declared as dependencies. Return a brief summary of each relevant feature — not the full content — to avoid filling the context window.
 
 After all subagents return, proceed to the review phase.
 
@@ -50,21 +50,24 @@ After all subagents return, proceed to the review phase.
   - Allowed `status` values: `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
   - Allowed `importance` values: `low`, `medium`, `high`, `critical`.
   - `type` is free-form — do not validate its value, only verify the field is present.
-- **Sections**: All expected sections present:
+- **Sections**: Check that the applicable sections are present. Sections marked *(functional/bug-fix only)* are expected when `type` is `functional` or `bug-fix` but may be absent for `infrastructure` docs — do not flag their absence for infrastructure type.
   - Intent
-  - Context & Background (Problem Statement, User Stories, Personas, Dependencies)
+  - Context & Background (Problem Statement, User Stories *(functional/bug-fix only)*, Personas *(functional/bug-fix only)*, Dependencies)
+  - Decisions *(optional — review if present, see below)*
   - Scope (In Scope, Out of Scope)
   - Functional Requirements
   - Non-Functional Requirements
-  - Constraints
-  - UI/UX Specs
-  - Risks & Assumptions
+  - Constraints *(functional/bug-fix only)*
+  - UI/UX Specs *(functional/bug-fix only)*
+  - Risks & Assumptions *(functional/bug-fix only)*
   - Acceptance Criteria
 - **Functional requirements**: Each has an ID, description, and priority. Requirements must be specific enough that two developers would implement the same behavior from the description alone.
 - **Non-functional requirements**: Must include a measurable threshold (e.g., "loads in < 200ms" not "should be fast"). Flag any requirement that lacks a concrete metric.
-- **Acceptance criteria**: Cover all functional requirements. Each criterion is testable — meaning it can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite.
+- **Acceptance criteria**: Cover all functional requirements. Each criterion must reference the requirement ID it validates (e.g., `[F-01]`). Flag any criterion that cannot be traced to a requirement, and any requirement with no corresponding criterion. Each criterion is testable — meaning it can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite.
 - **Scope**: Boundaries are explicit. Nothing in "In scope" contradicts "Out of scope". No implicit scope (things that seem assumed but not stated).
 - **Dependencies**: All listed and accurate. No unlisted dependencies implied by the requirements.
+- **Decisions**: If present, verify each row has a non-empty rationale. Choices must not contradict the technical reference docs (architecture, tech-stack, conventions). Flag decisions that duplicate or contradict decisions in dependency features.
+- **Unexpected sections**: If `requirements.md` contains sections not in the expected list above, flag them as a Warning — they may indicate scope creep or content that belongs in a different file.
 
 #### plan.md
 
@@ -139,6 +142,11 @@ Present the report directly in the conversation using this structure:
 [One-paragraph overview of the documentation quality. State the folder reviewed and the number of findings by severity.]
 
 X critical | Y warnings | Z suggestions — across N files.
+
+**Verdict**: [Approved | Needs Revision | Blocked]
+- **Approved**: No critical findings. Warnings and suggestions are non-blocking.
+- **Needs Revision**: One or more critical findings that must be resolved before implementation.
+- **Blocked**: Fundamental issues (e.g., missing required files, architectural contradictions) that require significant rework.
 
 ## Findings
 
