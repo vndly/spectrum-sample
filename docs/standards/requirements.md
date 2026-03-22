@@ -11,7 +11,13 @@ Requirements should describe:
 - Scenarios that can be tested or explicitly validated
 - Business rules: cascading deletes, state transitions, resource limits
 
-A good requirement is testable and unambiguous:
+A good requirement is:
+- **Unambiguous**: No room for interpretation.
+- **Complete**: Covers all necessary details.
+- **Consistent**: No contradictions with other requirements.
+- **Verifiable**: Testers can confirm if it's met.
+
+Examples:
 - "The task list displays all tasks belonging to the current user, sorted by due date ascending" (specific, testable)
 - "The task list should work well" (too vague)
 
