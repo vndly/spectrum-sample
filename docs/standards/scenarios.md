@@ -20,4 +20,5 @@
 - **Async state coverage**: For features involving network requests or async operations, scenarios cover all three states: loading (skeleton/spinner visible), success (data rendered), and error (error toast or fallback UI displayed).
 - **Persistence verification**: For features that write to `localStorage`, at least one scenario verifies that data survives a page reload.
 - **Destructive action safety**: Scenarios for irreversible operations (delete, clear data, overwrite) include a confirmation step and, where applicable, a cancel/undo path.
+- **Error message specificity**: `THEN` steps for error paths assert the specific message or error type shown to the user, not just "an error is shown" or "an error occurs."
 - **Completeness against requirements**: Cross-reference the sibling `requirements.md` — every `SHALL`/`MUST` statement has at least one matching scenario.
