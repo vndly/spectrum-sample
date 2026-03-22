@@ -46,20 +46,23 @@ After all subagents return, proceed to the review phase.
 
 #### requirements.md
 
-- **Frontmatter**: All fields present and valid (`id`, `title`, `status`, `importance`, `type`, `tags`).
-  - Allowed `status` values: `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
-  - Allowed `importance` values: `low`, `medium`, `high`, `critical`.
-  - `type` is free-form — do not validate its value, only verify the field is present.
-- **Sections**: Check that the applicable sections are present. Sections marked *(functional/bug-fix only)* are expected when `type` is `functional` or `bug-fix` but may be absent for `infrastructure` docs — do not flag their absence for infrastructure type.
+- **Frontmatter**: All fields present and valid:
+  - `id`: must be unique across all features (check against sibling summaries collected by Subagent C). Flag any duplicates.
+  - `title`: non-empty string
+  - `status`: allowed values are `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
+  - `importance`: allowed values are `low`, `medium`, `high`, `critical`.
+  - `type`: non-empty string (e.g., `functional`, `infrastructure`, or `bug-fix`)
+  - `tags`: array of strings (can be empty)
+- **Sections**: Check that the applicable sections are present:
   - Intent
-  - Context & Background (Problem Statement, User Stories *(functional/bug-fix only)*, Personas *(functional/bug-fix only)*, Dependencies)
-  - Decisions *(optional — review if present, see below)*
+  - Context & Background (Problem Statement, User Stories, Personas, Dependencies)
+  - Decisions
   - Scope (In Scope, Out of Scope)
   - Functional Requirements
   - Non-Functional Requirements
-  - Constraints *(functional/bug-fix only)*
-  - UI/UX Specs *(functional/bug-fix only)*
-  - Risks & Assumptions *(functional/bug-fix only)*
+  - Constraints
+  - UI/UX Specs
+  - Risks & Assumptions
   - Acceptance Criteria
 - **Functional requirements**: Each has an ID, description, and priority. IDs must be unique — flag any duplicates. Requirements must be specific enough that two developers would implement the same behavior from the description alone.
 - **Non-functional requirements**: Must include a measurable threshold (e.g., "loads in < 200ms" not "should be fast"). Flag any requirement that lacks a concrete metric.
