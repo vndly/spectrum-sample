@@ -63,6 +63,24 @@
 - Changes affecting logging, monitoring, or observability should be documented — flag as **Suggestion** if missing.
 - Error reporting changes (new error types, alerting implications) should be noted — flag as **Suggestion** if missing.
 
+### Concurrency & State Management
+
+- Race conditions in async flows (parallel requests, optimistic updates) must be identified and addressed — flag as **Warning** if present but undocumented.
+- Shared state mutations must document synchronization strategy — flag as **Warning** if missing.
+- Stale data scenarios (caching, background refreshes) should be described — flag as **Suggestion** if missing.
+
+### Error UX
+
+- User-facing error states must describe what the user sees (error messages, fallback UI, empty states) — flag as **Warning** if missing.
+- Retry and recovery flows should be documented for operations that can fail — flag as **Suggestion** if missing.
+- Destructive or irreversible actions must document confirmation and undo mechanisms — flag as **Warning** if missing.
+
+### Internationalization
+
+- New user-facing strings must use the localization system — flag as **Warning** if hardcoded.
+- Locale-sensitive formats (dates, numbers, currency) must use the appropriate formatting utilities — flag as **Warning** if raw formatting is used.
+- Text that affects layout (varying string lengths across locales) should note any UI implications — flag as **Suggestion** if missing.
+
 ### Known Limitations
 
 - Intentional shortcuts or deferred work must be explicitly listed — flag as **Warning** if discovered but undocumented.
