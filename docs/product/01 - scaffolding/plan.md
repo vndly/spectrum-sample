@@ -250,15 +250,109 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ---
 
-## Phase 9 — Verification
+## Phase 9 — Tests
 
-### Step 20 — Verify
+### Step 20 — Install test utilities
+
+- [ ] Run `npm install -D @vue/test-utils@^2`.
+
+### Step 21 — Router unit tests
+
+- [ ] Create `src/presentation/router.test.ts`:
+
+- All 5 named routes exist with correct paths and names
+- Catch-all `/:pathMatch(.*)*` route exists and redirects to `/`
+- `scrollBehavior` returns `{ top: 0 }`
+- `afterEach` guard sets `document.title` to `"{Page Name} — Plot Twisted"`
+
+### Step 22 — Composable unit tests
+
+- [ ] Create `src/presentation/composables/use-toast.test.ts`:
+
+- `addToast()` adds a toast to the queue with a unique id
+- `removeToast(id)` removes the toast from the queue
+- Auto-dismiss removes the toast after timeout (~4s, use `vi.useFakeTimers()`)
+- Toast types: `'error'`, `'success'`, `'info'`
+- Optional action object is preserved on the toast
+
+- [ ] Create `src/presentation/composables/use-modal.test.ts`:
+
+- `open(props)` sets `isOpen` to true and stores props
+- `close()` sets `isOpen` to false and clears props
+- Props include `title`, optional `content`, `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`
+
+### Step 23 — UI primitive component tests
+
+- [ ] Create `src/presentation/components/common/empty-state.test.ts`:
+
+- Renders title and description text
+- Renders icon when provided
+- Does not render icon when omitted
+
+- [ ] Create `src/presentation/components/common/skeleton-loader.test.ts`:
+
+- Renders with default dimensions
+- Applies custom `width`, `height`, and `rounded` props
+
+- [ ] Create `src/presentation/components/common/toast-container.test.ts`:
+
+- Renders nothing when toast queue is empty
+- Renders toast items when toasts exist
+- Each toast shows message, dismiss button, and type-colored border
+- Optional action button renders when toast has an action
+
+- [ ] Create `src/presentation/components/common/modal-dialog.test.ts`:
+
+- Does not render when `isOpen` is false
+- Renders title, body, confirm, and cancel buttons when open
+- Calls `close()` on backdrop click
+- Calls `close()` on Escape key
+
+- [ ] Create `src/presentation/components/error/error-boundary.test.ts`:
+
+- Renders slot content in normal state
+- Shows fallback UI with error title, description, and reload button when an error is captured
+
+### Step 24 — Navigation component tests
+
+- [ ] Create `src/presentation/components/layout/sidebar-nav.test.ts`:
+
+- Renders all 5 nav items with correct icons and translated labels
+- Active route item has teal accent classes (`border-accent`, `bg-accent/10`)
+- Inactive items have muted classes (`text-slate-400`)
+- Home route uses exact match (`route.path === '/'`)
+
+- [ ] Create `src/presentation/components/layout/bottom-nav.test.ts`:
+
+- Renders all 5 nav items with icons and labels
+- Active route item has teal accent styling
+- Inactive items have muted styling
+
+### Step 25 — Placeholder view tests
+
+- [ ] Create one test file per view in `src/presentation/views/`:
+
+| Test File                  | Verifies                                                          |
+| :------------------------- | :---------------------------------------------------------------- |
+| `home-screen.test.ts`      | Renders `<EmptyState>` with `Home` icon and `page.home.title`     |
+| `library-screen.test.ts`   | Renders `<EmptyState>` with `BookMarked` icon and `page.library.title`  |
+| `stats-screen.test.ts`     | Renders `<EmptyState>` with `BarChart3` icon and `page.stats.title`    |
+| `calendar-screen.test.ts`  | Renders `<EmptyState>` with `CalendarDays` icon and `page.calendar.title` |
+| `settings-screen.test.ts`  | Renders `<EmptyState>` with `Settings` icon and `page.settings.title`  |
+
+---
+
+## Phase 10 — Verification
+
+### Step 26 — Verify
 
 - [ ] Run and confirm all pass:
+  - `npm run test` — zero test failures
   - `npm run type-check` — zero TypeScript errors
   - `npm run lint` — zero ESLint errors
   - `npm run format:check` — zero formatting issues
   - `npm run build` — production build succeeds
+  - `npm run check` — full pipeline passes
   - `npm run dev` — manual verification:
     - Desktop: sidebar visible with 5 nav items, navigation works
     - Mobile (< 768px): sidebar hidden, bottom nav visible, navigation works
