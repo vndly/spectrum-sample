@@ -36,7 +36,12 @@ Use the Agent tool to spawn subagents in parallel to collect all necessary conte
 
 **Subagent B — Project context**: Read the target folder's `requirements.md` to extract its dependency list. Then list all sibling feature folders in `docs/product/` and, for each sibling folder, read only the `Scope` and `Functional Requirements` sections of its `requirements.md`. Return a brief summary of each sibling feature (title, scope boundaries, and requirement IDs) — not the full content — to avoid filling the context window. Mark which siblings are declared dependencies.
 
-After both subagents return, proceed to the per-file review phase.
+After both subagents return, read the standards files needed for the per-file review phase:
+
+1. Read `docs/standards/common.md` (needed by every per-file subagent).
+2. For each file that exists in the target folder, read its corresponding standards file from `docs/standards/` (see the file-specific instructions below for the mapping).
+
+You will embed this content directly into each subagent's prompt in step 3. Subagents must NOT fetch standards files themselves.
 
 ## 3. Per-File Review
 
@@ -47,7 +52,8 @@ For each file found in the target folder (from the list validated in step 1), sp
 - The **file path** to review (the subagent reads the file itself)
 - The **reference docs** output from Subagent A
 - The **project context** output from Subagent B
-- The **file-specific review instructions** and **common checks** from this section
+- The **common checks** content (embedded from `docs/standards/common.md`)
+- The **file-specific review checks** content (embedded from the corresponding `docs/standards/` file)
 
 ### What each subagent returns
 
@@ -56,7 +62,7 @@ For each file found in the target folder (from the list validated in step 1), sp
 
 ### Common checks
 
-Read from `docs/standards/common.md`. Every per-file subagent must perform these checks in addition to its file-specific checks.
+Every per-file subagent must perform the checks from `docs/standards/common.md` in addition to its file-specific checks. The orchestrator embeds this content into each subagent's prompt — subagents do not read the file themselves.
 
 ### File-specific instructions
 
@@ -64,7 +70,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### requirements.md
 
-**Review checks:** Read from `docs/standards/requirements.md`.
+**Review checks:** Embedded from `docs/standards/requirements.md` by the orchestrator.
 
 **Structured extract to return:**
 
@@ -80,7 +86,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### plan.md
 
-**Review checks:** Read from `docs/standards/plan.md`.
+**Review checks:** Embedded from `docs/standards/plan.md` by the orchestrator.
 
 > Completeness checks (every requirement has plan steps, plan stays within requirements scope) are performed by the cross-cutting subagent in step 4.
 
@@ -93,7 +99,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### scenarios.md
 
-**Review checks:** Read from `docs/standards/scenarios.md`.
+**Review checks:** Embedded from `docs/standards/scenarios.md` by the orchestrator.
 
 > Coverage checks (every requirement has a scenario) are performed by the cross-cutting subagent in step 4.
 
@@ -104,7 +110,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### index.md
 
-**Review checks:** Read from `docs/standards/index-file.md`.
+**Review checks:** Embedded from `docs/standards/index-file.md` by the orchestrator.
 
 **Structured extract to return:**
 
@@ -112,7 +118,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### api.md
 
-**Review checks:** Read from `docs/standards/api.md`.
+**Review checks:** Embedded from `docs/standards/api.md` by the orchestrator.
 
 **Structured extract to return:**
 
@@ -122,7 +128,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### data-model.md
 
-**Review checks:** Read from `docs/standards/data-model.md`.
+**Review checks:** Embedded from `docs/standards/data-model.md` by the orchestrator.
 
 **Structured extract to return:**
 
@@ -132,7 +138,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### implementation.md
 
-**Review checks:** Read from `docs/standards/implementation.md`.
+**Review checks:** Embedded from `docs/standards/implementation.md` by the orchestrator.
 
 > Alignment with plan and requirements is checked by the cross-cutting subagent in step 4.
 
