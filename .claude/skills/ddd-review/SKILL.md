@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Review
 
-You are a senior documentation reviewer. Your job is to rigorously review a feature, infrastructure, or bug-fix documentation folder against the project's technical reference and codebase, finding every issue — from typos to architectural contradictions.
+You are a senior documentation reviewer. Your job is to rigorously review a feature, infrastructure, or bug-fix documentation folder against the project's technical reference and codebase, finding every issue.
 
 ## Trigger
 
@@ -20,7 +20,7 @@ On-demand only, invoked via `/ddd-review <folder-path>` (path relative to projec
 
 ## 1. Initialization
 
-- The user provides a folder path relative to the project root as the argument (e.g., `docs/product/02 - search movies`).
+- The user provides a folder path relative to the project root as the argument (e.g., `docs/product/feature_name`).
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists and contains the expected files. The expected structure is:
   - **Required**: `requirements.md`
@@ -71,35 +71,11 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 ### File-specific instructions
 
+For each file type below, read the review checks from the corresponding file in `docs/standards/` and apply them during the review.
+
 #### requirements.md
 
-**Review checks:**
-
-- **Frontmatter**: All fields present and valid:
-  - `id`: must be unique across all features (check against sibling summaries from Subagent B). Flag any duplicates.
-  - `title`: non-empty string
-  - `status`: allowed values are `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
-  - `importance`: allowed values are `low`, `medium`, `high`, `critical`.
-  - `type`: non-empty string (e.g., `functional`, `infrastructure`, or `bug-fix`)
-  - `tags`: array of strings (can be empty)
-- **Sections**: All sections are optional, but flag as a Suggestion any section that would strengthen the document given its `type` and scope. The recognized sections are:
-  - Intent
-  - Context & Background (Problem Statement, User Stories, Personas, Dependencies)
-  - Decisions
-  - Scope (In Scope, Out of Scope)
-  - Functional Requirements (see detailed rules below)
-  - Non-Functional Requirements (see detailed rules below)
-  - Constraints
-  - UI/UX Specs
-  - Risks & Assumptions
-  - Acceptance Criteria (see detailed rules below)
-- **Functional requirements**: Each has an ID, description, and priority. IDs must be unique — flag any duplicates. Requirements must be specific enough that two developers would implement the same behavior from the description alone.
-- **Non-functional requirements**: Must include a measurable threshold (e.g., "loads in < 200ms" not "should be fast"). Flag any requirement that lacks a concrete metric.
-- **Acceptance criteria**: Cover all functional requirements and all measurable non-functional requirements. Each criterion must reference the requirement ID it validates (e.g., `[F-01]`). Flag any criterion that cannot be traced to a requirement, and any requirement (functional or non-functional) with no corresponding criterion. Each criterion is testable — meaning it can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite.
-- **Scope**: Boundaries are explicit. Nothing in "In scope" contradicts "Out of scope". No implicit scope (things that seem assumed but not stated).
-- **Dependencies**: All listed and accurate. No unlisted dependencies implied by the requirements.
-- **Decisions**: If present, verify each row has a non-empty rationale. Choices must not contradict the technical reference docs (architecture, tech-stack, conventions). Flag decisions that duplicate or contradict decisions in dependency features.
-- **Unexpected sections**: If `requirements.md` contains sections not in the expected list above, flag them as a Warning — they may indicate scope creep or content that belongs in a different file.
+**Review checks:** Read from `docs/standards/requirements.md`.
 
 **Structured extract to return:**
 
@@ -115,12 +91,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### plan.md
 
-**Review checks:**
-
-- **Structure**: Organized into phases with numbered steps and checkboxes.
-- **Ordering**: Steps are in a logical sequence. No step depends on something that hasn't happened yet.
-- **File impact map**: Referenced file paths are realistic — existing paths must actually exist, new paths must follow the naming and structure conventions in `docs/technical/conventions.md`.
-- **Feasibility**: Steps are actionable and concrete, not vague.
+**Review checks:** Read from `docs/standards/plan.md`.
 
 > Completeness checks (every requirement has plan steps, plan stays within requirements scope) are performed by the cross-cutting subagent in step 4.
 
@@ -133,12 +104,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### scenarios.md
 
-**Review checks:**
-
-- **Format**: Correct Gherkin syntax — `Feature:`, `Scenario:` (or `Scenario Outline:`), `Background:` (if used), and `GIVEN`/`WHEN`/`THEN`/`AND`/`BUT` steps.
-- **Edge cases**: Error paths, empty states, boundary values, invalid inputs, concurrent operations — are these covered?
-- **Testability**: Each scenario is specific enough to write an automated test from. No vague assertions.
-- **Negative scenarios**: "What should NOT happen" cases are included.
+**Review checks:** Read from `docs/standards/scenarios.md`.
 
 > Coverage checks (every requirement has a scenario) are performed by the cross-cutting subagent in step 4.
 
@@ -149,11 +115,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### index.md
 
-**Review checks:**
-
-- Links to all sibling files in the folder.
-- Descriptions accurately reflect each file's content.
-- No broken links, no missing entries.
+**Review checks:** Read from `docs/standards/index-file.md`.
 
 **Structured extract to return:**
 
@@ -161,10 +123,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### api.md
 
-**Review checks:**
-
-- If the file is empty or a stub (only headings with no content), flag as **Critical** — an empty file is misleading.
-- Endpoints follow patterns from `docs/technical/api.md`. Check: request/response schemas, example payloads, error responses, auth requirements, pagination, and headers.
+**Review checks:** Read from `docs/standards/api.md`.
 
 **Structured extract to return:**
 
@@ -174,10 +133,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### data-model.md
 
-**Review checks:**
-
-- If the file is empty or a stub, flag as **Critical**.
-- Entities, fields, and relationships align with `docs/technical/data-model.md`. Check: indexes, constraints, validation rules. Migrations mentioned if schema changes.
+**Review checks:** Read from `docs/standards/data-model.md`.
 
 **Structured extract to return:**
 
@@ -187,9 +143,7 @@ Every per-file subagent must perform these checks in addition to its file-specif
 
 #### implementation.md
 
-**Review checks:**
-
-- If the file is empty or a stub, flag as **Critical**.
+**Review checks:** Read from `docs/standards/implementation.md`.
 
 > Alignment with plan and requirements is checked by the cross-cutting subagent in step 4.
 
