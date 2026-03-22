@@ -26,36 +26,88 @@ Examples:
 
 ## Review Checks
 
-- **Frontmatter**: All fields present and valid:
-  - `id`: must be unique across all features (check against sibling summaries). Flag any duplicates.
-  - `title`: non-empty string
-  - `status`: allowed values are `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
-  - `importance`: allowed values are `low`, `medium`, `high`, `critical`.
-  - `type`: non-empty string (e.g., `functional`, `infrastructure`, or `bug-fix`)
-  - `tags`: array of strings (can be empty)
-- **Sections**: All sections are optional, but flag as a Suggestion any section that would strengthen the document given its `type` and scope. The recognized sections are:
-  - Intent
-  - Context & Background (Problem Statement, User Stories, Personas, Dependencies)
-  - Decisions
-  - Scope (In Scope, Out of Scope)
-  - Functional Requirements (see detailed rules below)
-  - Non-Functional Requirements (see detailed rules below)
-  - Constraints
-  - UI/UX Specs
-  - Risks & Assumptions
-  - Acceptance Criteria (see detailed rules below)
-- **Functional requirements**: Presented as a table with columns `ID | Requirement | Description | Priority`. `Requirement` is a short label/name; `Description` is the full specification. IDs must be unique within the document and use a feature-specific prefix (e.g., `S-01` for Setup, `SC-01` for Scaffolding) — flag any duplicates or missing prefixes. Priority allowed values are `P0` (must have), `P1` (should have), `P2` (nice to have). Flag any missing or non-standard priority. Requirements must be specific enough that two developers would implement the same behavior from the description alone.
-- **Non-functional requirements**: Must be organized into named subsections that group related concerns (e.g., Responsive Design, Performance, Accessibility, Testing). Each subsection contains bullet points with concrete, measurable thresholds (e.g., "loads in < 200ms" not "should be fast"). Flag any requirement that lacks a concrete metric or any flat list of NFRs without subsection grouping.
-- **Requirement quality**: Every functional and non-functional requirement must be:
-  - **Unambiguous**: Only one possible interpretation. Flag vague terms (e.g., "appropriate", "quickly", "properly") and propose a specific rewrite.
-  - **Complete**: Covers inputs, outputs, error conditions, and edge cases relevant to its scope. Flag any requirement that omits details another developer would need to implement the same behavior.
-  - **Consistent**: No contradictions with other requirements in the same document or in dependency features. Flag any conflicts.
-  - **Verifiable**: Can be confirmed with a concrete pass/fail check. Flag any requirement that relies on subjective judgment and propose a measurable rewrite.
-- **Acceptance criteria**: Acceptance criteria are the contract between the specification and the implementation. They should focus on what needs to be done (not how), define the specific behaviors and outcomes the software must provide, and consider edge cases (empty data, concurrent updates, missing dependencies). Cover all functional requirements and all measurable non-functional requirements. Each criterion is a markdown checkbox (`- [ ]`) describing a single verifiable outcome. Criteria must be testable — meaning they can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite. Flag any requirement (functional or non-functional) with no corresponding criterion.
-- **Scope**: Boundaries are explicit. Nothing in "In scope" contradicts "Out of scope". No implicit scope (things that seem assumed but not stated).
-- **Dependencies**: All listed and accurate. No unlisted dependencies implied by the requirements.
-- **Decisions**: If present, must be a table with columns `Decision | Choice | Rationale`. Verify each row has a non-empty rationale. Choices must not contradict the technical reference docs (architecture, tech-stack, conventions). Flag decisions that duplicate or contradict decisions in dependency features.
-- **Unexpected sections**: If `requirements.md` contains sections not in the expected list above, flag them as a Warning — they may indicate scope creep or content that belongs in a different file.
+### Frontmatter
+
+All fields present and valid:
+
+- `id`: must be unique across all features (check against sibling summaries). Flag any duplicates.
+- `title`: non-empty string
+- `status`: allowed values are `draft`, `review`, `approved`, `in_development`, `under_test`, `released`.
+- `importance`: allowed values are `low`, `medium`, `high`, `critical`.
+- `type`: non-empty string (e.g., `functional`, `infrastructure`, or `bug-fix`)
+- `tags`: array of strings (can be empty)
+
+### Sections
+
+All sections listed below are optional, but flag as a Suggestion any section that would strengthen the document given its `type` and scope. Flag any section not in this list as a Warning — it may indicate scope creep or content that belongs in a different file.
+
+#### Intent
+
+A concise statement of what the feature aims to achieve and why it matters. Should capture the high-level goal without diving into implementation details. Flag if the intent is vague or could apply to multiple unrelated features.
+
+#### Context & Background
+
+Provides the backstory needed to understand the feature. May include the following subsections:
+
+- **Problem Statement**: The specific problem being solved.
+- **User Stories**: Narratives describing who benefits and how (e.g., "As a [persona], I want [goal] so that [benefit]").
+- **Personas**: The target users or actors involved.
+- **Dependencies**: All dependency features must be listed and accurate. Flag any unlisted dependencies implied by the requirements.
+
+#### Decisions
+
+If present, must be a table with columns `Decision | Choice | Rationale`. Each row must have a non-empty rationale. Choices must not contradict the project's technical reference docs (architecture, tech-stack, conventions). Flag decisions that duplicate or contradict decisions in dependency features.
+
+#### Scope
+
+Must contain two subsections: **In Scope** and **Out of Scope**. Boundaries must be explicit. Flag if:
+
+- Anything in "In Scope" contradicts "Out of Scope".
+- Scope is implicit — things that seem assumed but are not stated.
+
+#### Functional Requirements
+
+Presented as a table with columns `ID | Requirement | Description | Priority`.
+
+- **Requirement**: A short label or name.
+- **Description**: The full specification — specific enough that two developers would implement the same behavior from the description alone.
+- **ID**: Must be unique within the document and use a feature-specific prefix (e.g., `S-01` for Setup, `SC-01` for Scaffolding). Flag duplicates or missing prefixes.
+- **Priority**: Allowed values are `P0` (must have), `P1` (should have), `P2` (nice to have). Flag missing or non-standard priorities.
+
+#### Non-Functional Requirements
+
+Must be organized into named subsections that group related concerns (e.g., Responsive Design, Performance, Accessibility, Testing). Each subsection contains bullet points with concrete, measurable thresholds (e.g., "loads in < 200 ms", not "should be fast"). Flag any requirement that lacks a concrete metric or any flat list of NFRs without subsection grouping.
+
+#### Constraints
+
+Technical, business, or regulatory constraints that limit how the feature can be implemented — for example, browser support targets, third-party API rate limits, compliance mandates, or budget/timeline boundaries. Each constraint should be specific and actionable. Flag vague constraints (e.g., "must be cost-effective") and propose a concrete rewrite.
+
+#### UI/UX Specs
+
+Visual and interaction specifications for user-facing features. May include layout descriptions, component behavior, responsive breakpoints, accessibility notes, or references to design mockups. Flag any spec that is too vague to implement consistently (e.g., "should look good on mobile") and propose a measurable alternative.
+
+#### Risks & Assumptions
+
+- **Risks**: Known threats to successful delivery — technical unknowns, third-party reliability, scope creep potential. Each risk should include likelihood, impact, and a mitigation strategy.
+- **Assumptions**: Conditions believed to be true but not yet verified. Flag assumptions that contradict known project state or dependency features.
+
+#### Acceptance Criteria
+
+The contract between the specification and the implementation. Acceptance criteria define the specific behaviors and outcomes the software must provide, focusing on *what* needs to be done, not *how*.
+
+- Each criterion is a markdown checkbox (`- [ ]`) describing a single verifiable outcome.
+- Must be testable with a concrete pass/fail check — no subjective judgment. Flag untestable criteria and propose a rewrite.
+- Must cover all functional requirements and all measurable non-functional requirements. Flag any requirement with no corresponding criterion.
+- Should consider edge cases: empty data, concurrent updates, missing dependencies.
+
+### Requirement Quality
+
+Every functional and non-functional requirement must satisfy the quality criteria defined in Writing Guidelines above (Unambiguous, Complete, Consistent, Verifiable). During review, additionally flag:
+
+- Vague terms (e.g., "appropriate", "quickly", "properly") — propose a specific rewrite.
+- Missing details another developer would need to implement the same behavior.
+- Contradictions with other requirements in the same document or in dependency features.
+- Subjective judgment that cannot be confirmed with a concrete pass/fail check — propose a measurable rewrite.
 
 ## Standards Compliance
 
