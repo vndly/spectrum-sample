@@ -14,7 +14,7 @@
 
 - `createWebHistory()` for clean URLs
 - `scrollBehavior` returning `{ top: 0 }` on every navigation
-- 5 routes with lazy-loaded views via `() => import('./views/...')`
+- 4 routes with lazy-loaded views via `() => import('./views/...')`
 - Catch-all `/:pathMatch(.*)*` redirecting to `/`
 - `meta.titleKey` on each route (e.g., `nav.home`, `nav.library`)
 - `afterEach` guard setting `document.title` via i18n: `${t(titleKey)} — Plot Twisted`
@@ -25,9 +25,8 @@
 | Path               | Name       | View File             | titleKey       |
 | :----------------- | :--------- | :-------------------- | :------------- |
 | `/`                | `home`     | `home-screen.vue`     | `nav.home`     |
-| `/library`         | `library`  | `library-screen.vue`  | `nav.library`  |
-| `/stats`           | `stats`    | `stats-screen.vue`    | `nav.stats`    |
 | `/calendar`        | `calendar` | `calendar-screen.vue` | `nav.calendar` |
+| `/library`         | `library`  | `library-screen.vue`  | `nav.library`  |
 | `/settings`        | `settings` | `settings-screen.vue` | `nav.settings` |
 | `/:pathMatch(.*)*` | —          | —                     | redirect `/`   |
 
@@ -46,8 +45,8 @@
 **Key structure:**
 
 ```
-nav.home / nav.library / nav.stats / nav.calendar / nav.settings
-page.home.title / page.library.title / page.stats.title / page.calendar.title / page.settings.title
+nav.home / nav.calendar / nav.library / nav.settings
+page.home.title / page.calendar.title / page.library.title / page.settings.title
 common.empty.title / common.empty.description
 common.error.title / common.error.description / common.error.reload
 toast.error / toast.dismiss / toast.retry
@@ -58,9 +57,8 @@ toast.error / toast.dismiss / toast.retry
 | Key                        | English                          | Spanish                           | French                                |
 | :------------------------- | :------------------------------- | :-------------------------------- | :------------------------------------ |
 | `nav.home`                 | Home                             | Inicio                            | Accueil                               |
-| `nav.library`              | Library                          | Biblioteca                        | Bibliotheque                          |
-| `nav.stats`                | Stats                            | Estadisticas                      | Statistiques                          |
 | `nav.calendar`             | Calendar                         | Calendario                        | Calendrier                            |
+| `nav.library`              | Library                          | Biblioteca                        | Bibliotheque                          |
 | `nav.settings`             | Settings                         | Ajustes                           | Parametres                            |
 | `common.empty.title`       | Nothing here yet                 | Nada aqui todavia                 | Rien ici pour le moment               |
 | `common.empty.description` | This page is under construction. | Esta pagina esta en construccion. | Cette page est en construction.       |
@@ -108,7 +106,7 @@ toast.error / toast.dismiss / toast.retry
 - Fixed left sidebar, `w-56`, `bg-bg-secondary`
 - App title at top using `$t('app.title')`
 - Nav items array: `{ to: string, labelKey: string, icon: Component }`
-- Icons from lucide-vue-next: `Home`, `BookMarked`, `BarChart3`, `CalendarDays`, `Settings`
+- Icons from lucide-vue-next: `Home`, `CalendarDays`, `BookMarked`, `Settings`
 - Each item is a `<RouterLink>` with icon + `$t(labelKey)`
 - Active state: `border-l-2 border-accent bg-accent/10 text-white`
 - Inactive state: `text-slate-400 hover:text-white`
@@ -119,7 +117,7 @@ toast.error / toast.dismiss / toast.retry
 - [ ] Create `src/presentation/components/layout/bottom-nav.vue`:
 
 - Fixed bottom bar (`fixed bottom-0 inset-x-0`), `z-10`
-- Same 5 nav items with icons and short labels
+- Same 4 nav items with icons and short labels
 - Active item: teal accent color, inactive: muted
 - Dark background with subtle top border
 - Hidden at `md+`, visible below `md`
@@ -205,16 +203,15 @@ toast.error / toast.dismiss / toast.retry
 
 ## Phase 7 — Placeholder Views
 
-### Step 17 — Create 5 view files
+### Step 17 — Create 4 view files
 
 - [ ] Create placeholder views in `src/presentation/views/`:
 
 | File                  | Icon Import    | Title Key             |
 | :-------------------- | :------------- | :-------------------- |
 | `home-screen.vue`     | `Home`         | `page.home.title`     |
-| `library-screen.vue`  | `BookMarked`   | `page.library.title`  |
-| `stats-screen.vue`    | `BarChart3`    | `page.stats.title`    |
 | `calendar-screen.vue` | `CalendarDays` | `page.calendar.title` |
+| `library-screen.vue`  | `BookMarked`   | `page.library.title`  |
 | `settings-screen.vue` | `Settings`     | `page.settings.title` |
 
 Each view follows the same pattern: `<script setup>` imports `EmptyState`, the lucide icon, and `useI18n`. Template renders `<EmptyState>` with the icon and translated title/description.
@@ -260,7 +257,7 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 - [ ] Create `tests/presentation/router.test.ts`:
 
-- All 5 named routes exist with correct paths and names
+- All 4 named routes exist with correct paths and names
 - Catch-all `/:pathMatch(.*)*` route exists and redirects to `/`
 - `scrollBehavior` returns `{ top: 0 }`
 - `afterEach` guard sets `document.title` to `"{Page Name} — Plot Twisted"`
@@ -317,14 +314,14 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 - [ ] Create `tests/presentation/components/layout/sidebar-nav.test.ts`:
 
-- Renders all 5 nav items with correct icons and translated labels
+- Renders all 4 nav items with correct icons and translated labels
 - Active route item has teal accent classes (`border-accent`, `bg-accent/10`)
 - Inactive items have muted classes (`text-slate-400`)
 - Home route uses exact match (`route.path === '/'`)
 
 - [ ] Create `tests/presentation/components/layout/bottom-nav.test.ts`:
 
-- Renders all 5 nav items with icons and labels
+- Renders all 4 nav items with icons and labels
 - Active route item has teal accent styling
 - Inactive items have muted styling
 
@@ -334,11 +331,10 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 | Test File                  | Verifies                                                          |
 | :------------------------- | :---------------------------------------------------------------- |
-| `home-screen.test.ts`      | Renders `<EmptyState>` with `Home` icon and `page.home.title`     |
-| `library-screen.test.ts`   | Renders `<EmptyState>` with `BookMarked` icon and `page.library.title`  |
-| `stats-screen.test.ts`     | Renders `<EmptyState>` with `BarChart3` icon and `page.stats.title`    |
+| `home-screen.test.ts`      | Renders `<EmptyState>` with `Home` icon and `page.home.title`         |
 | `calendar-screen.test.ts`  | Renders `<EmptyState>` with `CalendarDays` icon and `page.calendar.title` |
-| `settings-screen.test.ts`  | Renders `<EmptyState>` with `Settings` icon and `page.settings.title`  |
+| `library-screen.test.ts`   | Renders `<EmptyState>` with `BookMarked` icon and `page.library.title`    |
+| `settings-screen.test.ts`  | Renders `<EmptyState>` with `Settings` icon and `page.settings.title`     |
 
 ---
 
@@ -354,7 +350,7 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
   - `npm run build` — production build succeeds
   - `npm run check` — full pipeline passes
   - `npm run dev` — manual verification:
-    - Desktop: sidebar visible with 5 nav items, navigation works
+    - Desktop: sidebar visible with 4 nav items, navigation works
     - Mobile (< 768px): sidebar hidden, bottom nav visible, navigation works
     - Active route highlighted in teal in both nav components
     - Page header updates on navigation

@@ -27,7 +27,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 
 | Decision                   | Choice                                   | Rationale                                                                                                                                                     |
 | :------------------------- | :--------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Nav items                  | Home, Library, Stats, Calendar, Settings | User-defined scope for this phase. Differs from UI/UX doc (which has Recommendations instead of Stats). Recommendations route will be added with its feature. |
+| Nav items                  | Home, Calendar, Library, Settings | Matches UI/UX doc order (minus Recommendations, which will be added with its feature). Stats excluded from primary nav per UI/UX doc — accessed via internal link on Library screen. |
 | Router history mode        | `createWebHistory()`                     | Clean URLs without hash fragments. Firebase SPA rewrite already handles fallback.                                                                             |
 | Composable state pattern   | Module-level singleton                   | Toast and modal composables use module-level reactive state so they work both inside and outside component `setup()` (needed for the global error handler).   |
 | Desktop-first responsive   | `max-md:` breakpoints                    | Per conventions §10. Base styles target desktop; `max-md:` overrides adapt for mobile.                                                                        |
@@ -42,7 +42,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 
 - Vue Router configuration with lazy-loaded routes and catch-all redirect
 - App shell layout (sidebar + content area)
-- Desktop sidebar navigation with 5 items
+- Desktop sidebar navigation with 4 items
 - Mobile bottom navigation bar (below `md` breakpoint)
 - Active route highlighting in both nav components
 - Page header bar showing the current page name
@@ -56,7 +56,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 - Error boundary component
 - Global error handler routed to toast
 - i18n keys for navigation, page titles, and UI primitives (en/es/fr)
-- 5 placeholder views using the empty state component
+- 4 placeholder views using the empty state component
 - Unit tests for router configuration and composables
 - Component tests for all UI primitives and navigation components
 - Component tests for placeholder views
@@ -64,7 +64,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 **Out of scope:**
 
 - Actual feature content for any screen
-- Additional routes beyond the 5 nav items (movie/:id, show/:id, recommendations)
+- Additional routes beyond the 4 nav items (movie/:id, show/:id, stats, recommendations)
 - Search bar
 - Collapsible sidebar
 - Tooltip component
@@ -76,11 +76,11 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 | ID    | Requirement               | Description                                                                                                                                                                                                 | Priority |
 | :---- | :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
 | SC-01 | Vue Router setup          | `vue-router@^4` installed, `createWebHistory()`, router registered in `main.ts`. Routes defined in `src/presentation/router.ts`.                                                                            | P0       |
-| SC-02 | Route definitions         | 5 named routes (home `/`, library `/library`, stats `/stats`, calendar `/calendar`, settings `/settings`) plus catch-all `/:pathMatch(.*)*` redirecting to `/`.                                             | P0       |
-| SC-03 | Route lazy loading        | All 5 view components loaded via dynamic `import()` for code splitting.                                                                                                                                     | P0       |
+| SC-02 | Route definitions         | 4 named routes (home `/`, calendar `/calendar`, library `/library`, settings `/settings`) plus catch-all `/:pathMatch(.*)*` redirecting to `/`.                                             | P0       |
+| SC-03 | Route lazy loading        | All 4 view components loaded via dynamic `import()` for code splitting.                                                                                                                                     | P0       |
 | SC-04 | App shell layout          | Flexbox layout with fixed sidebar on the left and scrollable content area on the right. Sidebar hidden below `md`, bottom nav shown instead.                                                                | P0       |
-| SC-05 | Desktop sidebar           | Fixed left panel (`w-56`, dark background), app title at top, 5 nav items as `<RouterLink>` elements with lucide icons and translated labels.                                                               | P0       |
-| SC-06 | Mobile bottom nav         | Fixed bottom bar visible below `md` breakpoint. Same 5 nav items with icons. `z-10` stacking above content, below modals/toasts.                                                                            | P0       |
+| SC-05 | Desktop sidebar           | Fixed left panel (`w-56`, dark background), app title at top, 4 nav items as `<RouterLink>` elements with lucide icons and translated labels.                                                               | P0       |
+| SC-06 | Mobile bottom nav         | Fixed bottom bar visible below `md` breakpoint. Same 4 nav items with icons. `z-10` stacking above content, below modals/toasts.                                                                            | P0       |
 | SC-07 | Active route highlighting | Active nav item highlighted with teal accent (left border + background tint in sidebar, teal icon/text in bottom nav). Home route uses exact matching.                                                      | P0       |
 | SC-08 | Page header               | Sticky header at the top of the content area showing the current page name, translated via route `meta.titleKey`.                                                                                           | P0       |
 | SC-09 | Route transitions         | `<Transition name="fade" mode="out-in">` wrapping `<RouterView>`. 200ms opacity fade between views. Respects `prefers-reduced-motion`.                                                                      | P1       |
@@ -94,13 +94,13 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 | SC-17 | Skeleton loader           | Reusable shimmer placeholder. Props: `width`, `height`, `rounded`. Renders a div with `animate-pulse bg-surface`.                                                                                           | P1       |
 | SC-18 | Error boundary            | `onErrorCaptured` wrapper component. Normal state: renders slot. Error state: centered fallback with translated heading, description, and reload button.                                                    | P0       |
 | SC-19 | Global error handler      | `app.config.errorHandler` in `main.ts` logs errors and dispatches an error toast via `useToast()`.                                                                                                          | P0       |
-| SC-20 | Placeholder views         | 5 view components (one per route), each rendering `<EmptyState>` with the page's lucide icon and translated title.                                                                                          | P0       |
+| SC-20 | Placeholder views         | 4 view components (one per route), each rendering `<EmptyState>` with the page's lucide icon and translated title.                                                                                          | P0       |
 | SC-21 | Tailwind theme additions  | Add `--color-success: #22c55e` and `--color-error: #ef4444` to the `@theme` block for toast type accents.                                                                                                   | P1       |
-| SC-22 | Router unit tests         | Tests for route definitions (5 named routes + catch-all), `scrollBehavior` returning `{ top: 0 }`, and `afterEach` guard setting `document.title`.                                                          | P0       |
+| SC-22 | Router unit tests         | Tests for route definitions (4 named routes + catch-all), `scrollBehavior` returning `{ top: 0 }`, and `afterEach` guard setting `document.title`.                                                          | P0       |
 | SC-23 | Composable unit tests     | `useToast`: add/remove toast, auto-dismiss after timeout, toast types. `useModal`: open/close state, confirm/cancel callbacks.                                                                               | P0       |
 | SC-24 | UI primitive tests        | Component tests for EmptyState (renders icon/title/description/CTA props), SkeletonLoader (renders with width/height/rounded props), ErrorBoundary (renders slot normally, shows fallback on error), ToastContainer (renders toast queue), ModalDialog (renders title/body/buttons, closes on backdrop click and Escape). | P0       |
-| SC-25 | Navigation component tests | Sidebar and BottomNav render all 5 nav items with correct icons and labels. Active route item is highlighted. Home route uses exact matching.                                                                | P0       |
-| SC-26 | Placeholder view tests    | Each of the 5 view components renders an `<EmptyState>` with the expected icon and translated title.                                                                                                         | P1       |
+| SC-25 | Navigation component tests | Sidebar and BottomNav render all 4 nav items with correct icons and labels. Active route item is highlighted. Home route uses exact matching.                                                                | P0       |
+| SC-26 | Placeholder view tests    | Each of the 4 view components renders an `<EmptyState>` with the expected icon and translated title.                                                                                                         | P1       |
 
 ## Non-Functional Requirements
 
@@ -145,7 +145,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 
 - [ ] `npm run dev` starts and renders the app shell with sidebar navigation (desktop)
 - [ ] Resizing below 768px hides sidebar and shows bottom navigation bar
-- [ ] Clicking each of the 5 nav items navigates to the corresponding placeholder view
+- [ ] Clicking each of the 4 nav items navigates to the corresponding placeholder view
 - [ ] Active nav item is highlighted with teal accent in both sidebar and bottom nav
 - [ ] Page header displays the translated name of the current page
 - [ ] Document title updates to `"{Page Name} — Plot Twisted"` on navigation

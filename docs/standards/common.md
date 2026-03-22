@@ -12,3 +12,6 @@ Every documentation file must be reviewed against these checks in addition to it
 - **Typos and grammar**: Catch spelling mistakes, grammatical errors, and formatting issues.
 - **Scope creep detection**: Flag anything that introduces unnecessary complexity for the stated goal.
 - **Performance considerations**: Are potential bottlenecks (large lists, frequent re-renders, heavy queries) addressed?
+
+docs/technical/api.md
+docs/technical/data-model.md
