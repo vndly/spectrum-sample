@@ -1,5 +1,5 @@
 ---
-name: audit-index
+name: ddd-index
 description: MUST be applied whenever any index.md file is created or edited. Formats index files to follow a consistent structure with numbered entries, bold linked titles, and short descriptions.
 ---
 

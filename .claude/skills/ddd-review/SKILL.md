@@ -49,10 +49,10 @@ After all subagents return, proceed to the review phase.
 #### plan.md
 
 - **Structure**: Organized into phases with numbered steps and checkboxes.
-- **Completeness**: Every functional requirement has corresponding plan steps. Nothing in the plan goes beyond what requirements define (scope creep).
+- **Completeness**: Every functional requirement has corresponding plan steps. Nothing in the plan goes beyond what requirements define.
 - **Ordering**: Steps are in a logical sequence. No step depends on something that hasn't happened yet.
 - **File impact map**: Referenced file paths are realistic (existing paths are real, new paths follow project conventions).
-- **Feasibility**: Steps are actionable and concrete, not vague (e.g., "implement the feature" is too vague).
+- **Feasibility**: Steps are actionable and concrete, not vague.
 
 #### scenarios.md
 
