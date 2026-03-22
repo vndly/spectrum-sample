@@ -27,3 +27,43 @@
 
 - Should not contain vague or hand-wavy descriptions (e.g., "handle errors appropriately") — flag as **Suggestion**.
 - Should reference specific code locations, not just general descriptions — flag as **Suggestion**.
+
+### Testing Coverage
+
+- Must describe the testing approach (unit, integration, e2e) for the feature — flag as **Warning** if missing.
+- Must reference specific test files or describe where tests will live — flag as **Suggestion** if missing.
+- Edge cases and failure scenarios should have corresponding test coverage noted — flag as **Suggestion** if missing.
+
+### Migration & Rollback
+
+- Data model changes must include migration steps — flag as **Critical** if missing.
+- API or config changes must describe backward compatibility impact — flag as **Warning** if missing.
+- Must describe rollback strategy for non-trivial changes — flag as **Warning** if missing.
+
+### Performance Impact
+
+- Performance-sensitive code paths must be identified — flag as **Warning** if present but undocumented.
+- Expected load or scale considerations should be noted for user-facing features — flag as **Suggestion** if missing.
+- Any new database queries, API calls, or loops over large datasets should note expected performance characteristics — flag as **Suggestion** if missing.
+
+### Security Considerations
+
+- New user inputs must document validation and sanitization approach — flag as **Critical** if missing.
+- Changes to authentication or authorization flows must be explicitly described — flag as **Critical** if missing.
+- Data exposure risks (logging sensitive data, new API response fields) should be addressed — flag as **Warning** if present but undocumented.
+
+### Configuration & Environment
+
+- New environment variables must be documented with expected values and defaults — flag as **Warning** if missing.
+- New feature flags must be documented with their intended lifecycle — flag as **Warning** if missing.
+- Changes to build or deployment configuration must be noted — flag as **Suggestion** if missing.
+
+### Cross-cutting Concerns
+
+- Changes affecting logging, monitoring, or observability should be documented — flag as **Suggestion** if missing.
+- Error reporting changes (new error types, alerting implications) should be noted — flag as **Suggestion** if missing.
+
+### Known Limitations
+
+- Intentional shortcuts or deferred work must be explicitly listed — flag as **Warning** if discovered but undocumented.
+- Scope boundaries should be clear: what this implementation does and does not cover — flag as **Suggestion** if missing.
