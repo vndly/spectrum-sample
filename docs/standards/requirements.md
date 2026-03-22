@@ -21,11 +21,6 @@ Examples:
 - "The task list displays all tasks belonging to the current user, sorted by due date ascending" (specific, testable)
 - "The task list should work well" (too vague)
 
-Acceptance criteria are the contract between the specification and the implementation. They should:
-- Focus on what needs to be done, not how it should be implemented.
-- Define the specific behaviors and outcomes the software must provide.
-- Consider edge cases: empty data, concurrent updates, missing dependencies.
-
 ## Review Checks
 
 - **Frontmatter**: All fields present and valid:
@@ -48,7 +43,7 @@ Acceptance criteria are the contract between the specification and the implement
   - Acceptance Criteria (see detailed rules below)
 - **Functional requirements**: Each has an ID, description, and priority. IDs must be unique — flag any duplicates. Requirements must be specific enough that two developers would implement the same behavior from the description alone.
 - **Non-functional requirements**: Must include a measurable threshold (e.g., "loads in < 200ms" not "should be fast"). Flag any requirement that lacks a concrete metric.
-- **Acceptance criteria**: Cover all functional requirements and all measurable non-functional requirements. Each criterion must reference the requirement ID it validates (e.g., `[F-01]`). Flag any criterion that cannot be traced to a requirement, and any requirement (functional or non-functional) with no corresponding criterion. Each criterion is testable — meaning it can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite.
+- **Acceptance criteria**: Acceptance criteria are the contract between the specification and the implementation. They should focus on what needs to be done (not how), define the specific behaviors and outcomes the software must provide, and consider edge cases (empty data, concurrent updates, missing dependencies). Cover all functional requirements and all measurable non-functional requirements. Each criterion must reference the requirement ID it validates (e.g., `[F-01]`). Flag any criterion that cannot be traced to a requirement, and any requirement (functional or non-functional) with no corresponding criterion. Each criterion is testable — meaning it can be verified with a concrete pass/fail check without subjective judgment. If not, flag it and propose a testable rewrite.
 - **Scope**: Boundaries are explicit. Nothing in "In scope" contradicts "Out of scope". No implicit scope (things that seem assumed but not stated).
 - **Dependencies**: All listed and accurate. No unlisted dependencies implied by the requirements.
 - **Decisions**: If present, verify each row has a non-empty rationale. Choices must not contradict the technical reference docs (architecture, tech-stack, conventions). Flag decisions that duplicate or contradict decisions in dependency features.
