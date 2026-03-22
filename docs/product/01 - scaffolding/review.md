@@ -16,8 +16,6 @@ The documentation is thorough and well-structured — requirements are detailed,
 
 ### Warnings
 
-- **[requirements.md + plan.md: Decisions / Phase 4]** UI/UX alignment — Nav items are Home, Library, Stats, Calendar, Settings. The ui-ux.md specifies Home, Recommendations, Calendar, Library, Settings — with Stats explicitly excluded from primary nav ("accessed via 'View Stats' link on Library screen"). Additionally, the order differs (Library before Calendar vs. Calendar before Library). The requirements Decisions table acknowledges the item swap but not the reordering. **Recommendation**: Document the intended nav order explicitly and explain why Stats warrants primary nav placement in the scaffolding phase.
-
 - **[requirements.md: Non-Functional Requirements / Stacking Order]** UI/UX alignment — Both toast container and modal backdrop are assigned `z-50`. If both are visible simultaneously, stacking is undefined (depends on DOM order). **Recommendation**: Assign distinct z-index values (e.g., modal backdrop `z-40` or `z-60`) or document that toasts and modals are mutually exclusive.
 
 - **[requirements.md: Acceptance Criteria]** Coverage gap — Functional requirements SC-03 (lazy loading), SC-12 (i18n key namespaces), SC-16 (EmptyState component props), SC-17 (SkeletonLoader), and SC-21 (Tailwind theme variables) have no dedicated acceptance criterion. **Recommendation**: Add acceptance criteria for each, or note which existing criteria cover them transitively.
@@ -28,7 +26,7 @@ The documentation is thorough and well-structured — requirements are detailed,
 
 - **[requirements.md: Non-Functional Requirements]** NFR measurability — Several NFRs lack measurable thresholds and are rules/constraints rather than metrics: "i18n mandatory," "File naming: kebab-case," "Tailwind only," "Coverage target: all composables/components must have tests" (no percentage). **Recommendation**: Move rule-based items to a Constraints section; keep NFR for measurable quality attributes.
 
-- **[plan.md: Phase 2 Step 4]** Completeness — The translations table lists `nav.*`, `common.*`, and `toast.*` keys but omits the `page.*.title` keys despite the prose saying they "mirror nav.* values initially." An implementer following the table would miss 5 keys. **Recommendation**: Add the 5 `page.*.title` keys to the table with explicit values.
+- **[plan.md: Phase 2 Step 4]** Completeness — The translations table lists `nav.*`, `common.*`, and `toast.*` keys but omits the `page.*.title` keys despite the prose saying they "mirror nav._ values initially." An implementer following the table would miss 5 keys. **Recommendation**: Add the 5 `page._.title` keys to the table with explicit values.
 
 - **[plan.md: Phase 4 Step 7 / Phase 2]** i18n completeness — Step 7 references `$t('app.title')` but Phase 2's translations table does not list it, nor does it note that `app.title` already exists from Phase 00. **Recommendation**: Add a note that `app.title` is inherited from Phase 00 locale files.
 
