@@ -4,36 +4,6 @@ Its main challenges are around handling small changes (where the process overhea
 
 DDD could incorporate TDD within the implementation phase. Currently the framework does not prescribe how the AI agent writes tests during implementation, which is a gap.
 
-## Strengths
-
-### 1. Rigorous Standards with Mechanical Enforcement
-
-The most impressive aspect of the framework. Each document type has a detailed checklist in the standards directory, and the review skill systematically applies these checks. This eliminates the "well, we should have caught that" problem common to human review processes.
-
-### 2. End-to-End Traceability
-
-Requirements trace to plan steps, scenarios, and acceptance criteria. The cross-cutting review explicitly checks these traces (plan completeness, scenario coverage, acceptance criteria traceability). This level of traceability is rare even in formal methodologies.
-
-### 3. Separation of Document Standards from Application Standards
-
-Keeping document standards (rules about how to write documents) separate from technical reference (rules about how to build the application) is a clean architectural choice. It means the framework itself can evolve independently from the application's technical constraints.
-
-### 4. The Two-Developer Test
-
-The standard that a requirement or plan step should be "specific enough that two developers would produce the same behavior" is an excellent operationalization of "unambiguous." It gives reviewers a concrete mental model for evaluating document quality.
-
-### 5. Cheap Iteration
-
-Catching problems in documents (which take minutes to revise) rather than in code (which takes hours to debug and refactor) is economically sound, especially when the "developer" is an AI agent that may produce large volumes of code from a single prompt.
-
-### 6. Common Checks as a Force Multiplier
-
-Applying common checks (glossary alignment, architecture compliance, link validation, staleness detection) to every document type means that baseline quality is enforced everywhere, not just in the documents the reviewer remembers to check.
-
-### 7. The Implementation Record as Post-Mortem
-
-Having the AI agent document what it actually built (vs. what was planned) creates a valuable feedback loop. Deviations from the plan are captured with justification, which is useful for both current review and future archaeology.
-
 ## Weaknesses & Flaws
 
 ### 1. No Mechanism for Mid-Implementation Changes
