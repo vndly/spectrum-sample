@@ -13,10 +13,6 @@ The minimum document set (requirements + plan + scenarios) is appropriate for fe
 
 Define a threshold (e.g., changes touching fewer than 3 files, bug fixes with a clear root cause) below which the full document pipeline is optional. A "quick change" template might require only a brief description, the files affected, and a single acceptance criterion. This preserves the spirit of documentation without the overhead.
 
-### 3. Bridge Scenarios to Test Execution
-
-Formalize the experimental testing step. Options include: requiring that plan test steps reference scenario IDs, generating test stubs from `scenarios.md` that developers fill in, or using a Gherkin-compatible test runner that maps scenarios to executable tests. The goal is to close the gap between the validation contract (scenarios) and actual verification (tests).
-
 ### 4. Add a Requirements-to-Code Review Skill
 
 Create a skill that reads the feature's `requirements.md` and `scenarios.md`, then inspects the actual codebase to verify that documented behaviors are implemented. This would bridge the gap between document review and code review.
