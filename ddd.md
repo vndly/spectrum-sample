@@ -42,7 +42,7 @@ A phased, step-by-step implementation plan that the AI agent will follow to writ
 - **Purpose**: Break the requirements into concrete, ordered implementation steps. Each step should be specific enough that two developers (or agents) following the plan independently would produce the same result.
 - **When produced**: After requirements are reviewed and approved.
 - **Who produces it**: The AI agent, from the requirements. The team reviews and refines.
-- **Key sections**: Phases with numbered steps and checkboxes, file paths, dependencies between steps, verification phase, testing phase.
+- **Key sections**: Phases with numbered steps and checkboxes, file paths, dependencies between steps, verification phase, testing phase. The testing phase should specify that tests are written before implementation code (test-first), mapping each test file to the scenario IDs it covers.
 
 #### 3. Scenarios (`scenarios.md`)
 
@@ -107,12 +107,17 @@ The DDD workflow has five phases. Each phase has clear inputs, outputs, and qual
 
 ### Phase C: Implementation
 
-7. **Implement** — The team instructs the AI agent to implement the change. The agent reads all documents in the change folder plus the technical reference and writes the code. After implementation, the agent generates `implementation.md` documenting what was built.
+7. **Implement (test-first)** — The team instructs the AI agent to implement the change. The agent reads all documents in the change folder plus the technical reference and follows a test-first cycle:
+   1. **Red** — Write tests derived from the scenarios in `scenarios.md`. Run them to confirm they fail, proving the behavior is not yet implemented.
+   2. **Green** — Write the minimum implementation code to make the failing tests pass.
+   3. **Refactor** — Clean up the implementation while keeping all tests green.
+
+   After implementation, the agent generates `implementation.md` documenting what was built.
 8. **Code review** — The team uses a code review skill to audit the changed files against the project's technical reference.
 
 ### Phase D: Validation
 
-9. **Test** — The team validates the implementation against the scenarios in `scenarios.md`. The plan's testing phase maps each test file to the scenario IDs it covers, ensuring every scenario has a corresponding test and every test traces back to the validation contract. Tests that verify implementation details (e.g., schema parsing, migration logic) are marked as such rather than linked to scenarios.
+9. **Validate** — The team verifies that all scenarios in `scenarios.md` are covered by passing tests. The plan's testing phase maps each test file to the scenario IDs it covers, ensuring every scenario has a corresponding test and every test traces back to the validation contract. Tests that verify implementation details (e.g., schema parsing, migration logic) are marked as such rather than linked to scenarios. Since tests were written during implementation, this phase focuses on confirming completeness — not writing new tests.
 
 ### Phase E: Completion
 
