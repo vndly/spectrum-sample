@@ -188,6 +188,7 @@ These outputs are non-blocking and go into the "Ideas & Suggestions" section of 
 - **Sharpen acceptance criteria**: Propose specific, testable additions or rewording.
 - **Ask clarifying questions**: If something is ambiguous, list it as an open question rather than guessing intent.
 - **Missing edge cases**: Propose scenarios the author may have missed.
+- **Enrich technical docs**: Identify useful technical knowledge embedded in the feature documentation that would benefit the broader codebase. Propose moving or consolidating this information into the appropriate `docs/technical/` document.
 
 ## 5. Report
 
