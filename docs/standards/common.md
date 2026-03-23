@@ -15,5 +15,8 @@ Every documentation file must be reviewed against these checks in addition to it
 - **Code reference accuracy**: File paths, function names, CLI commands, and environment variables mentioned in the doc must exist in the codebase. Flag references that don't match reality.
 - **Staleness detection**: Flag references to features, code patterns, or files that no longer exist in the codebase.
 - **Typos and grammar**: Catch spelling mistakes, grammatical errors, and formatting issues.
+- **Section focus**: Each section should address a single concept or concern. Flag sections that combine unrelated topics (e.g., mixing installation, configuration, and usage in one block) and recommend splitting them.
+- **Code snippet validity**: Code blocks (fenced with ```) must be syntactically valid for their declared language. Variable names, imports, and function calls within snippets must reference real project entities or be clearly marked as pseudocode. Flag snippets that would not compile or run.
+- **Prerequisite context**: Each document must stand alone or explicitly link to prerequisite knowledge. Flag sections that assume the reader knows something not explained in the document and not linked to another doc.
 - **Scope creep detection**: Flag anything that introduces unnecessary complexity for the stated goal.
 - **Performance considerations**: Are potential bottlenecks (large lists, frequent re-renders, heavy queries) addressed?
