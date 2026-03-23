@@ -124,17 +124,7 @@ DDD enforces document quality through a two-tier review system.
 
 ### Common Checks
 
-A set of checks applied to every document regardless of type. These ensure baseline quality across the entire document set:
-
-- **Glossary alignment** — Terms match the project glossary.
-- **Convention compliance** — Documents follow established conventions.
-- **Architecture alignment** — Proposals respect architectural constraints.
-- **Tech stack compliance** — Referenced technologies match the approved stack.
-- **API and data model compliance** — References match existing specifications.
-- **Security surface review** — Changes are assessed for security implications.
-- **Link and code reference validation** — References point to real targets.
-- **Staleness detection** — References to removed or renamed code are flagged.
-- **Scope creep detection** — Content stays within declared scope boundaries.
+A set of checks applied to every document regardless of type. These ensure baseline quality across the entire document set.
 
 ### File-Specific Checks
 
@@ -168,13 +158,11 @@ Seven principles guide the framework:
 
 ## Tooling
 
-DDD is tool-agnostic in principle but benefits greatly from AI-powered automation. The current implementation uses Claude Code skills to automate four key functions:
+DDD is tool-agnostic in principle but benefits greatly from AI-powered automation. The current implementation uses skills to automate four key functions:
 
-| Function              | Description                                                                                                                                                                     |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Document creation** | An AI skill acts as a technical writer, helping the team draft and structure documents according to standards.                                                                  |
-| **Document review**   | A review skill spawns parallel sub-agents to check each document against common and file-specific standards, then performs cross-cutting checks for multi-document consistency. |
-| **Code review**       | After implementation, a code review skill audits changed files against the project's technical reference across multiple specialized areas.                                     |
-| **Index formatting**  | An index formatting skill ensures that index files follow a consistent structure, staying in sync with the filesystem.                                                          |
+- **Document creation** — An AI skill acts as a technical writer, helping the team draft and structure documents according to standards.
+- **Document review** — A review skill spawns parallel sub-agents to check each document against common and file-specific standards, then performs cross-cutting checks for multi-document consistency.
+- **Code review** — After implementation, a code review skill audits changed files against the project's technical reference across multiple specialized areas.
+- **Index formatting** — An index formatting skill ensures that index files follow a consistent structure, staying in sync with the filesystem.
 
 These skills can be implemented with any AI coding agent that supports custom commands or extensions. The key requirement is that the skills have access to both the document standards and the project's technical reference so they can perform mechanical enforcement.
