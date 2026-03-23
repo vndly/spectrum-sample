@@ -12,21 +12,3 @@ The minimum document set (requirements + plan + scenarios) is appropriate for fe
 ### 1. Add a Lightweight Path for Small Changes
 
 Define a threshold (e.g., changes touching fewer than 3 files, bug fixes with a clear root cause) below which the full document pipeline is optional. A "quick change" template might require only a brief description, the files affected, and a single acceptance criterion. This preserves the spirit of documentation without the overhead.
-
-## Scalability Concerns
-
-### Document Volume
-
-As the project grows, `product/` will accumulate many feature folders. Navigation and cross-referencing become harder. The index files help, but searching for "where did we decide X?" across dozens of feature folders is cumbersome. A search-friendly format or cross-referencing tool would help.
-
-### Context Window Limits
-
-The AI agent's ability to ingest all documents depends on context window size. A project with 50 features, each with 6 documents, produces 300+ documents. Not all of these fit in a single context window. The framework should document a prioritization strategy (e.g., always include the change folder + technical reference; include product documents only when referenced as dependencies).
-
-### Standards Maintenance
-
-As standards evolve, previously shipped features may not conform to current standards. Re-reviewing old documents against new standards could generate noise. The framework should clarify whether standards are versioned or whether `product/` documents are expected to conform to the standards that were current when they shipped.
-
-### Multi-Person Teams
-
-The framework is currently optimized for a single developer working with an AI agent. In a multi-person team, document ownership, review assignments, and conflict resolution need additional process. Who reviews the requirements? Can two team members work on overlapping changes simultaneously? These questions are not yet addressed.
