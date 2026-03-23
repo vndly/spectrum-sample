@@ -120,19 +120,7 @@ The DDD workflow has five phases. Each phase has clear inputs, outputs, and qual
 
 ## Standards
 
-DDD enforces document quality through a two-tier review system.
-
-### Common Checks
-
-A set of checks applied to every document regardless of type. These ensure baseline quality across the entire document set.
-
-### File-Specific Checks
-
-Additional checks tailored to each document type. For example:
-
-- **Requirements** checks validate frontmatter structure, section completeness, requirement quality (unambiguous, complete, consistent, verifiable), and the absence of vague terms.
-- **Plan** checks validate step granularity, phase ordering, dependency management, and the presence of verification and testing phases.
-- **Scenarios** checks validate Gherkin syntax, requirement grouping, step consistency, scenario independence, and coverage of edge cases and negative paths.
+DDD enforces document quality through a two-tier review system. Common checks apply to every document regardless of type, ensuring baseline quality across the entire set. File-specific checks add validation rules tailored to each document type.
 
 ### Mechanical Enforcement
 
