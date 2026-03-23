@@ -70,13 +70,6 @@ Design specification for the app's interface. All styling uses Tailwind utility 
 
 `/movie/:id`, `/show/:id`, and `/stats` are not in the nav — accessed via card clicks and internal links. Stats is reached via a "View Stats" link on the Library screen (visible only when the user has at least one watched entry).
 
-### Search Bar
-
-- Full-width input at the top of the Home screen content area.
-- Search icon on the left, rounded corners, dark background (`~bg-slate-800`).
-- Placeholder: "Search for movies or TV shows..."
-- Focus state: subtle border glow in accent color.
-
 ## 5. Component Patterns
 
 ### Movie Card
@@ -87,16 +80,6 @@ The most-used component across Home, Recommendations, Library, and search result
 - **Rating badge** — Top-right corner. Small teal pill with star icon + score (e.g., "8.4"). `text-xs font-bold`, white text, positioned `absolute top-2 right-2`.
 - **Title** — Below the poster. `text-sm font-medium text-white`, single line, truncated with ellipsis.
 - **Year** — Below the title. `text-xs text-slate-400`.
-
-### Hero Banner (Trending Carousel)
-
-- Full-width banner spanning the content area.
-- Backdrop image as background (`w780` or `original` size).
-- Dark gradient overlay from bottom-left for text legibility.
-- Title: large bold white text (`text-2xl` to `text-3xl`), bottom-left.
-- "Watchlist +" button: teal accent, small pill.
-- "In Theaters Now >" text link on the right, navigating to `/calendar` (Release Calendar).
-- Dot pagination indicators: small circles at bottom center. Active dot filled/white, inactive dots muted.
 
 ### Tab Toggle
 
@@ -117,69 +100,6 @@ Horizontal row of text tabs (e.g., Library: Watchlist / Watched / Lists).
 - **Secondary / Ghost** — Transparent background, white or muted text, subtle border or none. Used for "In Theaters Now >", secondary actions.
 - **Icon button** — Square, transparent background, icon-only. Used for bookmark, favorite, share.
 - All buttons: `cursor-pointer`, `transition-colors`, hover state slightly lighter/darker.
-
-### Detail Screen
-
-- **Hero backdrop** — Full-width backdrop image at top with gradient overlay fading to dark background at bottom. Title overlaid in large bold text. Bookmark icon next to title.
-- **Metadata line** — Year | Seasons | Episodes as pipe-separated text in muted color.
-- **Synopsis** — Paragraph of body text below metadata.
-- **Info pairs** — Genre, Cast, Writer, Director displayed as bold label + normal value.
-- **Poster** — Positioned to the right of metadata on desktop. Standard poster image.
-- **Provider rating badge** — provider label + `vote_average` score (e.g., "8.1/10"). Displayed as a small badge alongside the metadata.
-- **IMDb link** — Text link opening the IMDb page via the entry's `imdb_id` (e.g., `https://www.imdb.com/title/tt1234567`). Only shown when `imdb_id` is available.
-- **Watch Trailer** — Primary button with play icon.
-- **Gallery** — Horizontal row of thumbnail images at the bottom.
-
-### Library Screen
-
-- **Tab Toggle** — Switches between Watchlist / Watched / Lists tabs.
-- **"View Stats" link** — A text link displayed below the tab toggle, visible only when the user has at least one watched entry. Navigates to `/stats`.
-- **Filter Bar** — Filters entries by genre, media type, or tag.
-- **Sort Dropdown** — Orders entries by date added, rating, title, or release date.
-- **Entry Grid** — Grid of MovieCard components for entries in the active tab.
-
-### Custom List Management
-
-Custom lists are managed from the Library screen's "Lists" tab and from entry detail screens.
-
-- **Lists tab** — Displays all user-created custom lists as clickable rows (list name + entry count). Tap to view list contents.
-- **Create list** — A "New List" button at the top of the Lists tab. Opens an inline text input for the list name. Submit creates the list; cancel dismisses the input.
-- **Rename list** — Long-press or context menu on a list row reveals a "Rename" option. Opens the same inline text input with the current name pre-filled.
-- **Delete list** — Long-press or context menu reveals a "Delete" option. Confirmation prompt before deletion. Deleting a list does not remove the entries from the library.
-- **Add to list** — On the entry detail screen, a "Add to List" button opens a dropdown/modal showing all custom lists with checkboxes. Toggling a checkbox adds or removes the entry from that list.
-
-### Stats Screen
-
-- **Stat Cards** — Row of summary cards at the top: total watched, total watchlist, average rating, total watch time. Each card is a dark surface with a bold number and a muted label beneath.
-- **Genre Chart** — Horizontal bar chart showing the number of watched entries per genre. Bars use the teal accent color. Genre labels on the left, counts on the right.
-- **Monthly Chart** — Vertical bar chart showing entries watched per month for the current year. X-axis: month abbreviations. Y-axis: count. Bars in teal accent.
-- **Top Rated List** — Ordered list of the user's highest-rated entries (5-star rating). Each row shows rank number, poster thumbnail, title, and star rating. Limited to the top 10.
-- **Layout** — Stat cards span the full width in a responsive grid (4 columns on desktop, 2 on tablet, 1 on mobile). Charts and list stack vertically below the cards with `space-y-6` spacing.
-
-### Recommendations Screen
-
-- **Filter Bar** — Horizontal row of filter chips at the top. Options: media type (All / Movies / TV Shows) and genre. Active filter uses teal accent background; inactive filters use dark surface.
-- **Entry Grid** — Standard `MovieCard[]` grid (same responsive columns as the Home screen). Cards show poster, rating badge, title, and year.
-- **Seed context** — A muted text line above the grid: "Based on your highest-rated titles." No individual seed entries are surfaced to the user — the composable handles seed selection internally.
-- **Layout** — Filter bar at the top, entry grid below. Same spacing and grid breakpoints as the Home screen's popular grid.
-
-### Release Calendar Screen
-
-- **Calendar layout** — Vertical list grouped by release week. Each week section has a sticky header showing the date range (e.g., "Mar 23 – Mar 29").
-- **Release Cards** — Horizontal row per entry within a week: poster thumbnail (small, `w92`), title, release date, and genre tags. Tapping a card navigates to `/movie/:id`.
-- **Date navigation** — Month/year selector at the top (dropdown or left/right arrows) to jump between months. Defaults to the current month.
-- **Region filter** — Uses the user's `Settings.preferredRegion` to filter releases. Displayed as a muted label (e.g., "Showing releases for US").
-- **Layout** — Date navigation at top, followed by week-grouped release card lists. Full content-area width, no sidebar-specific adjustments needed.
-
-### Settings Screen
-
-- **Layout** — Vertical stack of setting groups, each as a labeled row with the control on the right. Dark surface cards with `rounded-lg` and `p-4` padding, separated by `space-y-4`.
-- **Theme Toggle** — Label "Theme" on the left, toggle switch on the right. Switch uses teal accent when active (dark mode). Toggling applies the theme immediately.
-- **Language Select** — Label "Language" on the left, dropdown on the right showing the language name in its own language (e.g., "English", "Español", "Français"). Selecting a language updates `Settings.language`, which immediately re-renders all UI text via vue-i18n and applies to subsequent media provider API calls.
-- **Region Select** — Label "Region" on the left, dropdown on the right showing the current region name (e.g., "United States"). Controls streaming availability and release calendar filtering.
-- **Home Section Select** — Label "Default Home Section" on the left, dropdown with options: Trending, Popular, Search. Controls which section is scrolled-to on initial Home screen load.
-- **Data Export** — Label "Export Data" on the left, primary teal button "Export JSON" on the right. Exports the full localStorage payload as a downloadable `.json` file.
-- **Data Import** — Label "Import Data" on the left, ghost button "Import JSON" on the right. Opens a file picker for a `.json` file. Shows a confirmation prompt before overwriting existing data.
 
 ## 6. Interaction Patterns
 
@@ -219,19 +139,6 @@ Custom lists are managed from the Library screen's "Lists" tab and from entry de
 - **Heading** — Bold white text, clear and direct.
 - **Supporting text** — One line of muted gray text below the heading explaining what to do.
 - **CTA button** — Primary teal button guiding the user to action.
-
-Per-screen messages (English values shown — all strings come from translation files and are localized per `Settings.language`):
-
-| Screen           | Heading                   | Supporting text                                 | CTA                           |
-| ---------------- | ------------------------- | ----------------------------------------------- | ----------------------------- |
-| Library (all)    | "Your library is empty"   | "Search for a movie or TV show to get started." | "Discover something to watch" |
-| Watchlist        | "Your watchlist is empty" | "Find something you want to watch."             | "Browse trending titles"      |
-| Watched          | "Nothing watched yet"     | "Mark titles as watched to see them here."      | "Check your watchlist"        |
-| Search results   | "No results found"        | "Try a different search term."                  | _(text only, no button)_      |
-| Stats            | "No stats yet"            | "Watch some movies to see your statistics."     | "Go to your library"          |
-| Recommendations  | "No recommendations yet"  | "Rate some titles so we can suggest new ones."  | "Discover something to watch" |
-| Release Calendar | "No upcoming releases"    | "No theatrical releases found for your region." | _(text only, no button)_      |
-| Custom List      | "This list is empty"      | "Add titles from their detail page."            | "Browse trending titles"      |
 
 ## 10. Error States & Notifications
 
