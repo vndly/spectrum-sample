@@ -4,21 +4,10 @@ Its main challenges are around handling small changes (where the process overhea
 
 DDD could incorporate TDD within the implementation phase. Currently the framework does not prescribe how the AI agent writes tests during implementation, which is a gap.
 
-## Weaknesses & Flaws
-
-### 1. No Mechanism for Mid-Implementation Changes
-
-The workflow assumes a linear progression: requirements are finalized, then the plan is generated, then code is written. Real development frequently surfaces requirement changes during implementation ("we said X, but while building it we realized Y is actually needed").
-
-The framework has no documented process for mid-implementation changes. Does the team stop, update requirements, re-review, regenerate the plan, and restart? That would be extremely costly. Does the team allow undocumented deviations? That undermines traceability. This is the framework's most significant gap.
-
-### 2. Document Staleness After Shipping
-
-Once a feature ships and moves to `product/`, there is no mechanism to keep its documents up to date as the codebase evolves. Feature B might change behavior documented in Feature A's requirements. The staleness detection check catches references to code that no longer exists, but it does not catch semantic drift where the code still exists but behaves differently. Over time, `product/` could become a graveyard of technically inaccurate but structurally valid documents.
-
-### 3. Heavy Process for Small Changes
-
+Heavy Process for Small Changes:
 The minimum document set (requirements + plan + scenarios) is appropriate for features with dozens of functional requirements. But for a bug fix that changes one line, or a quick UI tweak, writing formal requirements with frontmatter, a phased plan, and Gherkin scenarios is disproportionate overhead. The framework does not distinguish between change sizes or provide a lightweight path for trivial changes.
+
+## Weaknesses & Flaws
 
 ### 4. Testing Step is Underspecified
 
@@ -54,11 +43,7 @@ Formalize the experimental testing step. Options include: requiring that plan te
 
 Create a skill that reads the feature's `requirements.md` and `scenarios.md`, then inspects the actual codebase to verify that documented behaviors are implemented. This would bridge the gap between document review and code review.
 
-### 5. Address Document Staleness Systematically
-
-Options include: a periodic "documentation health check" skill that re-runs reviews against shipped features, tagging each document with a "last verified" date, or treating `product/` as historical records (accurate at time of shipping) and maintaining current state separately in the technical reference.
-
-### 6. Consider a Global Decisions Log
+### 5. Consider a Global Decisions Log
 
 The Decisions table in `requirements.md` is feature-scoped, but architectural decisions often span features. A dedicated global decisions log (similar to ADRs) would provide a centralized record of cross-cutting decisions. This is distinct from the technical reference (which documents the current state) in that it documents the reasoning behind the current state.
 

@@ -116,7 +116,7 @@ The DDD workflow has five phases. Each phase has clear inputs, outputs, and qual
 
 ### Phase E: Completion
 
-10. **Complete** — When satisfied, the team moves the change folder from `changes/` to `product/`, updates status metadata, and updates index files.
+10. **Complete** — When satisfied, the team moves the change folder from `changes/` to `product/`, updates status metadata, updates index files, and updates any existing `product/` documents affected by the change (e.g., a bug fix that alters behavior documented in a previously shipped feature).
 
 ## Standards
 
