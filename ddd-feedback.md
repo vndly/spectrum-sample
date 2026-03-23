@@ -2,23 +2,7 @@
 
 Its main challenges are around handling small changes (where the process overhead may not be justified), managing document staleness after shipping, and closing the gap between validation scenarios and actual test execution.
 
-## Similar Frameworks
-
-### Behavior-Driven Development (BDD)
-
-DDD incorporates BDD directly via `scenarios.md` in Gherkin format. The difference is that in classical BDD, scenarios drive the implementation — developers write code to make scenarios pass. In DDD, scenarios are one input among several that the AI agent ingests. The scenarios serve more as a validation contract than as the primary driver. This is a reasonable adaptation for AI-assisted development, where the agent needs broader context than just GIVEN/WHEN/THEN.
-
-### Test-Driven Development (TDD)
-
-TDD's red-green-refactor cycle operates at the code level with rapid feedback loops. DDD operates at the document level with longer feedback loops but broader scope. They are complementary rather than competing: DDD could incorporate TDD within the implementation phase. Currently the framework does not prescribe how the AI agent writes tests during implementation, which is a gap (see Weaknesses).
-
-### Architecture Decision Records (ADRs)
-
-The Decisions table in `requirements.md` (Decision | Choice | Rationale) functions similarly to ADRs but is scoped to individual features rather than maintained as a global log. This means architectural decisions are scattered across feature folders. A developer asking "why did we choose X?" must know which feature's requirements to look in. A global ADR log would complement the per-feature decisions.
-
-### RFC-Driven Development
-
-RFC processes (used by Rust, React, Kubernetes) are designed for open-ended, multi-stakeholder architectural decisions with public comment periods. DDD's requirements phase serves a similar "think before you build" purpose but is lighter weight and more prescriptive in structure. RFC processes typically do not prescribe document types or review checklists — they rely on community review for quality. DDD's mechanical review is an advantage for smaller teams without a large reviewer pool.
+DDD could incorporate TDD within the implementation phase. Currently the framework does not prescribe how the AI agent writes tests during implementation, which is a gap.
 
 ### Documentation-Driven Development (Tom Preston-Werner)
 

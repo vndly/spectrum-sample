@@ -1,6 +1,6 @@
-# Document Driven Development (DDD)
+# Documentation Driven Development (DDD)
 
-Document Driven Development (DDD) is a development framework where every code change — whether a new feature, a bug fix, or an infrastructure task — begins with a curated set of documents produced in a specific order. An AI coding agent then ingests those documents and generates the implementation.
+Documentation Driven Development (DDD) is a development framework where every code change — whether a new feature, a bug fix, or an infrastructure task — begins with a curated set of documents produced in a specific order. An AI coding agent then ingests those documents and generates the implementation.
 
 These documents include implementation plans, validation scenarios, API contracts, data models, and post-implementation records. Together they form a comprehensive paper trail that governs the full lifecycle of a change, from idea to shipped code.
 
