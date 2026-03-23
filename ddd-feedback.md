@@ -17,8 +17,6 @@ Define a threshold (e.g., changes touching fewer than 3 files, bug fixes with a 
 
 The current ordering — requirements, then plan, then scenarios — is mostly sound, but there is a valid argument for generating scenarios before or alongside the plan.
 
-**Current order (requirements -> plan -> scenarios):** The plan is generated first, then scenarios. This means scenarios do not influence the plan. If scenario generation reveals edge cases the plan does not handle, the plan must be revised retroactively.
-
 **Alternative order (requirements -> scenarios -> plan):** Generating scenarios first would force the team to think about validation before implementation, more aligned with BDD and TDD principles. Edge cases discovered during scenario writing would be available when the plan is generated, potentially producing a more robust plan.
 
 **Practical note:** In the current workflow, both plan and scenarios are generated from requirements in the same step, so the ordering is somewhat moot — they are produced together. However, the review process should check that scenarios influenced the plan, not just that they are consistent with it.
