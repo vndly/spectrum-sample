@@ -6,7 +6,8 @@
 
 - **Format**: Correct Gherkin syntax — `Feature:`, `Scenario:` (or `Scenario Outline:`), `Background:` (if used), and `GIVEN`/`WHEN`/`THEN`/`AND`/`BUT` steps.
 - **Requirement grouping**: Scenarios are organized under their parent requirement heading, with horizontal rules (`---`) separating requirement groups.
-- **Scenario naming**: Each scenario has a descriptive, unique name that summarizes the behavior under test.
+- **Scenario IDs**: Every scenario has a stable ID in the format `{requirement-id}-{nn}` (e.g., `SC-04-01`). The ID appears at the start of the scenario name: `#### Scenario: SC-04-01 — Navigation between pages`. IDs enable the plan's testing phase to reference specific scenarios, creating traceability between the validation contract and actual tests. Flag scenarios without IDs or with duplicate IDs.
+- **Scenario naming**: After the ID, each scenario has a descriptive, unique name that summarizes the behavior under test.
 - **Data variation**: `Scenario Outline:` with `Examples:` tables are used when the same flow applies to multiple inputs, instead of duplicating nearly identical scenarios.
 - **Background deduplication**: When multiple scenarios under the same requirement share identical GIVEN steps, a `Background:` block should be used instead of repeating them in each scenario.
 

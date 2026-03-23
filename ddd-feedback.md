@@ -1,6 +1,6 @@
 # DDD Framework Feedback
 
-Its main challenges are around handling small changes (where the process overhead may not be justified), managing document staleness after shipping, and closing the gap between validation scenarios and actual test execution.
+Its main challenges are around handling small changes (where the process overhead may not be justified) and managing document staleness after shipping.
 
 DDD could incorporate TDD within the implementation phase. Currently the framework does not prescribe how the AI agent writes tests during implementation, which is a gap.
 
@@ -13,19 +13,11 @@ The minimum document set (requirements + plan + scenarios) is appropriate for fe
 
 Define a threshold (e.g., changes touching fewer than 3 files, bug fixes with a clear root cause) below which the full document pipeline is optional. A "quick change" template might require only a brief description, the files affected, and a single acceptance criterion. This preserves the spirit of documentation without the overhead.
 
-### 4. Add a Requirements-to-Code Review Skill
-
-Create a skill that reads the feature's `requirements.md` and `scenarios.md`, then inspects the actual codebase to verify that documented behaviors are implemented. This would bridge the gap between document review and code review.
-
-### 5. Consider a Global Decisions Log
-
-The Decisions table in `requirements.md` is feature-scoped, but architectural decisions often span features. A dedicated global decisions log (similar to ADRs) would provide a centralized record of cross-cutting decisions. This is distinct from the technical reference (which documents the current state) in that it documents the reasoning behind the current state.
-
-### 7. Formalize the Roadmap-to-Change Lifecycle
+### 5. Formalize the Roadmap-to-Change Lifecycle
 
 The transition from `roadmap/` to `changes/` is not documented. When the team starts working on a roadmap item, do they create a change request that references it? Is the roadmap item updated? The lifecycle from roadmap to product should be explicit.
 
-### 8. Document the AI Agent's Working Context
+### 6. Document the AI Agent's Working Context
 
 The framework implicitly assumes the AI agent reads all documents in the change folder plus the technical reference. This should be explicit: what exactly does the AI agent receive as context during each phase? If the context window is limited, which documents take priority? This becomes critical as the project grows and cumulative document size may exceed context limits.
 

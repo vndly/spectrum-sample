@@ -105,7 +105,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 **Structured extract to return:**
 
-- List of scenario names with referenced requirement IDs
+- List of scenario IDs and names with referenced requirement IDs
 - Entity names and terms used
 
 #### index.md
@@ -172,6 +172,7 @@ After all per-file subagents from step 3 complete, spawn a single **cross-cuttin
 - **Scenarios coverage**: Every functional requirement has at least one scenario. Flag requirements with no corresponding scenario.
 - **Acceptance criteria ↔ scenarios traceability**: Every acceptance criterion should have at least one corresponding scenario in `scenarios.md`, and every scenario should map to at least one acceptance criterion. Flag gaps in either direction.
 - **Plan ↔ scenarios alignment**: Plan steps that produce user-visible behavior should have corresponding scenario coverage. Scenarios that assume functionality not addressed by any plan step should be flagged.
+- **Scenario ↔ test traceability**: Every scenario ID in `scenarios.md` must be referenced by at least one test step in the plan's testing phase. Flag orphan scenarios (defined but never referenced by a test). Flag test steps that lack both scenario references and an `(implementation detail)` justification.
 - **Implementation alignment**: If `implementation.md` exists, verify it aligns with the plan and requirements. No contradictions between implementation approach and architectural constraints.
 - **Cross-feature conflicts**: No overlap or contradiction with other features in `docs/product/` (using project context from Subagent B).
 - **Dependency impact**: If the feature touches existing modules, are ripple effects acknowledged?
