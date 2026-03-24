@@ -16,7 +16,7 @@ On-demand only, invoked via `/ddd-review <folder-path>` (path relative to projec
 ## Scope
 
 - Reviews a single feature, infrastructure, or bug-fix documentation folder against the project's technical reference (`docs/technical/`) and codebase.
-- **Report only** — does not modify any files.
+- After review, the user triages each finding interactively. Findings marked **Fix** are applied directly to the documentation files. Findings marked **Skip** are preserved in the final report.
 
 ## 1. Initialization
 
@@ -191,9 +191,9 @@ These outputs are non-blocking and go into the "Ideas & Suggestions" section of 
 - **Missing edge cases**: Propose scenarios the author may have missed.
 - **Enrich technical docs**: Identify useful technical knowledge embedded in the feature documentation that would benefit the broader codebase. Propose moving or consolidating this information into the appropriate `docs/technical/` document.
 
-## 5. Report
+## 5. Report Assembly
 
-Assemble the final report from all subagent outputs: merge findings from per-file subagents (step 3) and the cross-cutting subagent (step 4), deduplicate any overlapping findings, and present the report directly in the conversation using this structure:
+Assemble the findings from all subagent outputs: merge findings from per-file subagents (step 3) and the cross-cutting subagent (step 4), and deduplicate any overlapping findings. Do **not** present the report yet — it will be rendered after triage (step 8). Keep the assembled findings, ideas, and suggestions in memory for use in steps 6–8.
 
 ### Report Structure
 
@@ -257,9 +257,58 @@ X critical | Y warnings | Z suggestions — across N files.
 ### Report Rules
 
 - **Numbered findings** — assign each finding a sequential number (`#1`, `#2`, `#3`, …) across all severity levels (Critical first, then Warnings, then Suggestions).
-- **Report only** — do not modify any files.
 - Be specific — cite the exact text and the reference doc or code that contradicts it.
 - Every finding must have a recommendation. Do not flag something without saying what to do.
 - Do not flag stylistic preferences or subjective opinions — only actionable issues.
 - If a section has no findings, omit it from the report.
 - If the documentation is excellent and has no issues, say so clearly.
+
+## 6. Triage
+
+Present each finding to the user for triage using `AskUserQuestion`, ordered by priority: all Critical findings first, then Warnings, then Suggestions.
+
+### How to present
+
+- Process findings in batches of up to **4 at a time**.
+- Each question in the batch corresponds to one finding. Format the question as:
+  - **Header**: The severity (e.g., `Critical`, `Warning`, `Suggestion`) — max 12 chars.
+  - **Question**: `#N [file.md: Section] — Description of the issue. Recommendation: What to do about it.`
+  - **Options**:
+    1. **Fix** — "Apply the recommendation automatically"
+    2. **Skip** — "Acknowledge but do not fix now"
+    3. **Discuss** — "I have questions or want to refine this"
+  - The built-in "Other" option is always available for custom input.
+- Continue presenting batches until all findings have been triaged.
+- After all findings are triaged, briefly summarize the decisions: how many marked Fix, Skip, and Discuss.
+
+## 7. Discuss & Fix
+
+After triage is complete, process the user's decisions in the following order:
+
+### 7.1 Discuss
+
+For each finding the user marked **Discuss** (in finding order):
+
+- Present the finding in full (description, context, recommendation).
+- Actively engage in a conversation about it: ask clarifying questions, offer alternative approaches, or refine the recommendation based on the user's input.
+- At the end of the discussion, ask the user for a final decision on the finding: **Fix** (with the agreed-upon resolution), **Skip**, or provide a custom action.
+
+### 7.2 Fix
+
+After all discussions are resolved, collect every finding marked **Fix** (both from initial triage and from resolved discussions). Apply all fixes at once, since changes may interact with each other. When fixing:
+
+- Edit the documentation files directly to resolve each finding.
+- Follow the recommendation for each finding, adjusted by any discussion outcomes.
+- After applying all fixes, briefly list what was changed and in which files.
+
+## 8. Final Report
+
+Re-render the report from step 5, incorporating the triage and fix outcomes:
+
+- **Remove** all findings that were marked **Fix** (they have been resolved).
+- **Keep** all findings that were marked **Skip** — these remain in the report as a record of acknowledged-but-deferred issues.
+- **Move** any findings that were marked **Discuss** and then resolved to **Fix** out of the report (already resolved). If a discussed finding was ultimately **Skipped**, keep it in the report.
+- Add an **Open Discussion** section for any findings from Discuss that resulted in a custom action or open-ended outcome rather than a Fix or Skip.
+- Update the **Summary** counts and **Verdict** to reflect only the remaining (unresolved) findings.
+
+Present the final report using the Report Structure defined in step 5.
