@@ -151,16 +151,8 @@ Composables are the public data-access layer for Presentation components. They o
 }
 ```
 
-- **`useMovie(id)`** — Fetches and exposes reactive movie data via `provider.client.ts`.
-- **`useShow(id)`** — Fetches and exposes reactive TV show data via `provider.client.ts`.
-- **`useLibrary()`** — Reads/writes library entries via `storage.service.ts`. Exposes watchlist, watched, favorites, etc.
-- **`useSearch(query)`** — Runs search queries via `provider.client.ts`, exposes reactive results.
-- **`useTrending()`** — Fetches trending titles via `provider.client.ts`.
-- **`usePopular()`** — Fetches popular titles via `provider.client.ts`.
-- **`useRecommendations()`** — Selects up to 5 seed entries from the user's library (highest-rated first) and fetches recommendations for each via `provider.client.ts`. Deduplicates results across seeds and excludes entries already in the library.
-- **`useUpcoming()`** — Fetches upcoming movie releases via `provider.client.ts`.
-- **`useStats()`** — Computes viewing statistics from library data via `storage.service.ts`.
-- **`useGenres()`** — Fetches movie and TV genre lists from the media provider on first call and caches the result in memory for the session. Returns a lookup map of genre ID → name for resolving `genre_ids` in list responses. Subsequent calls return the cached data without additional API requests.
-- **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`. When `language` changes, also updates the vue-i18n global locale (`i18n.global.locale.value`) so all UI translations re-render immediately.
-- **`useLists()`** — Manages custom lists and list membership via `storage.service.ts`.
-- **`useRouteId()`** — Extracts and validates the numeric `:id` param from the current route. Used by both detail screens (`MovieDetailScreen`, `ShowDetailScreen`) to get a typed provider ID.
+Examples:
+
+- **`useMovie(id)`** — Fetches and exposes reactive movie detail data via `provider.client.ts`.
+- **`useLibrary()`** — Reads/writes library entries via `storage.service.ts`.
+- **`useSettings()`** — Reads/writes user preferences via `storage.service.ts`.
