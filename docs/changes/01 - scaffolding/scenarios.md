@@ -4,17 +4,15 @@
 
 The router SHALL navigate between all defined routes.
 
-Background:
-GIVEN the app is running
-
 #### Scenario: SC-01-01 — Router uses HTML5 history mode
 
-WHEN the app starts
-THEN the router is created with `createWebHistory`
-AND the router instance is registered on the Vue app
+GIVEN the app is running
+WHEN I navigate to `/settings`
+THEN the URL in the browser address bar is `/settings` without a hash fragment
 
 #### Scenario Outline: SC-02-01 — Navigation between pages
 
+GIVEN the app is running
 WHEN I click the "<nav_item>" nav item
 THEN the URL changes to `<route>`
 AND the <page_name> placeholder view is displayed
@@ -29,21 +27,23 @@ Examples:
 
 #### Scenario: SC-02-02 — Direct URL navigation
 
+GIVEN the app is running
 WHEN I navigate directly to `/settings` in the browser address bar
 THEN the settings placeholder view is displayed
 AND the sidebar highlights the Settings nav item
 
 #### Scenario: SC-02-03 — Catch-all redirect
 
+GIVEN the app is running
 WHEN I navigate to `/nonexistent`
 THEN the router redirects to `/`
 AND the home placeholder view is displayed
 
-#### Scenario: SC-03-01 — Route lazy loading
+#### Scenario: SC-03-01 — Route lazy loading (build verification)
 
 GIVEN the app is built for production
 WHEN I inspect the build output
-THEN the production build output contains separate JavaScript chunks for each route view
+THEN the production build output contains at least 4 separate JavaScript chunk files corresponding to route views
 
 ---
 
@@ -110,12 +110,17 @@ GIVEN the viewport width is 768px or above
 WHEN the app loads
 THEN the layout contains a sidebar and a scrollable content area arranged with flexbox
 
-#### Scenario: SC-04-02 — Responsive toggle
+#### Scenario: SC-04-02 — Sidebar hides on mobile
 
 GIVEN the viewport width is 768px or above
 WHEN the viewport is resized to below 768px
 THEN the sidebar hides and the bottom nav shows
-AND when resized back above 768px the sidebar shows and the bottom nav hides
+
+#### Scenario: SC-04-03 — Sidebar restores on desktop
+
+GIVEN the viewport width is below 768px
+WHEN the viewport is resized to 768px or above
+THEN the sidebar shows and the bottom nav hides
 
 ---
 
@@ -264,6 +269,13 @@ GIVEN the modal is open with `onConfirm` and `onCancel` callbacks
 WHEN I click the cancel button
 THEN the `onCancel` callback is invoked and the modal closes
 
+#### Scenario: SC-15-06 — Single-instance replacement
+
+GIVEN the modal is open with title "First"
+WHEN `useModal().open()` is called again with title "Second"
+THEN only one modal is visible
+AND it displays the title "Second"
+
 ---
 
 ### Requirement: SC-16 — Empty state component
@@ -384,6 +396,48 @@ Examples:
 
 ---
 
+### Requirement: NFR — Non-functional behavior
+
+Non-functional requirements SHALL be met for transitions, touch targets, and stickiness.
+
+#### Scenario: SC-NFR-01 — Reduced motion disables toast animations
+
+GIVEN the user's OS has `prefers-reduced-motion` enabled
+WHEN a toast is triggered
+THEN it appears without slide animation (instant display)
+
+#### Scenario: SC-NFR-02 — Reduced motion disables modal animations
+
+GIVEN the user's OS has `prefers-reduced-motion` enabled
+WHEN the modal is opened
+THEN it appears without fade or scale animation (instant display)
+
+#### Scenario: SC-NFR-03 — Mobile touch targets
+
+GIVEN the viewport width is below 768px
+WHEN I inspect the bottom nav items
+THEN each item has a minimum touch target of 44x44px
+
+#### Scenario: SC-NFR-04 — Sticky page header
+
+GIVEN I am on a page with scrollable content
+WHEN I scroll down
+THEN the page header remains visible at the top of the content area
+
+#### Scenario: SC-NFR-05 — Toast slide-in animation
+
+GIVEN transitions are enabled (no `prefers-reduced-motion`)
+WHEN a toast is triggered
+THEN it slides in from the right and fades out on dismiss
+
+#### Scenario: SC-NFR-06 — Modal fade and scale animation
+
+GIVEN transitions are enabled (no `prefers-reduced-motion`)
+WHEN the modal is opened
+THEN the backdrop fades in and the content card scales up slightly
+
+---
+
 ### Requirement: SC-21 — Theme additions
 
 The app theme SHALL provide semantic color tokens.
@@ -396,29 +450,95 @@ THEN `--color-success` and `--color-error` CSS custom properties exist
 
 ---
 
-### Requirement: Build and tooling
+### Requirement: SC-22 — Router unit tests
 
-All tooling checks SHALL pass after scaffolding is complete.
+Router tests SHALL verify route definitions and navigation behavior.
 
-#### Scenario: BT-01 — Type-check passes
+#### Scenario: SC-22-01 — Router test suite covers route definitions
+
+GIVEN the router test file exists
+WHEN the test suite runs
+THEN it verifies all 4 named routes exist with correct paths, the catch-all redirects to `/`, `scrollBehavior` returns `{ top: 0 }`, and `afterEach` sets `document.title`
+
+---
+
+### Requirement: SC-23 — Composable unit tests
+
+Composable tests SHALL verify toast and modal state management.
+
+#### Scenario: SC-23-01 — Toast composable tests pass
+
+GIVEN the toast composable test file exists
+WHEN the test suite runs
+THEN it verifies add/remove toast, auto-dismiss after timeout, and toast type variants
+
+#### Scenario: SC-23-02 — Modal composable tests pass
+
+GIVEN the modal composable test file exists
+WHEN the test suite runs
+THEN it verifies open/close state and confirm/cancel callbacks
+
+---
+
+### Requirement: SC-24 — UI primitive tests
+
+UI primitive component tests SHALL verify rendering and behavior.
+
+#### Scenario: SC-24-01 — UI primitive test suites pass
+
+GIVEN test files exist for EmptyState, SkeletonLoader, ErrorBoundary, ToastContainer, and ModalDialog
+WHEN the test suites run
+THEN all component tests pass verifying props rendering and interaction behavior
+
+---
+
+### Requirement: SC-25 — Navigation component tests
+
+Navigation component tests SHALL verify sidebar and bottom nav rendering.
+
+#### Scenario: SC-25-01 — Navigation component test suites pass
+
+GIVEN test files exist for SidebarNav and BottomNav
+WHEN the test suites run
+THEN all tests pass verifying 4 nav items render with correct icons, labels, and active state highlighting
+
+---
+
+### Requirement: SC-26 — Placeholder view tests
+
+Placeholder view tests SHALL verify each view renders an empty state.
+
+#### Scenario: SC-26-01 — Placeholder view test suites pass
+
+GIVEN test files exist for all 4 placeholder views
+WHEN the test suites run
+THEN each test verifies the view renders `<EmptyState>` with the expected icon and translated title
+
+---
+
+### Requirement: SC-27 — Test infrastructure setup and build tooling
+
+Test infrastructure SHALL be configured and all tooling checks SHALL pass.
+
+#### Scenario: SC-27-01 — Type-check passes
 
 GIVEN all scaffolding files are in place
 WHEN I run `npm run type-check`
 THEN zero TypeScript errors are reported
 
-#### Scenario: BT-02 — Lint passes
+#### Scenario: SC-27-02 — Lint passes
 
 GIVEN all scaffolding files are in place
 WHEN I run `npm run lint`
 THEN zero ESLint errors are reported
 
-#### Scenario: BT-03 — Format check passes
+#### Scenario: SC-27-03 — Format check passes
 
 GIVEN all scaffolding files are in place
 WHEN I run `npm run format:check`
 THEN zero formatting issues are reported
 
-#### Scenario: BT-04 — Production build succeeds
+#### Scenario: SC-27-04 — Production build succeeds
 
 GIVEN all scaffolding files are in place
 WHEN I run `npm run build`

@@ -2,6 +2,6 @@
 
 ## Contents
 
-1. **[Requirements](./requirements.md)**: What the scaffolding must achieve: routing, layout, navigation, and UI primitives.
-2. **[Scenarios](./scenarios.md)**: Verification scenarios to confirm the scaffolding works end-to-end.
+1. **[Requirements](./requirements.md)**: Functional and non-functional requirements for routing, layout, navigation, and UI primitives.
+2. **[Scenarios](./scenarios.md)**: Gherkin scenarios to confirm the scaffolding behaves correctly.
 3. **[Plan](./plan.md)**: Step-by-step implementation plan with progress tracking.

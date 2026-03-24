@@ -11,7 +11,7 @@
 
 ### Step 2 — Configure test environment
 
-- [ ] Update `vitest.config.ts`: add `globals: true`, `include: ["tests/**/*.test.ts"]`, `setupFiles: ["./tests/setup.ts"]`.
+- [ ] Update `vitest.config.ts`: add `globals: true`, `include: ["tests/**/*.test.ts"]`, `setupFiles: ["./tests/setup.ts"]` inside the existing `test: { }` block in the `defineConfig` call (do not create a separate config object).
 - [ ] Create `tests/setup.ts` with `beforeEach(() => { localStorage.clear() })`.
 
 ---
@@ -55,6 +55,8 @@ toast.error / toast.dismiss / toast.retry
 
 `page.*.title` keys mirror `nav.*` values initially (separate keys to allow divergence later).
 
+> **Prerequisite:** The `app.title` key must already exist in all locale files from Phase 00. Verify before proceeding.
+
 ---
 
 ## Phase 3 — Router
@@ -63,13 +65,12 @@ toast.error / toast.dismiss / toast.retry
 
 - [ ] Create `tests/presentation/router.test.ts` covering:
 
-- **SC-01-01** — All 4 named routes exist with correct paths and names
-- **SC-02-01** — Catch-all `/:pathMatch(.*)*` route exists and redirects to `/`
-- **SC-02-02** — `scrollBehavior` returns `{ top: 0 }`
-- **SC-02-03** — `afterEach` guard sets `document.title` to `"{Page Name} — Plot Twisted"`
-- **SC-03-01** — Each route has `meta.titleKey` matching the expected i18n key
-- **SC-10-01** — Route transitions use `<Transition name="fade" mode="out-in">`
-- **SC-11-01** — Lazy-loaded views via `() => import('./views/...')`
+- **SC-02-03** — Catch-all `/:pathMatch(.*)*` route exists and redirects to `/`
+- **SC-11-01** — `scrollBehavior` returns `{ top: 0 }`
+- **SC-10-01** — `afterEach` guard sets `document.title` to `"${t(titleKey)} — ${t('app.title')}"`
+- **SC-03-01** — Lazy-loaded views via `() => import('./views/...')`
+- `(implementation detail)` — All 4 named routes exist with correct paths and names
+- `(implementation detail)` — Each route has `meta.titleKey` matching the expected i18n key
 
 ### Step 5 — Create router configuration
 
@@ -80,7 +81,7 @@ toast.error / toast.dismiss / toast.retry
 - 4 routes with lazy-loaded views via `() => import('./views/...')`
 - Catch-all `/:pathMatch(.*)*` redirecting to `/`
 - `meta.titleKey` on each route (e.g., `nav.home`, `nav.library`)
-- `afterEach` guard setting `document.title` via i18n: `${t(titleKey)} — Plot Twisted`
+- `afterEach` guard setting `document.title` via i18n: `${t(titleKey)} — ${t('app.title')}`
 - TypeScript `RouteMeta` augmentation for `titleKey`
 
 **Routes:**
@@ -95,41 +96,49 @@ toast.error / toast.dismiss / toast.retry
 
 ### Step 6 — Register router
 
-- [ ] Modify `src/main.ts` to import router and register with `app.use(router)`.
+- [ ] Modify `src/main.ts` to import router and register with `app.use(router)` (after existing `app.use(i18n)` call).
 
 ---
 
-## Phase 4 — Composables
+## Phase 4 — Domain Constants & Composables
 
-### Step 7 — Write toast composable tests
+### Step 7 — Create domain constants
+
+- [ ] Create `src/domain/constants.ts`:
+
+- `TOAST_DISMISS_MS = 4000` — auto-dismiss timeout for toast notifications
+
+> This is the only Domain layer change in this phase, acknowledged as an exception in the Architecture Compliance NFR.
+
+### Step 8 — Write toast composable tests
 
 - [ ] Create `tests/presentation/composables/use-toast.test.ts` covering:
 
 - **SC-13-01** — `addToast()` adds a toast to the queue with a unique id
 - **SC-13-02** — `removeToast(id)` removes the toast from the queue
 - **SC-13-03** — Auto-dismiss removes the toast after timeout (~4s, use `vi.useFakeTimers()`)
-- Toast types: `'error'`, `'success'`, `'info'`
-- Optional action object is preserved on the toast
+- `(implementation detail)` — Toast types: `'error'`, `'success'`, `'info'`
+- `(implementation detail)` — Optional action object is preserved on the toast
 
-### Step 8 — Write modal composable tests
+### Step 9 — Write modal composable tests
 
 - [ ] Create `tests/presentation/composables/use-modal.test.ts` covering:
 
 - **SC-15-01** — `open(props)` sets `isOpen` to true and stores props
-- **SC-15-04** — `close()` sets `isOpen` to false and clears props
-- **SC-15-05** — Props include `title`, optional `content`, `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`
+- `(implementation detail)` — `close()` sets `isOpen` to false and clears props
+- `(implementation detail)` — Props include `title`, optional `content`, `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`
 
-### Step 9 — Create toast composable
+### Step 10 — Create toast composable
 
 - [ ] Create `src/presentation/composables/use-toast.ts`:
 
 - Module-level `ref<Toast[]>` (singleton — shared across all callers, works outside `setup()`)
 - `Toast` type: `{ id: string, message: string, type: 'error' | 'success' | 'info', action?: { label: string, handler: () => void } }`
-- `addToast(options)` — generates unique id, pushes toast, starts `setTimeout` (~4s) for auto-removal
+- `addToast(options)` — generates unique id, pushes toast, starts `setTimeout` (using `TOAST_DISMISS_MS` from `src/domain/constants.ts`) for auto-removal. Enforces max 5 simultaneous toasts with oldest-first eviction.
 - `removeToast(id)` — removes from array; also clears the associated `setTimeout` to prevent stale timer callbacks
 - Returns `{ toasts: Readonly<Ref<Toast[]>>, addToast, removeToast }`
 
-### Step 10 — Create modal composable
+### Step 11 — Create modal composable
 
 - [ ] Create `src/presentation/composables/use-modal.ts`:
 
@@ -143,24 +152,31 @@ toast.error / toast.dismiss / toast.retry
 
 ## Phase 5 — Layout Components
 
-### Step 11 — Write sidebar tests
+### Step 12 — Write sidebar tests
 
 - [ ] Create `tests/presentation/components/layout/sidebar-nav.test.ts` covering:
 
 - **SC-05-01** — Renders all 4 nav items with correct icons and translated labels
 - **SC-07-01** — Active route item has teal accent classes (`border-accent`, `bg-accent/10`)
 - **SC-07-02** — Home route uses exact match (`route.path === '/'`)
-- Inactive items have muted classes (`text-slate-400`)
+- `(implementation detail)` — Inactive items have muted classes (`text-slate-400`)
 
-### Step 12 — Write bottom nav tests
+### Step 13 — Write bottom nav tests
 
 - [ ] Create `tests/presentation/components/layout/bottom-nav.test.ts` covering:
 
 - **SC-06-01** — Renders all 4 nav items with icons and labels
 - **SC-07-03** — Active route item has teal accent styling
-- **SC-06-02** — Inactive items have muted styling
+- `(implementation detail)` — Inactive items have muted styling
 
-### Step 13 — Create layout components
+### Step 14 — Write page header tests
+
+- [ ] Create `tests/presentation/components/layout/page-header.test.ts` covering:
+
+- **SC-08-01** — Displays translated title from route `meta.titleKey`
+- **SC-08-02** — Updates displayed title when route changes
+
+### Step 15 — Create layout components
 
 - [ ] Create `src/presentation/components/layout/sidebar-nav.vue`:
 
@@ -185,7 +201,7 @@ toast.error / toast.dismiss / toast.retry
 
 - Reads `route.meta.titleKey`, translates via `$t()`
 - White text, `text-xl font-bold`
-- Classes: `sticky top-0 z-10 bg-bg`
+- Classes: `sticky top-0 z-10 bg-bg-primary`
 
 - [ ] Create `src/presentation/components/layout/app-shell.vue`:
 
@@ -201,37 +217,42 @@ toast.error / toast.dismiss / toast.retry
 
 ## Phase 6 — Common Components
 
-### Step 14 — Write empty-state tests
+### Step 16 — Write empty-state tests
 
 - [ ] Create `tests/presentation/components/common/empty-state.test.ts` covering:
 
-- **SC-16-01** — Renders title and description text
-- **SC-16-02** — Renders icon when provided
-- **SC-16-03** — Does not render icon when omitted
+- **SC-16-01** — Renders icon, title, and description when all provided
+- **SC-16-02** — With only title prop, icon and description are absent
+- **SC-16-03** — CTA button renders when `ctaLabel` is provided; clicking invokes `ctaAction`
 
-### Step 15 — Write skeleton-loader tests
+### Step 17 — Write skeleton-loader tests
 
 - [ ] Create `tests/presentation/components/common/skeleton-loader.test.ts` covering:
 
 - **SC-17-01** — Renders with default dimensions
 - **SC-17-02** — Applies custom `width`, `height`, and `rounded` props
 
-### Step 16 — Write toast-container tests
+### Step 18 — Write toast-container tests
 
 - [ ] Create `tests/presentation/components/common/toast-container.test.ts` covering:
 
-- **SC-14-01** — Renders nothing when toast queue is empty; renders toast items when toasts exist
-- **SC-14-02** — Each toast shows message, dismiss button, type-colored border, and optional action button
+- **SC-14-01** — Multiple toasts stack vertically without overlapping
+- **SC-14-02** — Container is fixed top-right with `z-50`
+- `(implementation detail)` — Renders nothing when toast queue is empty; renders toast items when present
+- `(implementation detail)` — Each toast shows message, dismiss button, type-colored border, and optional action button
 
-### Step 17 — Write modal-dialog tests
+### Step 19 — Write modal-dialog tests
 
 - [ ] Create `tests/presentation/components/common/modal-dialog.test.ts` covering:
 
-- **SC-15-01** — Does not render when `isOpen` is false
-- **SC-15-02** — Renders title, body, confirm, and cancel buttons when open
-- **SC-15-03** — Calls `close()` on backdrop click and on Escape key
+- **SC-15-01** — Opens and renders title, body, confirm, and cancel buttons
+- **SC-15-02** — Closes on backdrop click
+- **SC-15-03** — Closes on Escape key
+- **SC-15-04** — Confirm button invokes `onConfirm` callback and closes
+- **SC-15-05** — Cancel button invokes `onCancel` callback and closes
+- `(implementation detail)` — Does not render when `isOpen` is false
 
-### Step 18 — Create common components
+### Step 20 — Create common components
 
 - [ ] Create `src/presentation/components/common/skeleton-loader.vue`:
 
@@ -240,9 +261,10 @@ toast.error / toast.dismiss / toast.retry
 
 - [ ] Create `src/presentation/components/common/empty-state.vue`:
 
-- Props: `icon` (component, optional), `title` (string), `description` (string)
+- Props: `icon` (component, optional), `title` (string), `description` (string, optional), `ctaLabel` (string, optional), `ctaAction` (() => void, optional)
 - Centered vertically and horizontally
 - Icon in `text-slate-500`, title in `text-white font-bold`, description in `text-slate-400`
+- CTA button rendered only when `ctaLabel` is provided; clicking invokes `ctaAction`
 
 - [ ] Create `src/presentation/components/common/toast-container.vue`:
 
@@ -255,7 +277,7 @@ toast.error / toast.dismiss / toast.retry
 - [ ] Create `src/presentation/components/common/modal-dialog.vue`:
 
 - Uses `useModal()` to read open/close state and props
-- Backdrop: `bg-black/50`, click-to-close
+- Backdrop: `fixed inset-0 z-40 bg-black/50`, click-to-close
 - Content card: centered, `bg-surface rounded-lg`
 - Title, optional body text, confirm (teal) and cancel buttons
 - Escape key closes via `@keydown.escape` listener
@@ -265,14 +287,21 @@ toast.error / toast.dismiss / toast.retry
 
 ## Phase 7 — Error Handling
 
-### Step 19 — Write error-boundary tests
+### Step 21 — Write error-boundary tests
 
 - [ ] Create `tests/presentation/components/error/error-boundary.test.ts` covering:
 
-- **SC-18-01** — Renders slot content in normal state
-- **SC-18-02** — Shows fallback UI with error title, description, and reload button when an error is captured
+- **SC-18-01** — Shows fallback UI with error title, description, and reload button when an error is captured
+- **SC-18-02** — Reload button calls `window.location.reload()`
+- `(implementation detail)` — Renders slot content in normal state
 
-### Step 20 — Create error boundary
+### Step 22 — Write global error handler test
+
+- [ ] Create `tests/presentation/global-error-handler.test.ts` covering:
+
+- **SC-19-01** — `app.config.errorHandler` dispatches an error toast via `useToast()` and logs to `console.error`
+
+### Step 23 — Create error boundary
 
 - [ ] Create `src/presentation/components/error/error-boundary.vue`:
 
@@ -280,18 +309,20 @@ toast.error / toast.dismiss / toast.retry
 - Normal state: renders `<slot />`
 - Error state: centered fallback with `$t('common.error.title')`, `$t('common.error.description')`, and reload button calling `window.location.reload()`
 
-### Step 21 — Add global error handler
+### Step 24 — Add global error handler
 
-- [ ] Modify `src/main.ts` to add `app.config.errorHandler`:
+- [ ] Modify `src/main.ts` to add `app.config.errorHandler` (after existing plugin registrations):
 
 - Logs the error to `console.error`
 - Calls `useToast().addToast({ message: i18n.global.t('toast.error'), type: 'error' })`
+
+> Note: `main.ts` importing from `src/presentation/composables/` is an intentional exception to typical layer boundaries, consistent with the module-level singleton decision in requirements.
 
 ---
 
 ## Phase 8 — Placeholder Views
 
-### Step 22 — Write view tests
+### Step 25 — Write view tests
 
 - [ ] Create one test file per view in `tests/presentation/views/` covering:
 
@@ -304,7 +335,7 @@ toast.error / toast.dismiss / toast.retry
 | `library-screen.test.ts`  | Renders `<EmptyState>` with `BookMarked` icon and `page.library.title`    |
 | `settings-screen.test.ts` | Renders `<EmptyState>` with `Settings` icon and `page.settings.title`     |
 
-### Step 23 — Create placeholder views
+### Step 26 — Create placeholder views
 
 - [ ] Create placeholder views in `src/presentation/views/`:
 
@@ -321,13 +352,13 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ## Phase 9 — App.vue & Tailwind
 
-### Step 24 — Update App.vue
+### Step 27 — Update App.vue
 
 - [ ] Replace `src/App.vue` template with `<ErrorBoundary>` wrapping `<AppShell />`.
 
-### Step 25 — Update Tailwind theme & transition CSS
+### Step 28 — Update Tailwind theme & transition CSS
 
-- [ ] Add to `src/assets/main.css` `@theme` block:
+- [ ] Add to the existing `@theme { }` block in `src/assets/main.css` (do not create a new block):
 
 - `--color-success: #22c55e`
 - `--color-error: #ef4444`
@@ -398,7 +429,7 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ## Phase 10 — Verification
 
-### Step 26 — Verify
+### Step 29 — Verify
 
 - [ ] Run and confirm all pass:
   - `npm run test` — zero test failures

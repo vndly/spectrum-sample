@@ -88,10 +88,10 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 | SC-11 | Scroll-to-top              | Router `scrollBehavior` returns `{ top: 0 }` on every navigation.                                                                                                                                                                                                                                                         | P1       |
 | SC-12 | i18n keys                  | Navigation labels (`nav.*`), page titles (`page.*.title`), empty state text (`common.empty.*`), error text (`common.error.*`), and toast labels (`toast.*`) added to en.json, es.json, fr.json.                                                                                                                           | P0       |
 | SC-13 | Toast notification system  | `useToast()` composable with module-level reactive state. `addToast(options)` pushes a toast (options: `{ message, type, action?: { label: string, handler: () => void } }`) with auto-dismiss after `TOAST_DISMISS_MS` (default 4000ms, from `src/domain/constants.ts`). `removeToast(id)` removes it. Toast types: error (error color), success (success color), info (accent color).                                                                                                               | P0       |
-| SC-14 | Toast container            | Fixed top-right container (`z-50`) rendering the toast queue with `<TransitionGroup>` (slide-in from right, fade-out). Each toast has dismiss button and optional action button.                                                                                                                                          | P0       |
-| SC-15 | Modal/dialog               | `useModal()` composable (single-instance). `modal-dialog.vue` with backdrop (`bg-black/50`), centered content card, title, optional body, confirm/cancel buttons. Closes on backdrop click and Escape key.                                                                                                                | P1       |
+| SC-14 | Toast container            | Fixed top-right container (`z-50`) rendering the toast queue with `<TransitionGroup>` (slide-in from right, fade-out). Each toast has dismiss button and optional action button. Maximum 5 simultaneous toasts; when exceeded, the oldest toast is evicted.                                                                | P0       |
+| SC-15 | Modal/dialog               | `useModal()` composable (single-instance). `modal-dialog.vue` with backdrop (`bg-black/50`), centered content card, title, optional body, confirm/cancel buttons. Closes on backdrop click and Escape key. Opening a new modal while one is active replaces the current modal.                                              | P1       |
 | SC-16 | Empty state component      | Centered layout with optional lucide icon, title (white bold), description (muted), optional CTA. Props: `icon` (Component, optional), `title` (string), `description` (string, optional), `ctaLabel` (string, optional), `ctaAction` (() => void, optional).                                                                                                                                                                                  | P0       |
-| SC-17 | Skeleton loader            | Reusable shimmer placeholder. Props: `width`, `height`, `rounded`. Renders a div with `animate-pulse bg-surface`.                                                                                                                                                                                                         | P1       |
+| SC-17 | Skeleton loader            | Reusable shimmer placeholder. Props: `width` (string, default `'100%'`), `height` (string, default `'1rem'`), `rounded` (string, default `'rounded-md'`). Renders a div with `animate-pulse bg-surface`.                                                                                                                  | P1       |
 | SC-18 | Error boundary             | `onErrorCaptured` wrapper component. Normal state: renders slot. Error state: centered fallback with translated heading, description, and reload button (calls `window.location.reload()`).                                                                                                                                                                  | P0       |
 | SC-19 | Global error handler       | `app.config.errorHandler` in `main.ts` logs errors and dispatches an error toast via `useToast()`.                                                                                                                                                                                                                        | P0       |
 | SC-20 | Placeholder views          | 4 view components (one per route), each rendering `<EmptyState>` with the page's lucide icon and translated title.                                                                                                                                                                                                        | P0       |
@@ -101,6 +101,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 | SC-24 | UI primitive tests         | Component tests for EmptyState (renders icon/title/description/CTA props), SkeletonLoader (renders with width/height/rounded props), ErrorBoundary (renders slot normally, shows fallback on error), ToastContainer (renders toast queue), ModalDialog (renders title/body/buttons, closes on backdrop click and Escape). | P0       |
 | SC-25 | Navigation component tests | Sidebar and BottomNav render all 4 nav items with correct icons and labels. Active route item is highlighted. Home route uses exact matching.                                                                                                                                                                             | P0       |
 | SC-26 | Placeholder view tests     | Each of the 4 view components renders an `<EmptyState>` with the expected icon and translated title.                                                                                                                                                                                                                      | P1       |
+| SC-27 | Test infrastructure setup  | Update `vitest.config.ts` with `globals: true`, `include: ["tests/**/*.test.ts"]`, and `setupFiles: ["./tests/setup.ts"]` inside the existing `test: {}` block. Create `tests/setup.ts` with `localStorage.clear()` in `beforeEach`.                                                                                     | P0       |
 
 ## Non-Functional Requirements
 
@@ -120,7 +121,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 
 ### Architecture Compliance
 
-- **Layer boundaries:** All new files live in `src/presentation/` (components, composables, views, router). No application/domain/infrastructure changes. Note: toast and modal composables live in `src/presentation/composables/` rather than `src/application/` because they manage UI-only state with no domain or infrastructure dependencies.
+- **Layer boundaries:** All new files live in `src/presentation/` (components, composables, views, router). Note: toast and modal composables live in `src/presentation/composables/` rather than `src/application/` because they manage UI-only state with no domain or infrastructure dependencies. Exceptions: `src/domain/constants.ts` is created with `TOAST_DISMISS_MS`, and `src/assets/main.css` is modified for theme additions and transition CSS.
 - **i18n mandatory:** All user-facing strings use `$t()` or `useI18n()`.
 - **SFC block order:** `<script setup>` then `<template>` then `<style>` (rare).
 - **File naming:** kebab-case for all component and composable files.
@@ -150,6 +151,7 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 - [ ] Page header displays the translated name of the current page
 - [ ] Document title updates to `"{Page Name} — {App Name}"` pattern on navigation (using i18n for both parts)
 - [ ] Route transitions fade in/out at 200ms
+- [ ] When `prefers-reduced-motion` is enabled, all transitions and animations are disabled (route fade, toast slide, modal fade)
 - [ ] Navigating to `/nonexistent` redirects to `/`
 - [ ] Page scrolls to top on every route change
 - [ ] Toast can be triggered programmatically and auto-dismisses after ~4 seconds
@@ -166,6 +168,13 @@ The project has a fully configured build pipeline and tooling (phase 00) but ren
 - [ ] en.json, es.json, and fr.json contain all required i18n key namespaces: `nav.*`, `page.*.title`, `common.empty.*`, `common.error.*`, `toast.*` (SC-12)
 - [ ] Opening a second modal replaces the first — single-instance behavior (SC-15)
 - [ ] `npm run check` passes — full pipeline (format, lint:fix, type-check, test, build)
+
+## Constraints
+
+- **Runtime dependencies:** No new runtime dependencies beyond `vue-router@^4`. All other tools (Tailwind, vue-i18n, lucide-vue-next) are already installed from Phase 00.
+- **Dev dependencies:** `@vue/test-utils@^2` is the only new dev dependency.
+- **Browser targets:** Modern evergreen browsers only, per tech-stack.md.
+- **No server-side changes:** Client-only; no Firebase functions or server config beyond the existing SPA rewrite.
 
 ## Risks & Assumptions
 
