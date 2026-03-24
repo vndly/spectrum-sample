@@ -1,5 +1,7 @@
 # Verification Scenarios: App Scaffolding
 
+Feature: App Scaffolding
+
 ### Requirement: SC-01/SC-02/SC-03 — Routing
 
 The router SHALL navigate between all defined routes.
@@ -61,14 +63,12 @@ THEN the sidebar is visible on the left with app title and 4 nav items
 
 #### Scenario: SC-07-01 — Active route highlighting in sidebar
 
-GIVEN the app is running on desktop
 WHEN I am on the `/library` route
 THEN the Library nav item has a teal left border and background tint
 AND the other 3 nav items are muted gray
 
 #### Scenario: SC-07-02 — Home exact matching
 
-GIVEN the app is running on desktop
 WHEN I am on the `/library` route
 THEN the Home nav item is NOT highlighted (exact match only for `/`)
 
@@ -168,13 +168,13 @@ The document title SHALL update to reflect the current page.
 
 GIVEN the app is running
 WHEN I navigate to `/library`
-THEN `document.title` becomes "Library — Plot Twisted"
+THEN `document.title` becomes "Library — Plot Twisted" (where "Plot Twisted" is the value of `t('app.title')`)
 
 #### Scenario: SC-10-02 — Title uses i18n
 
 GIVEN the app language is set to Spanish
 WHEN I navigate to `/settings`
-THEN `document.title` becomes "Ajustes — Plot Twisted"
+THEN `document.title` becomes "Ajustes — Plot Twisted" (where "Plot Twisted" is the value of `t('app.title')` — the app name is not translated)
 
 ---
 
@@ -225,6 +225,14 @@ AND clicking "Retry" invokes the handler function
 GIVEN two toasts are triggered in quick succession
 WHEN both are visible
 THEN they stack vertically in the top-right corner without overlapping
+
+#### Scenario: SC-14-03 — Oldest toast evicted when maximum exceeded
+
+GIVEN 5 toasts are currently visible
+WHEN a 6th toast is triggered
+THEN the oldest toast is removed
+AND the new toast is added to the stack
+AND 5 toasts remain visible
 
 #### Scenario: SC-14-02 — Toast container positioning
 
@@ -297,10 +305,10 @@ AND the icon and description are absent
 
 #### Scenario: SC-16-03 — Empty state with CTA button
 
-GIVEN a view renders `<EmptyState>` with a CTA button and click handler
+GIVEN a view renders `<EmptyState>` with ctaLabel "Try Again" and ctaAction handler
 WHEN the component mounts
-THEN the CTA button is rendered
-AND clicking the CTA button invokes the handler
+THEN a "Try Again" button is rendered
+AND clicking the button invokes the ctaAction handler
 
 ---
 
@@ -316,9 +324,9 @@ THEN a pulsing placeholder div is visible with the specified dimensions
 
 #### Scenario: SC-17-02 — Skeleton with rounded prop
 
-GIVEN a `<SkeletonLoader>` is rendered with the rounded prop
+GIVEN a `<SkeletonLoader>` is rendered with rounded "rounded-full"
 WHEN the component mounts
-THEN the placeholder div has rounded corners applied
+THEN the placeholder div has fully rounded corners applied (using the `rounded-full` Tailwind class)
 
 ---
 
@@ -373,7 +381,8 @@ THEN the page header displays "Biblioteca"
 
 GIVEN all locale files for en, es, and fr
 WHEN I inspect their contents
-THEN each file contains keys in the nav.*, page.*.title, common.empty.*, common.error.*, and toast.* namespaces
+THEN each file contains keys in the app.title, nav.*, page.*.title, common.empty.*, common.error.*, and toast.* namespaces
+AND all three locale files contain the identical set of key paths
 
 ---
 
@@ -391,46 +400,46 @@ Examples:
 | route     | icon         | page_name |
 | /         | Home         | Home      |
 | /calendar | CalendarDays | Calendar  |
-| /library  | BookMarked   | Library   |
+| /library  | Bookmark     | Library   |
 | /settings | Settings     | Settings  |
 
 ---
 
-### Requirement: NFR — Non-functional behavior
+### Requirement: Cross-cutting NFRs (SC-06, SC-08, SC-09, SC-14, SC-15)
 
-Non-functional requirements SHALL be met for transitions, touch targets, and stickiness.
+Non-functional requirements that span multiple functional requirements. Scenario IDs follow their parent requirement prefix.
 
-#### Scenario: SC-NFR-01 — Reduced motion disables toast animations
+#### Scenario: SC-09-03 — Reduced motion disables toast animations
 
 GIVEN the user's OS has `prefers-reduced-motion` enabled
 WHEN a toast is triggered
 THEN it appears without slide animation (instant display)
 
-#### Scenario: SC-NFR-02 — Reduced motion disables modal animations
+#### Scenario: SC-09-04 — Reduced motion disables modal animations
 
 GIVEN the user's OS has `prefers-reduced-motion` enabled
 WHEN the modal is opened
 THEN it appears without fade or scale animation (instant display)
 
-#### Scenario: SC-NFR-03 — Mobile touch targets
+#### Scenario: SC-06-03 — Mobile touch targets
 
 GIVEN the viewport width is below 768px
 WHEN I inspect the bottom nav items
 THEN each item has a minimum touch target of 44x44px
 
-#### Scenario: SC-NFR-04 — Sticky page header
+#### Scenario: SC-08-03 — Sticky page header
 
 GIVEN I am on a page with scrollable content
 WHEN I scroll down
 THEN the page header remains visible at the top of the content area
 
-#### Scenario: SC-NFR-05 — Toast slide-in animation
+#### Scenario: SC-14-04 — Toast slide-in animation
 
 GIVEN transitions are enabled (no `prefers-reduced-motion`)
 WHEN a toast is triggered
 THEN it slides in from the right and fades out on dismiss
 
-#### Scenario: SC-NFR-06 — Modal fade and scale animation
+#### Scenario: SC-15-07 — Modal fade and scale animation
 
 GIVEN transitions are enabled (no `prefers-reduced-motion`)
 WHEN the modal is opened
@@ -454,11 +463,29 @@ THEN `--color-success` and `--color-error` CSS custom properties exist
 
 Router tests SHALL verify route definitions and navigation behavior.
 
-#### Scenario: SC-22-01 — Router test suite covers route definitions
+#### Scenario: SC-22-01 — Router test verifies named routes
 
 GIVEN the router test file exists
 WHEN the test suite runs
-THEN it verifies all 4 named routes exist with correct paths, the catch-all redirects to `/`, `scrollBehavior` returns `{ top: 0 }`, and `afterEach` sets `document.title`
+THEN it verifies all 4 named routes exist with correct paths
+
+#### Scenario: SC-22-02 — Router test verifies catch-all redirect
+
+GIVEN the router test file exists
+WHEN the test suite runs
+THEN it verifies the catch-all route redirects to `/`
+
+#### Scenario: SC-22-03 — Router test verifies scroll behavior
+
+GIVEN the router test file exists
+WHEN the test suite runs
+THEN it verifies `scrollBehavior` returns `{ top: 0 }`
+
+#### Scenario: SC-22-04 — Router test verifies document title
+
+GIVEN the router test file exists
+WHEN the test suite runs
+THEN it verifies `afterEach` sets `document.title` using i18n
 
 ---
 
@@ -466,17 +493,41 @@ THEN it verifies all 4 named routes exist with correct paths, the catch-all redi
 
 Composable tests SHALL verify toast and modal state management.
 
-#### Scenario: SC-23-01 — Toast composable tests pass
+#### Scenario: SC-23-01 — Toast composable test: add and remove
 
 GIVEN the toast composable test file exists
 WHEN the test suite runs
-THEN it verifies add/remove toast, auto-dismiss after timeout, and toast type variants
+THEN it verifies `addToast` adds a toast to the queue and `removeToast` removes it
 
-#### Scenario: SC-23-02 — Modal composable tests pass
+#### Scenario: SC-23-02 — Toast composable test: auto-dismiss
+
+GIVEN the toast composable test file exists
+WHEN the test suite runs
+THEN it verifies toasts are automatically dismissed after the timeout
+
+#### Scenario: SC-23-03 — Toast composable test: type variants
+
+GIVEN the toast composable test file exists
+WHEN the test suite runs
+THEN it verifies error, success, and info toast types are supported
+
+#### Scenario: SC-23-04 — Modal composable test: open and close
 
 GIVEN the modal composable test file exists
 WHEN the test suite runs
-THEN it verifies open/close state and confirm/cancel callbacks
+THEN it verifies `open(props)` sets the modal visible and `close()` hides it
+
+#### Scenario: SC-23-05 — Modal composable test: confirm callback
+
+GIVEN the modal composable test file exists
+WHEN the test suite runs
+THEN it verifies the `onConfirm` callback is invoked when confirm is triggered
+
+#### Scenario: SC-23-06 — Modal composable test: cancel callback
+
+GIVEN the modal composable test file exists
+WHEN the test suite runs
+THEN it verifies the `onCancel` callback is invoked when cancel is triggered
 
 ---
 
@@ -484,11 +535,35 @@ THEN it verifies open/close state and confirm/cancel callbacks
 
 UI primitive component tests SHALL verify rendering and behavior.
 
-#### Scenario: SC-24-01 — UI primitive test suites pass
+#### Scenario: SC-24-01 — EmptyState component test
 
-GIVEN test files exist for EmptyState, SkeletonLoader, ErrorBoundary, ToastContainer, and ModalDialog
-WHEN the test suites run
-THEN all component tests pass verifying props rendering and interaction behavior
+GIVEN the EmptyState test file exists
+WHEN the test suite runs
+THEN it verifies rendering of icon, title, description, and CTA props
+
+#### Scenario: SC-24-02 — SkeletonLoader component test
+
+GIVEN the SkeletonLoader test file exists
+WHEN the test suite runs
+THEN it verifies rendering with width, height, and rounded props
+
+#### Scenario: SC-24-03 — ErrorBoundary component test
+
+GIVEN the ErrorBoundary test file exists
+WHEN the test suite runs
+THEN it verifies slot rendering in normal state and fallback UI on error
+
+#### Scenario: SC-24-04 — ToastContainer component test
+
+GIVEN the ToastContainer test file exists
+WHEN the test suite runs
+THEN it verifies toast queue rendering, dismiss button, and positioning
+
+#### Scenario: SC-24-05 — ModalDialog component test
+
+GIVEN the ModalDialog test file exists
+WHEN the test suite runs
+THEN it verifies title/body/buttons rendering, backdrop click close, and Escape key close
 
 ---
 
@@ -496,11 +571,29 @@ THEN all component tests pass verifying props rendering and interaction behavior
 
 Navigation component tests SHALL verify sidebar and bottom nav rendering.
 
-#### Scenario: SC-25-01 — Navigation component test suites pass
+#### Scenario: SC-25-01 — Sidebar nav renders items with icons and labels
 
-GIVEN test files exist for SidebarNav and BottomNav
-WHEN the test suites run
-THEN all tests pass verifying 4 nav items render with correct icons, labels, and active state highlighting
+GIVEN the SidebarNav test file exists
+WHEN the test suite runs
+THEN it verifies all 4 nav items render with correct icons and translated labels
+
+#### Scenario: SC-25-02 — Sidebar nav active state highlighting
+
+GIVEN the SidebarNav test file exists
+WHEN the test suite runs
+THEN it verifies the active route item has teal accent classes and home uses exact match
+
+#### Scenario: SC-25-03 — Bottom nav renders items
+
+GIVEN the BottomNav test file exists
+WHEN the test suite runs
+THEN it verifies all 4 nav items render with icons and labels
+
+#### Scenario: SC-25-04 — Bottom nav active state highlighting
+
+GIVEN the BottomNav test file exists
+WHEN the test suite runs
+THEN it verifies the active route item has teal accent styling
 
 ---
 
@@ -508,11 +601,29 @@ THEN all tests pass verifying 4 nav items render with correct icons, labels, and
 
 Placeholder view tests SHALL verify each view renders an empty state.
 
-#### Scenario: SC-26-01 — Placeholder view test suites pass
+#### Scenario: SC-26-01 — Home view renders EmptyState
 
-GIVEN test files exist for all 4 placeholder views
-WHEN the test suites run
-THEN each test verifies the view renders `<EmptyState>` with the expected icon and translated title
+GIVEN the home-screen test file exists
+WHEN the test suite runs
+THEN it verifies the view renders `<EmptyState>` with the Home icon and translated title
+
+#### Scenario: SC-26-02 — Calendar view renders EmptyState
+
+GIVEN the calendar-screen test file exists
+WHEN the test suite runs
+THEN it verifies the view renders `<EmptyState>` with the CalendarDays icon and translated title
+
+#### Scenario: SC-26-03 — Library view renders EmptyState
+
+GIVEN the library-screen test file exists
+WHEN the test suite runs
+THEN it verifies the view renders `<EmptyState>` with the Bookmark icon and translated title
+
+#### Scenario: SC-26-04 — Settings view renders EmptyState
+
+GIVEN the settings-screen test file exists
+WHEN the test suite runs
+THEN it verifies the view renders `<EmptyState>` with the Settings icon and translated title
 
 ---
 
@@ -543,3 +654,9 @@ THEN zero formatting issues are reported
 GIVEN all scaffolding files are in place
 WHEN I run `npm run build`
 THEN the build completes with zero errors
+
+#### Scenario: SC-27-05 — Test suite passes
+
+GIVEN all scaffolding files are in place
+WHEN I run `npm run test`
+THEN zero test failures are reported

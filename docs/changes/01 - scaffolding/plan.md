@@ -34,24 +34,24 @@ toast.error / toast.dismiss / toast.retry
 
 **Translations:**
 
-| Key                        | English                          | Spanish                            | French                                |
-| :------------------------- | :------------------------------- | :--------------------------------- | :------------------------------------ |
-| `nav.home`                 | Home                             | Inicio                             | Accueil                               |
-| `nav.calendar`             | Calendar                         | Calendario                         | Calendrier                            |
-| `nav.library`              | Library                          | Biblioteca                         | Bibliothèque                          |
-| `nav.settings`             | Settings                         | Ajustes                            | Paramètres                            |
-| `page.home.title`          | Home                             | Inicio                             | Accueil                               |
-| `page.calendar.title`      | Calendar                         | Calendario                         | Calendrier                            |
-| `page.library.title`       | Library                          | Biblioteca                         | Bibliothèque                          |
-| `page.settings.title`      | Settings                         | Ajustes                            | Paramètres                            |
-| `common.empty.title`       | Nothing here yet                 | Nada aquí todavía                  | Rien ici pour le moment               |
-| `common.empty.description` | This page is under construction. | Esta página está en construcción.  | Cette page est en construction.       |
-| `common.error.title`       | Something went wrong             | Algo salió mal                     | Une erreur est survenue               |
-| `common.error.description` | An unexpected error occurred.    | Ocurrió un error inesperado.       | Une erreur inattendue s'est produite. |
-| `common.error.reload`      | Reload                           | Recargar                           | Recharger                             |
-| `toast.error`              | An error occurred                | Ocurrió un error                   | Une erreur est survenue               |
-| `toast.dismiss`            | Dismiss                          | Cerrar                             | Fermer                                |
-| `toast.retry`              | Retry                            | Reintentar                         | Réessayer                             |
+| Key                        | English                          | Spanish                           | French                                |
+| :------------------------- | :------------------------------- | :-------------------------------- | :------------------------------------ |
+| `nav.home`                 | Home                             | Inicio                            | Accueil                               |
+| `nav.calendar`             | Calendar                         | Calendario                        | Calendrier                            |
+| `nav.library`              | Library                          | Biblioteca                        | Bibliothèque                          |
+| `nav.settings`             | Settings                         | Ajustes                           | Paramètres                            |
+| `page.home.title`          | Home                             | Inicio                            | Accueil                               |
+| `page.calendar.title`      | Calendar                         | Calendario                        | Calendrier                            |
+| `page.library.title`       | Library                          | Biblioteca                        | Bibliothèque                          |
+| `page.settings.title`      | Settings                         | Ajustes                           | Paramètres                            |
+| `common.empty.title`       | Nothing here yet                 | Nada aquí todavía                 | Rien ici pour le moment               |
+| `common.empty.description` | This page is under construction. | Esta página está en construcción. | Cette page est en construction.       |
+| `common.error.title`       | Something went wrong             | Algo salió mal                    | Une erreur est survenue               |
+| `common.error.description` | An unexpected error occurred.    | Ocurrió un error inesperado.      | Une erreur inattendue s'est produite. |
+| `common.error.reload`      | Reload                           | Recargar                          | Recharger                             |
+| `toast.error`              | An error occurred                | Ocurrió un error                  | Une erreur est survenue               |
+| `toast.dismiss`            | Dismiss                          | Cerrar                            | Fermer                                |
+| `toast.retry`              | Retry                            | Reintentar                        | Réessayer                             |
 
 `page.*.title` keys mirror `nav.*` values initially (separate keys to allow divergence later).
 
@@ -80,19 +80,19 @@ toast.error / toast.dismiss / toast.retry
 - `scrollBehavior` returning `{ top: 0 }` on every navigation
 - 4 routes with lazy-loaded views via `() => import('./views/...')`
 - Catch-all `/:pathMatch(.*)*` redirecting to `/`
-- `meta.titleKey` on each route (e.g., `nav.home`, `nav.library`)
+- `meta.titleKey` on each route (e.g., `page.home.title`, `page.library.title`)
 - `afterEach` guard setting `document.title` via i18n: `${t(titleKey)} — ${t('app.title')}`
 - TypeScript `RouteMeta` augmentation for `titleKey`
 
 **Routes:**
 
-| Path               | Name       | View File             | titleKey       |
-| :----------------- | :--------- | :-------------------- | :------------- |
-| `/`                | `home`     | `home-screen.vue`     | `nav.home`     |
-| `/calendar`        | `calendar` | `calendar-screen.vue` | `nav.calendar` |
-| `/library`         | `library`  | `library-screen.vue`  | `nav.library`  |
-| `/settings`        | `settings` | `settings-screen.vue` | `nav.settings` |
-| `/:pathMatch(.*)*` | —          | —                     | redirect `/`   |
+| Path               | Name       | View File             | titleKey              |
+| :----------------- | :--------- | :-------------------- | :-------------------- |
+| `/`                | `home`     | `home-screen.vue`     | `page.home.title`     |
+| `/calendar`        | `calendar` | `calendar-screen.vue` | `page.calendar.title` |
+| `/library`         | `library`  | `library-screen.vue`  | `page.library.title`  |
+| `/settings`        | `settings` | `settings-screen.vue` | `page.settings.title` |
+| `/:pathMatch(.*)*` | —          | —                     | redirect `/`          |
 
 ### Step 6 — Register router
 
@@ -117,6 +117,7 @@ toast.error / toast.dismiss / toast.retry
 - **SC-13-01** — `addToast()` adds a toast to the queue with a unique id
 - **SC-13-02** — `removeToast(id)` removes the toast from the queue
 - **SC-13-03** — Auto-dismiss removes the toast after timeout (~4s, use `vi.useFakeTimers()`)
+- **SC-14-03** — Adding a 6th toast evicts the oldest toast (max 5 cap)
 - `(implementation detail)` — Toast types: `'error'`, `'success'`, `'info'`
 - `(implementation detail)` — Optional action object is preserved on the toast
 
@@ -126,6 +127,7 @@ toast.error / toast.dismiss / toast.retry
 
 - **SC-15-01** — `open(props)` sets `isOpen` to true and stores props
 - `(implementation detail)` — `close()` sets `isOpen` to false and clears props
+- **SC-15-06** — Calling `open()` a second time replaces the first modal's props (single-instance behavior)
 - `(implementation detail)` — Props include `title`, optional `content`, `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`
 
 ### Step 10 — Create toast composable
@@ -183,7 +185,7 @@ toast.error / toast.dismiss / toast.retry
 - Fixed left sidebar, `w-56`, `bg-bg-secondary`
 - App title at top using `$t('app.title')`
 - Nav items array: `{ to: string, labelKey: string, icon: Component }`
-- Icons from lucide-vue-next: `Home`, `CalendarDays`, `BookMarked`, `Settings`
+- Icons from lucide-vue-next: `Home`, `CalendarDays`, `Bookmark`, `Settings`
 - Each item is a `<RouterLink>` with icon + `$t(labelKey)`
 - Active state: `border-l-2 border-accent bg-accent/10 text-white`
 - Inactive state: `text-slate-400 hover:text-white`
@@ -301,6 +303,8 @@ toast.error / toast.dismiss / toast.retry
 
 - **SC-19-01** — `app.config.errorHandler` dispatches an error toast via `useToast()` and logs to `console.error`
 
+  **Setup:** Create a test Vue app instance, register the error handler function on it, invoke the handler with a synthetic error, and assert that `useToast().addToast` was called with type `'error'` and that `console.error` was invoked.
+
 ### Step 23 — Create error boundary
 
 - [ ] Create `src/presentation/components/error/error-boundary.vue`:
@@ -332,21 +336,21 @@ toast.error / toast.dismiss / toast.retry
 | :------------------------ | :------------------------------------------------------------------------ |
 | `home-screen.test.ts`     | Renders `<EmptyState>` with `Home` icon and `page.home.title`             |
 | `calendar-screen.test.ts` | Renders `<EmptyState>` with `CalendarDays` icon and `page.calendar.title` |
-| `library-screen.test.ts`  | Renders `<EmptyState>` with `BookMarked` icon and `page.library.title`    |
+| `library-screen.test.ts`  | Renders `<EmptyState>` with `Bookmark` icon and `page.library.title`      |
 | `settings-screen.test.ts` | Renders `<EmptyState>` with `Settings` icon and `page.settings.title`     |
 
 ### Step 26 — Create placeholder views
 
 - [ ] Create placeholder views in `src/presentation/views/`:
 
-| File                  | Icon Import    | Title Key             |
-| :-------------------- | :------------- | :-------------------- |
-| `home-screen.vue`     | `Home`         | `page.home.title`     |
-| `calendar-screen.vue` | `CalendarDays` | `page.calendar.title` |
-| `library-screen.vue`  | `BookMarked`   | `page.library.title`  |
-| `settings-screen.vue` | `Settings`     | `page.settings.title` |
+| File                  | Icon Import    | Title Key             | Description Key            |
+| :-------------------- | :------------- | :-------------------- | :------------------------- |
+| `home-screen.vue`     | `Home`         | `page.home.title`     | `common.empty.description` |
+| `calendar-screen.vue` | `CalendarDays` | `page.calendar.title` | `common.empty.description` |
+| `library-screen.vue`  | `Bookmark`     | `page.library.title`  | `common.empty.description` |
+| `settings-screen.vue` | `Settings`     | `page.settings.title` | `common.empty.description` |
 
-Each view follows the same pattern: `<script setup>` imports `EmptyState`, the lucide icon, and `useI18n`. Template renders `<EmptyState>` with the icon and translated title/description.
+Each view follows the same pattern: `<script setup>` imports `EmptyState`, the lucide icon, and `useI18n`. Template renders `<EmptyState>` with the icon, translated title (from `page.*.title`), and the shared description (`common.empty.description`).
 
 ---
 
@@ -354,7 +358,7 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ### Step 27 — Update App.vue
 
-- [ ] Replace `src/App.vue` template with `<ErrorBoundary>` wrapping `<AppShell />`.
+- [ ] Update `src/App.vue`: Import `ErrorBoundary` from `./presentation/components/error/error-boundary.vue` and `AppShell` from `./presentation/components/layout/app-shell.vue` in `<script setup>`. Replace template with `<ErrorBoundary>` wrapping `<AppShell />`.
 
 ### Step 28 — Update Tailwind theme & transition CSS
 
@@ -381,7 +385,9 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ```css
 .toast-enter-active {
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
 }
 .toast-leave-active {
   transition: opacity 0.2s ease-in;
@@ -399,14 +405,19 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
 
 ```css
 .modal-enter-active {
-  transition: opacity 0.2s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
 }
 .modal-leave-active {
-  transition: opacity 0.15s ease-in;
+  transition:
+    opacity 0.15s ease-in,
+    transform 0.15s ease-in;
 }
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+  transform: scale(0.95);
 }
 ```
 
@@ -421,6 +432,10 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
   .modal-enter-active,
   .modal-leave-active {
     transition: none;
+  }
+
+  .animate-pulse {
+    animation: none;
   }
 }
 ```
@@ -439,13 +454,19 @@ Each view follows the same pattern: `<script setup>` imports `EmptyState`, the l
   - `npm run build` — production build succeeds
   - `npm run check` — full pipeline passes
   - `npm run dev` — manual verification:
-    - Desktop: sidebar visible with 4 nav items, navigation works
-    - Mobile (< 768px): sidebar hidden, bottom nav visible, navigation works
-    - Active route highlighted in teal in both nav components
-    - Page header updates on navigation
-    - Document title updates (e.g., "Library — Plot Twisted")
-    - Route fade transition visible
-    - Toast and modal transitions visible
-    - Scroll resets to top on navigation
-    - `/nonexistent` redirects to `/`
-    - `prefers-reduced-motion: reduce` disables all transitions
+    - **(SC-05-01, SC-04-01)** Desktop: sidebar visible with 4 nav items, flexbox layout with sidebar + scrollable content
+    - **(SC-04-02, SC-06-01)** Mobile (< 768px): sidebar hides, bottom nav appears with 4 items
+    - **(SC-04-03)** Resize back to desktop: sidebar restores, bottom nav hides
+    - **(SC-06-02)** Mobile: scroll to bottom of page — content not obscured by bottom nav
+    - **(SC-02-01, SC-02-02)** Navigation between pages via nav items and direct URL entry
+    - **(SC-07-01, SC-07-03)** Active route highlighted in teal in both sidebar and bottom nav
+    - **(SC-08-01, SC-08-02, SC-08-03)** Page header updates on navigation and remains sticky when scrolling
+    - **(SC-10-01, SC-10-02)** Document title updates (e.g., "Library — Plot Twisted"); verify with Spanish locale
+    - **(SC-09-01)** Route fade transition visible (~200ms)
+    - **(SC-14-04)** Toast slide-in animation from right
+    - **(SC-15-07)** Modal fade backdrop + scale-up animation for content card
+    - **(SC-11-01)** Scroll resets to top on navigation
+    - **(SC-02-03)** `/nonexistent` redirects to `/`
+    - **(SC-01-01)** URL shows clean paths without hash fragments
+    - **(SC-09-02, SC-09-03, SC-09-04)** `prefers-reduced-motion: reduce` disables all transitions and animations
+    - **(SC-06-03)** Mobile: bottom nav touch targets meet 44x44px minimum
