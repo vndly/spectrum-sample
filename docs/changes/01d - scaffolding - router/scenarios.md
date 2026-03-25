@@ -2,11 +2,11 @@
 
 Feature: App Scaffolding — Router
 
-### Requirement: SC-01/SC-02/SC-03 — Routing
+### Requirement: SC-29/SC-02/SC-03 — Routing
 
 The router SHALL navigate between all defined routes.
 
-#### Scenario: SC-01-01 — Router uses HTML5 history mode
+#### Scenario: SC-29-01 — Router uses HTML5 history mode
 
 GIVEN the app is running
 WHEN I navigate to `/settings`
