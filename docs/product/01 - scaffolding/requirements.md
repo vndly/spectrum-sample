@@ -1,7 +1,7 @@
 ---
 id: R-01a
 title: App Scaffolding — Dependencies & Test Infrastructure
-status: draft
+status: released
 type: infrastructure
 importance: critical
 tags: [dependencies, testing, dx]
