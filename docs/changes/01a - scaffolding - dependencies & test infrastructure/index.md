@@ -3,5 +3,5 @@
 ## Contents
 
 1. **[Requirements](./requirements.md)**: Dependency and Vitest configuration requirements for this scaffolding change.
-2. **[Verification Scenarios](./scenarios.md)**: Scenarios verifying dependency installation and Vitest setup for subsequent phases.
-3. **[Implementation Plan](./plan.md)**: Step-by-step implementation plan.
+2. **[Scenarios](./scenarios/)**: Scenarios verifying dependency installation and Vitest setup for subsequent phases.
+3. **[Plan](./plan.md)**: Step-by-step implementation plan.
