@@ -205,3 +205,4 @@ Present a final summary:
 - **No guessing**: If a merge conflict is ambiguous, always ask the user. Do not silently pick a side.
 - **Preserve IDs**: Never change requirement IDs, scenario IDs, or feature IDs during promotion. The target's IDs take precedence if there is a collision.
 - **Status update**: Always set the `status` field in the promoted `requirements.md` to `released`.
+- **Format after completion**: After all promotion steps are complete (after index updates), run `npm run format` to ensure consistent formatting across all created and modified files.

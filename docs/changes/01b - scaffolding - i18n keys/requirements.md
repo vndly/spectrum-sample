@@ -19,8 +19,8 @@ Add all i18n keys needed by the scaffolding phases (navigation labels, page titl
 
 ## Decisions
 
-| Decision | Choice | Rationale |
-| :------- | :----- | :-------- |
+| Decision                          | Choice                                                | Rationale                                                                                                                                                                                                             |
+| :-------------------------------- | :---------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Namespace pattern for shared keys | `common.*` (e.g., `common.error.*`, `common.empty.*`) | Distinguishes global reusable strings from feature-scoped keys (e.g., `library.empty.title`). Keeps shared error and empty state text under a single top-level namespace rather than scattering across feature areas. |
 
 ## Scope
@@ -37,8 +37,8 @@ Add all i18n keys needed by the scaffolding phases (navigation labels, page titl
 
 ## Functional Requirements
 
-| ID    | Requirement | Description                                                                                                                                                                                                                              | Priority |
-| :---- | :---------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| ID    | Requirement | Description                                                                                                                                                                                                                                | Priority |
+| :---- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
 | SC-12 | i18n keys   | Navigation labels (`nav.*`), page titles (`page.*.title`), empty state text (`common.empty.*`), error text (`common.error.*`), and toast labels (`toast.*`) added to en.json, es.json, fr.json. See plan.md for the complete key manifest. | P0       |
 
 ## Non-Functional Requirements

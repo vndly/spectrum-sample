@@ -239,3 +239,4 @@ Present a final summary to the user:
 - **No speculative implementation**: If a step is ambiguous, ask the user via `AskUserQuestion`. Do not guess.
 - **Atomic checkpoints**: After each step is marked `[x]` in `plan.md`, the project should be in a consistent state. It may have failing tests if following test-first order, but there should be no syntax errors or broken imports in non-test files.
 - **Respect test-first order**: If the plan defines tests before implementation, write tests first. Expected test failures for not-yet-implemented code are normal and must not trigger error handling.
+- **Format after completion**: When all implementation steps are complete (before verification), run `npm run format` to ensure consistent formatting across all created and modified files.

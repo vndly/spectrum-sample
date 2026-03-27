@@ -174,3 +174,4 @@ Before running, inform the user:
 - **One round-trip minimum**: Always present the draft and ask follow-up questions (step 5), even if the user's description seems complete. There are always gaps or ambiguities worth surfacing.
 - **No scope creep**: Do not add requirements, sections, or acceptance criteria that the user did not ask for or confirm. Suggest them in step 5, but only include them if the user agrees.
 - **ID uniqueness is mandatory**: The feature ID and all requirement IDs must be unique across the entire project. If a collision is detected, resolve it before writing files.
+- **Format after writing**: After writing `requirements.md` and `index.md` (step 7), run `npm run format` to ensure consistent formatting.

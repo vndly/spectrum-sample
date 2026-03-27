@@ -317,3 +317,7 @@ Re-render the report from step 5, incorporating the triage and fix outcomes:
 - Update the **Summary** counts and **Verdict** to reflect only the remaining (unresolved) findings.
 
 Present the final report using the Report Structure defined in step 5.
+
+## Rules
+
+- **Format after fixes**: After applying fixes (step 7.2), run `npm run format` to ensure consistent formatting across all modified files.

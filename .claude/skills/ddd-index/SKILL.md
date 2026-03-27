@@ -13,3 +13,7 @@ description: MUST be applied whenever any index.md file is created or edited. Fo
 ## Standard
 
 Read and apply the rules defined in `docs/standards/index-file.md`.
+
+## Rules
+
+- **Format after editing**: After creating or editing any `index.md` file, run `npm run format` to ensure consistent formatting.
