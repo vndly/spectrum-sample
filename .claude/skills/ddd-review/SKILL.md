@@ -24,7 +24,7 @@ On-demand only, invoked via `/ddd-review <folder-path>` (path relative to projec
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists and contains the expected files. The expected structure is:
   - **Required**: `requirements.md`
-  - **Optional**: `implementation.md`, `api.md`, `data-model.md`, `plan.md`, `scenarios.md`, `index.md`
+  - **Optional**: `implementation.md`, `api.md`, `data-model.md`, `plan.md`, `scenarios/`, `index.md`
 - If required files are missing, note it as a Critical finding but continue reviewing whatever files exist.
 - If the folder contains files not in the expected list above, ignore them.
 
@@ -97,7 +97,9 @@ For each file type below, read the review checks from the corresponding file in 
 - Technologies/tools mentioned
 - Entity names and terms used
 
-#### scenarios.md
+#### scenarios/
+
+The `scenarios/` folder contains one `.feature` file per requirement. Spawn a single subagent that reads all `.feature` files in the folder and reviews them together.
 
 **Review checks:** Embedded from `docs/standards/scenarios.md` by the orchestrator.
 
@@ -105,6 +107,7 @@ For each file type below, read the review checks from the corresponding file in 
 
 **Structured extract to return:**
 
+- List of `.feature` files with their Feature names
 - List of scenario IDs and names with referenced requirement IDs
 - Entity names and terms used
 
@@ -167,12 +170,12 @@ After all per-file subagents from step 3 complete, spawn a single **cross-cuttin
 ### 4.1 Multi-File Checks
 
 - **Consistency**: Terms, entity names, and descriptions are consistent across all files in the folder. No file contradicts another.
-- **Internal cross-references**: Verify that requirement IDs referenced in other files (`plan.md`, `scenarios.md`, acceptance criteria) actually exist in `requirements.md`. Flag any dangling references.
+- **Internal cross-references**: Verify that requirement IDs referenced in other files (`plan.md`, `scenarios/`, acceptance criteria) actually exist in `requirements.md`. Flag any dangling references.
 - **Plan completeness**: Every functional requirement has corresponding plan steps. Nothing in the plan goes beyond what requirements define.
 - **Scenarios coverage**: Every functional requirement has at least one scenario. Flag requirements with no corresponding scenario.
-- **Acceptance criteria ↔ scenarios traceability**: Every acceptance criterion should have at least one corresponding scenario in `scenarios.md`, and every scenario should map to at least one acceptance criterion. Flag gaps in either direction.
+- **Acceptance criteria ↔ scenarios traceability**: Every acceptance criterion should have at least one corresponding scenario in `scenarios/`, and every scenario should map to at least one acceptance criterion. Flag gaps in either direction.
 - **Plan ↔ scenarios alignment**: Plan steps that produce user-visible behavior should have corresponding scenario coverage. Scenarios that assume functionality not addressed by any plan step should be flagged.
-- **Scenario ↔ test traceability**: Every scenario ID in `scenarios.md` must be referenced by at least one test step in the plan's testing phase. Flag orphan scenarios (defined but never referenced by a test). Flag test steps that lack both scenario references and an `(implementation detail)` justification.
+- **Scenario ↔ test traceability**: Every scenario ID in `scenarios/` must be referenced by at least one test step in the plan's testing phase. Flag orphan scenarios (defined but never referenced by a test). Flag test steps that lack both scenario references and an `(implementation detail)` justification.
 - **Implementation alignment**: If `implementation.md` exists, verify it aligns with the plan and requirements. No contradictions between implementation approach and architectural constraints.
 - **Cross-feature conflicts**: No overlap or contradiction with other features in `docs/product/` (using project context from Subagent B).
 - **Dependency impact**: If the feature touches existing modules, are ripple effects acknowledged?
