@@ -14,7 +14,7 @@ The implementation followed the plan exactly across two phases: dependency insta
 
 ### Modified
 
-- `package.json` — Added `vue-router@^4.6.4` to `dependencies` and `@vue/test-utils@^2.4.6` to `devDependencies`.
+- `package.json` — Added `vue-router@^5.0.4` to `dependencies` and `@vue/test-utils@^2.4.6` to `devDependencies`.
 - `package-lock.json` — Updated lockfile reflecting the two new packages and their transitive dependencies (51 packages added total).
 - `vitest.config.ts` — Added `globals: true`, `include: ['tests/**/*.test.ts']`, and `setupFiles: ['./tests/setup.ts']` to the existing `test: {}` block. Preserved the `mergeConfig(viteConfig, defineConfig(...))` pattern and `environment: 'jsdom'`.
 - `docs/technical/testing.md` — Removed the `import { describe, it, expect } from 'vitest'` line from the code example in the "Test Pattern" section, aligning the documentation with the `globals: true` convention.
@@ -33,20 +33,20 @@ No test files were created in this phase. The scope is pure infrastructure — t
 
 ### Verification Results
 
-| Check | Result |
-|-------|--------|
-| `package.json` dependencies present | PASS |
-| `vitest.config.ts` properties set | PASS |
-| `testing.md` no explicit Vitest imports | PASS |
-| `tests/setup.ts` contents correct | PASS |
-| `npm run test` exits cleanly | FAIL (no test files — ignored) |
-| `npm run check` full pipeline | FAIL (blocked by test step — ignored) |
+| Check                                   | Result                                |
+| --------------------------------------- | ------------------------------------- |
+| `package.json` dependencies present     | PASS                                  |
+| `vitest.config.ts` properties set       | PASS                                  |
+| `testing.md` no explicit Vitest imports | PASS                                  |
+| `tests/setup.ts` contents correct       | PASS                                  |
+| `npm run test` exits cleanly            | FAIL (no test files — ignored)        |
+| `npm run check` full pipeline           | FAIL (blocked by test step — ignored) |
 
 Format (`prettier`), lint (`eslint`), and type-check (`vue-tsc`) all pass individually. The test and check failures are expected and resolve once test files are added in downstream phases.
 
 ## Dependencies
 
-- `vue-router@^4.6.4` — Vue Router for SPA routing (runtime dependency, used starting in phase 01d).
+- `vue-router@^5.0.4` — Vue Router for SPA routing (runtime dependency, used starting in phase 01d).
 - `@vue/test-utils@^2.4.6` — Official Vue test utilities for mounting and interacting with components in tests (dev dependency, used starting in phase 01f+).
 
 ## Known Limitations
