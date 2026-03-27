@@ -1,15 +1,32 @@
-# scenarios.md
+# scenarios/
+
+## File Organization
+
+Scenarios live in a `scenarios/` folder within each change directory, with one `.feature` file per requirement. Each file contains all scenarios for that requirement.
+
+```
+scenarios/
+├── index.md
+├── SC-01a-01.feature
+├── SC-01a-02.feature
+└── SC-01a-03.feature
+```
+
+- **File naming**: `{requirement-id}.feature` (e.g., `SC-01a-01.feature`).
+- **One Feature per file**: Each file declares a single `Feature:` named after the requirement.
+- **Multiple Scenarios per file**: All scenarios belonging to that requirement are grouped in the same file.
+- **Index**: The `scenarios/` folder includes an `index.md` listing all `.feature` files.
 
 ## Review Checks
 
 ### Structure & Syntax
 
-- **Format**: Correct Gherkin syntax — `Feature:`, `Scenario:` (or `Scenario Outline:`), `Background:` (if used), and `GIVEN`/`WHEN`/`THEN`/`AND`/`BUT` steps.
-- **Requirement grouping**: Scenarios are organized under their parent requirement heading, with horizontal rules (`---`) separating requirement groups.
-- **Scenario IDs**: Every scenario has a stable ID in the format `{requirement-id}-{nn}` (e.g., `SC-04-01`). The ID appears at the start of the scenario name: `#### Scenario: SC-04-01 — Navigation between pages`. IDs enable the plan's testing phase to reference specific scenarios, creating traceability between the validation contract and actual tests. Flag scenarios without IDs or with duplicate IDs.
+- **Format**: Correct Gherkin syntax — `Feature:`, `Scenario:` (or `Scenario Outline:`), `Background:` (if used), and `Given`/`When`/`Then`/`And`/`But` steps.
+- **Requirement grouping**: Each `.feature` file corresponds to one requirement. All scenarios for that requirement are in the same file.
+- **Scenario IDs**: Every scenario has a stable ID in the format `{requirement-id}-{nn}` (e.g., `SC-04-01`). The ID appears at the start of the scenario name: `Scenario: SC-04-01 — Navigation between pages`. IDs enable the plan's testing phase to reference specific scenarios, creating traceability between the validation contract and actual tests. Flag scenarios without IDs or with duplicate IDs.
 - **Scenario naming**: After the ID, each scenario has a descriptive, unique name that summarizes the behavior under test.
 - **Data variation**: `Scenario Outline:` with `Examples:` tables are used when the same flow applies to multiple inputs, instead of duplicating nearly identical scenarios.
-- **Background deduplication**: When multiple scenarios under the same requirement share identical GIVEN steps, a `Background:` block should be used instead of repeating them in each scenario.
+- **Background deduplication**: When multiple scenarios in the same file share identical `Given` steps, a `Background:` block should be used instead of repeating them in each scenario.
 
 ### Step Quality
 
