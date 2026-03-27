@@ -23,7 +23,7 @@ On-demand only, invoked via `/ddd-implement <folder-path>` (path relative to pro
 
 ## 1. Initialization
 
-- The user provides a folder path relative to the project root as the argument (e.g., `docs/changes/01a - scaffolding - dependencies & test infrastructure`).
+- The user provides a folder path relative to the project root as the argument (e.g., `docs/changes/001 - feature`).
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists.
 - Validate that `requirements.md` exists — if missing, STOP with an error.
@@ -154,7 +154,7 @@ If the user chooses **Investigate**: read the error output, identify the likely 
 
 ## 7. Implementation Log
 
-After verification, generate `implementation.md` in the target folder. Use the implementation log accumulated during step 5 and the verification results from step 6.
+After verification, read `docs/standards/implementation.md` to understand the review checks that apply to this file. Then generate `implementation.md` in the target folder using the implementation log accumulated during step 5 and the verification results from step 6.
 
 ### Content structure
 
