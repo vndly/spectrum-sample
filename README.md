@@ -8,24 +8,7 @@
 
 Commands
 
-- /specify:
-
-i want to implement a new skill in this document. this skill is called ddd-specify.
-this skill should:
-
-- ask for the name of the feature (e.g. "001 - feature")
-- create a folder under "docs/changes" with the name of the feature
-- create in the new folder a file called `requirements.md`
-- read the standard documentation for that file from "docs/standards/requirements.md"
-- read the technical documentation of the project in "docs/technical" to understand the technical context of the project
-- for each section and subsection in the standard documentation, it should ask the user to provide the information
-- check if the information provided by the user is consistent with the technical documentation and with the rest of the information provided. If not, it should ask the user to clarify or update the information.
-- after collecting the information from the user, write the file `requirements.md` following its standards
-- as a last step, run the skill `ddd-review` providing the newly created folder to run a review of the created specification
-
-what do you think?
-do you think this skill should perform additional actions/steps?
-ask me if not clear
+- /specify: TODO
 
 - /review: DONE
 
@@ -33,7 +16,7 @@ ask me if not clear
 
 - /implement: DONE
 
-- /promote: TODO
+- /promote: DONE
 
 ---
 
