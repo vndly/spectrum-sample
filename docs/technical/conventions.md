@@ -114,7 +114,7 @@ src/presentation/i18n/
 │   └── fr.json           # French
 ```
 
-Keys are nested by feature area, mirroring the component directory structure (e.g. `nav.home`, `library.empty.title`, `errors.loadFailed`). Use camelCase for key segments.
+Keys are nested by feature area, mirroring the component directory structure (e.g. `nav.home`, `library.empty.title`, `errors.loadFailed`). Shared keys reusable across multiple features use the `common.*` namespace (e.g., `common.empty.title`, `common.error.reload`). Toast notification labels use the `toast.*` namespace (e.g., `toast.error`, `toast.dismiss`). Use camelCase for key segments.
 
 `en.json` is the source of truth. `es.json` and `fr.json` must mirror the same key structure. Any missing key silently falls back to the English value.
 

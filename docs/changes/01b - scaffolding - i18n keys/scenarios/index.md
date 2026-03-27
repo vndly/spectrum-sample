@@ -2,4 +2,4 @@
 
 ## Contents
 
-1. **[SC-12](./SC-12.feature)**: i18n — all user-facing text translated via vue-i18n.
+1. **[SC-12](./SC-12.feature)**: i18n keys for navigation, page titles, empty state, error, and toast labels.

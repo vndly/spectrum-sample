@@ -25,8 +25,17 @@ On-demand only, invoked via `/ddd-specify <feature-name>` (e.g., `/ddd-specify 0
 - The user provides a feature name as the argument (e.g., `001 - feature`).
 - If no argument is provided, ask the user for the feature name before proceeding. Do not guess.
 - Validate that `docs/changes/` exists. If it does not, STOP with an error.
-- Validate that the folder `docs/changes/<feature-name>/` does **not** already exist. If it does, STOP with an error: "A folder with this name already exists. Choose a different name or work with the existing folder."
-- **Auto-generate the feature ID**: Scan all `requirements.md` files in `docs/changes/` and `docs/product/` to collect existing `id` values from their frontmatter. Determine the next available ID using the project's convention (e.g., `R-02a`). The ID prefix is derived from the feature name — the numeric/alphanumeric prefix before the first `-` separator.
+- **Check if the folder already exists**: If `docs/changes/<feature-name>/` already exists, use `AskUserQuestion` to ask the user how to proceed:
+  - **Header**: "Folder Exists"
+  - **Question**: `The folder docs/changes/<feature-name>/ already exists.`
+  - **Options**:
+    1. **Resume** — "Continue from the existing requirements.md"
+    2. **Overwrite** — "Start fresh, discarding existing content"
+    3. **Abort** — "Cancel and choose a different name"
+  - If **Resume**: read the existing `requirements.md` as the draft and skip to step 5 (Review & Refinement) after context loading.
+  - If **Overwrite**: proceed as if the folder does not exist (existing files will be overwritten in step 7).
+  - If **Abort**: STOP.
+- **Auto-generate the feature ID**: Scan all `requirements.md` files in `docs/changes/` and `docs/product/` to collect existing `id` values from their frontmatter. Determine the next available ID using the project's convention (e.g., `R-02a`). The ID prefix is derived from the feature name — the numeric/alphanumeric prefix before the first `-` separator. When resuming, reuse the existing ID from the file's frontmatter instead of generating a new one.
 
 ## 2. Context Loading
 
