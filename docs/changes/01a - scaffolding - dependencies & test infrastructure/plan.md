@@ -6,14 +6,14 @@
 
 ### Step 1 — Install dependencies (SC-01a-01)
 
-- [ ] Run `npm install vue-router@^4.5`.
-- [ ] Run `npm install -D @vue/test-utils@^2.4`.
+- [ ] Run `npm install vue-router@^4.5` (covering SC-01a-01-01).
+- [ ] Run `npm install -D @vue/test-utils@^2.4` (covering SC-01a-01-02).
 
 > Rollback: `npm uninstall vue-router @vue/test-utils` and revert `package.json` / `package-lock.json`.
 
 ### Step 2 — Configure test environment (SC-01a-02, SC-01a-03)
 
-- [ ] Update `vitest.config.ts`: add `globals: true`, `include: ["tests/**/*.test.ts"]`, `setupFiles: ["./tests/setup.ts"]` inside the existing `test: { }` block in the `defineConfig` call. Preserve the existing `mergeConfig(viteConfig, defineConfig(...))` pattern and the `environment: 'jsdom'` setting — do not restructure the config (covering SC-01a-02-01).
+- [ ] Update `vitest.config.ts`: add `globals: true`, `include: ['tests/**/*.test.ts']`, `setupFiles: ['./tests/setup.ts']` inside the existing `test: { }` block in the `defineConfig` call. Preserve the existing `mergeConfig(viteConfig, defineConfig(...))` pattern and the `environment: 'jsdom'` setting — do not restructure the config (covering SC-01a-02-01).
 
 Expected final `test` block:
 
@@ -34,7 +34,7 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 > Rollback: revert `vitest.config.ts` to its previous state and delete `tests/setup.ts`.
 
-### Step 3 — Update testing documentation `(implementation detail)`
+### Step 3 — Update testing documentation (SC-01a-02)
 
 - [ ] Remove the `import { describe, it, expect } from 'vitest'` line from the code example in `docs/technical/testing.md`, so the example starts with `import { isHighRated } from '@/domain/movie.logic'`. This aligns the reference documentation with the `globals: true` convention established in Step 2. Note: the `vitest.config.ts` settings list in `testing.md` already reflects the post-Phase 01a target state (`globals: true`, `include`, `setupFiles`) — only the code example needs updating.
 
@@ -51,7 +51,8 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 ### Step 4 — Run verification checks (SC-01a-01, SC-01a-02, SC-01a-03)
 
 - [ ] Verify `package.json` lists `vue-router` under `dependencies` and `@vue/test-utils` under `devDependencies` (SC-01a-01-01, SC-01a-01-02).
-- [ ] Verify `vitest.config.ts` contains `globals: true`, `include: ["tests/**/*.test.ts"]`, `setupFiles: ["./tests/setup.ts"]`, and `environment: 'jsdom'` (SC-01a-02-01).
+- [ ] Verify `vitest.config.ts` contains `globals: true`, `include: ['tests/**/*.test.ts']`, `setupFiles: ['./tests/setup.ts']`, and `environment: 'jsdom'` (SC-01a-02-01).
+- [ ] Verify `docs/technical/testing.md` code example does not contain explicit Vitest imports (SC-01a-02-04).
 - [ ] Verify `tests/setup.ts` calls `localStorage.clear()` in `beforeEach` (SC-01a-03-01) and includes `/// <reference types="vitest/globals" />` (SC-01a-03-02).
 - [ ] Run `npm run test` — must exit with zero config errors (SC-01a-02-02).
 - [ ] Run `npm run check` — format, lint, type-check, test, and build must all pass with zero failures (SC-01a-02-03).

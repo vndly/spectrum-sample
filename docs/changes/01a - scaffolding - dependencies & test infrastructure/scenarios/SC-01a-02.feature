@@ -28,3 +28,9 @@ Feature: SC-01a-02 — Vitest configuration
     And type-check passes with zero failures
     And test passes with zero failures
     And build passes with zero failures
+
+  Scenario: SC-01a-02-04 — testing.md code example uses globals
+    Given Phase 01a (Dependencies & Test Infrastructure) is complete
+    When I inspect the code example in `docs/technical/testing.md`
+    Then the example does NOT contain `import { describe, it, expect } from 'vitest'`
+    And the example starts with `import { isHighRated } from '@/domain/movie.logic'`

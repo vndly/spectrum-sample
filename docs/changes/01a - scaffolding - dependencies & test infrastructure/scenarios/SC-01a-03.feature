@@ -2,6 +2,9 @@ Feature: SC-01a-03 — Test setup file
   The test setup file SHALL clear `localStorage` between tests
   and provide TypeScript global recognition for Vitest.
 
+  Background:
+    Given Phase 00 (Setup) is complete
+
   Scenario: SC-01a-03-01 — localStorage cleared between tests
     Given `tests/setup.ts` exists
     And `vitest.config.ts` includes `setupFiles: ["./tests/setup.ts"]`
