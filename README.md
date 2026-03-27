@@ -4,6 +4,8 @@
 - What's the benefit of implementation.md?
 - After implementing all the skills, and a few features. Review all the skill to see if they can be improved.
 
+- ask Claude to review all the ddd skills as a whole
+
 Commands
 
 - /specify:
@@ -31,22 +33,10 @@ ask me if not clear
 
 - /implement: DONE
 
+- /promote: TODO
+
+---
+
 - /test or /validate or /verify: tests if a requirement is working as expected. Should this also check for bugs? The goal is to ensure that the software meets all specified requirements. Verifies that the software functions as expected based on requirements. The test command should ask the agent if the current implementation takes into account all the acceptance criteria scenarios. This skill should read requirements.md and scenarios folder, then inspect the actual codebase to verify that documented behaviors are implemented.
-
-- /finalize:
-
-i want to implement a new skill in this document. this skill is called ddd-finalize.
-this skill should:
-
-- ask for the name of the change (e.g. "001 - feature")
-- check that folder exits and read all the files inside of it
-- the goal of this skill is to merge the change request with the current specifications of the app (located in "docs/product").
-- if there is no folder with the name of the change in the folder "docs/products", it should create one with the name of the change and move the files from the change request to the new folder.
-- if there is already a folder with the name of the change in the folder "docs/products", it should read the files in that folder and check and merge them with the files in the change request. If there are any conflicts, it should ask the user to clarify or update the information.
-
-propose other names for this skill. I am not sure if "finalize" is the best name for it.
-what do you think?
-do you think this skill should perform additional actions/steps?
-ask me if not clear
 
 - Add skills to ensure that when some files change, we need to update some others (e.g. indexes). Think about other skills to add.
