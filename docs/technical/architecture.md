@@ -12,6 +12,7 @@ src/
 ├── App.vue                    # Root component — error boundary + router outlet
 │
 ├── presentation/              # LAYER 1: UI — Vue SFCs, views, routing
+│   ├── composables/           # UI-only state composables (toast queue, modal visibility)
 │   ├── components/            # Vue SFCs organized by feature
 │   │   ├── layout/            # App shell, navigation, shared layout wrappers
 │   │   ├── common/            # Reusable UI pieces (cards, search bar, filters)
@@ -67,7 +68,7 @@ src/
 
 ### Presentation
 
-Vue 3 SFCs using `<script setup>` and Tailwind. Components call composables from the Application layer to access data — they never import Infrastructure or Domain directly. Route-level views live in `views/`, reusable UI pieces live in `components/` organized by feature area. All UI text uses vue-i18n's `$t()` or `useI18n()` — see [Conventions § 11](./conventions.md#11-internationalization-i18n).
+Vue 3 SFCs using `<script setup>` and Tailwind. Components call composables from the Application layer to access data — they never import Infrastructure or Domain directly. Route-level views live in `views/`, reusable UI pieces live in `components/` organized by feature area. UI-only state composables (e.g., toast queue, modal visibility) live in `composables/` and use module-level singleton state so they work both inside and outside component `setup()`. All UI text uses vue-i18n's `$t()` or `useI18n()` — see [Conventions § 11](./conventions.md#11-internationalization-i18n).
 
 ### Application
 

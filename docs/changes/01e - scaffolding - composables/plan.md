@@ -6,7 +6,7 @@
 
 ### Step 1 — Write toast composable tests
 
-- [ ] Create `tests/presentation/composables/use-toast.test.ts` covering:
+- [x] Create `tests/presentation/composables/use-toast.test.ts` covering:
 
 - **SC-13-01, SC-23-01** — `addToast()` adds a toast to the queue with a unique ID
 - **SC-23-09** — `removeToast(id)` removes the toast from the queue
@@ -26,7 +26,7 @@
 
 ### Step 2 — Write modal composable tests
 
-- [ ] Create `tests/presentation/composables/use-modal.test.ts` covering:
+- [x] Create `tests/presentation/composables/use-modal.test.ts` covering:
 
 - **SC-12-01, SC-23-04** — `open(props)` sets `isOpen` to true and stores props
 - **SC-12-02, SC-23-04** — `close()` sets `isOpen` to false and clears props to null
@@ -45,8 +45,8 @@
 
 ### Step 3 — Create toast composable
 
-- [ ] Add `MAX_VISIBLE_TOASTS = 5` to `src/domain/constants.ts`. _(Rollback: remove the `MAX_VISIBLE_TOASTS` line from `src/domain/constants.ts`.)_
-- [ ] Create `src/presentation/composables/use-toast.ts`:
+- [x] Add `MAX_VISIBLE_TOASTS = 5` to `src/domain/constants.ts`. _(Rollback: remove the `MAX_VISIBLE_TOASTS` line from `src/domain/constants.ts`.)_
+- [x] Create `src/presentation/composables/use-toast.ts`:
 
 - Module-level `ref<Toast[]>` (singleton — shared across all callers, works outside `setup()`)
 - `Toast` type: `{ id: string, message: string, type: 'error' | 'success' | 'info', action?: { label: string, handler: () => void } }`
@@ -63,7 +63,7 @@
 
 ### Step 4 — Create modal composable
 
-- [ ] Create `src/presentation/composables/use-modal.ts`:
+- [x] Create `src/presentation/composables/use-modal.ts`:
 
 - Module-level `ref<boolean>` + `shallowRef<ModalProps | null>` (single modal at a time; `shallowRef` is intentional — props are always replaced via `open()`, never mutated in place. Incoming props are not cloned; the caller-provided object is stored directly.)
 - `ModalProps` type: `{ title: string, content?: string, confirmLabel?: string, cancelLabel?: string, onConfirm?: () => void, onCancel?: () => void }`
@@ -80,10 +80,10 @@
 
 ### Step 5 — Update architecture documentation
 
-- [ ] Update `docs/technical/architecture.md` to document `src/presentation/composables/` as the location for UI-only state composables. Add `composables/` to the Presentation-layer folder structure.
-- [ ] Update `docs/technical/testing.md` directory-tree example to include `tests/presentation/composables/`.
-- [ ] Update `docs/technical/data-model.md` constants table to include `MAX_VISIBLE_TOASTS`.
-- [ ] Update the glossary entry for "Composable" in `docs/reference/glossary.md`. Draft wording: _"A `use`-prefixed function providing reactive state. **Application-layer** composables (in `src/application/`) wrap Infrastructure calls with Vue reactivity and return `{ data, loading, error, refresh? }`. **Presentation-layer** composables (in `src/presentation/composables/`) manage UI-only state (e.g., toast queue, modal visibility) with a custom return shape."_
+- [x] Update `docs/technical/architecture.md` to document `src/presentation/composables/` as the location for UI-only state composables. Add `composables/` to the Presentation-layer folder structure.
+- [x] Update `docs/technical/testing.md` directory-tree example to include `tests/presentation/composables/`.
+- [x] Update `docs/technical/data-model.md` constants table to include `MAX_VISIBLE_TOASTS`.
+- [x] Update the glossary entry for "Composable" in `docs/reference/glossary.md`. Draft wording: _"A `use`-prefixed function providing reactive state. **Application-layer** composables (in `src/application/`) wrap Infrastructure calls with Vue reactivity and return `{ data, loading, error, refresh? }`. **Presentation-layer** composables (in `src/presentation/composables/`) manage UI-only state (e.g., toast queue, modal visibility) with a custom return shape."_
 
 ---
 
@@ -91,8 +91,8 @@
 
 ### Step 6 — Verification
 
-- [ ] `npx vitest run tests/presentation/composables/` — all composable tests pass
-- [ ] `npx tsc --noEmit` — no type errors
-- [ ] `npx eslint src/presentation/composables/` — no lint violations
-- [ ] Verify `MAX_VISIBLE_TOASTS` is exported from `src/domain/constants.ts` (e.g., `grep 'MAX_VISIBLE_TOASTS' src/domain/constants.ts`)
-- [ ] Verify JSDoc comments are present on all exported functions and types
+- [x] `npx vitest run tests/presentation/composables/` — all composable tests pass
+- [x] `npx tsc --noEmit` — no type errors
+- [x] `npx eslint src/presentation/composables/` — no lint violations
+- [x] Verify `MAX_VISIBLE_TOASTS` is exported from `src/domain/constants.ts` (e.g., `grep 'MAX_VISIBLE_TOASTS' src/domain/constants.ts`)
+- [x] Verify JSDoc comments are present on all exported functions and types

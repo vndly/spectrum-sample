@@ -15,6 +15,7 @@ All types are defined as Zod schemas in `src/domain/` with TypeScript types infe
 | `STORAGE_KEY`            | `string`            | localStorage key for all persisted data                      |
 | `MAX_RETRY_ATTEMPTS`     | `number`            | Maximum retries for rate-limited API requests                |
 | `TOAST_DISMISS_MS`       | `number`            | Auto-dismiss duration for toast notifications                |
+| `MAX_VISIBLE_TOASTS`     | `number`            | Maximum simultaneous toasts; oldest evicted when exceeded    |
 | `SUPPORTED_LANGUAGES`    | `readonly string[]` | Supported UI/content languages: `['en', 'es', 'fr']`         |
 | `DEFAULT_LANGUAGE`       | `string`            | Default language when browser locale is unsupported (`'en'`) |
 

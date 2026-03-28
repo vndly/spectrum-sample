@@ -47,6 +47,8 @@ tests/
 │   └── use-library.test.ts        # Tests for composable logic
 │
 └── presentation/
+    ├── composables/
+    │   └── use-toast.test.ts       # Tests for UI-state composables
     └── components/
         └── common/
             └── MovieCard.test.ts   # Component interaction tests (if needed)
