@@ -1,7 +1,7 @@
 ---
 id: R-01c
 title: App Scaffolding — Theme, Transitions & Constants
-status: draft
+status: review
 type: infrastructure
 importance: P1
 tags: [tailwind, transitions, constants]

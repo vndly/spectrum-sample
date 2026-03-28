@@ -1,45 +1,21 @@
 {
-  "app": {
-    "title": "Plot Twisted"
-  },
-  "nav": {
-    "home": "Accueil",
-    "recommendations": "Recommandations",
-    "calendar": "Calendrier",
-    "library": "Bibliothèque",
-    "settings": "Paramètres"
-  },
-  "page": {
-    "home": {
-      "title": "Accueil"
-    },
-    "recommendations": {
-      "title": "Recommandations"
-    },
-    "calendar": {
-      "title": "Calendrier"
-    },
-    "library": {
-      "title": "Bibliothèque"
-    },
-    "settings": {
-      "title": "Paramètres"
-    }
-  },
-  "common": {
-    "empty": {
-      "title": "Rien ici pour le moment",
-      "description": "Cette page est en construction."
-    },
-    "error": {
-      "title": "Une erreur est survenue",
-      "description": "Une erreur inattendue s'est produite.",
-      "reload": "Recharger"
-    }
-  },
-  "toast": {
-    "error": "Une erreur est survenue",
-    "dismiss": "Fermer",
-    "retry": "Réessayer"
-  }
+  "app.title": "Plot Twisted",
+  "nav.home": "Accueil",
+  "nav.recommendations": "Recommandations",
+  "nav.calendar": "Calendrier",
+  "nav.library": "Bibliothèque",
+  "nav.settings": "Paramètres",
+  "page.home.title": "Accueil",
+  "page.recommendations.title": "Recommandations",
+  "page.calendar.title": "Calendrier",
+  "page.library.title": "Bibliothèque",
+  "page.settings.title": "Paramètres",
+  "common.empty.title": "Rien ici pour le moment",
+  "common.empty.description": "Cette page est en construction.",
+  "common.error.title": "Une erreur est survenue",
+  "common.error.description": "Une erreur inattendue s'est produite.",
+  "common.error.reload": "Recharger",
+  "toast.error": "Une erreur est survenue",
+  "toast.dismiss": "Fermer",
+  "toast.retry": "Réessayer"
 }

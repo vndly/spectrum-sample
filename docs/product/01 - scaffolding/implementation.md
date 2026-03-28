@@ -26,13 +26,12 @@ Additionally, 18 i18n keys across 5 namespaces (`nav.*`, `page.*.title`, `common
 ## Key Decisions
 
 - **No `passWithNoTests` added**: Vitest exits with code 1 when no test files match the `include` pattern. Since this phase creates no test files, `npm run test` and `npm run check` fail. This resolves naturally once downstream phases (01b+) add test files. Adding `passWithNoTests: true` was considered but deferred to avoid config changes outside the plan's scope.
-- **Nested JSON structure**: Locale files use nested JSON objects (e.g., `{ "nav": { "home": "Home" } }`) rather than flat dot-notation keys (e.g., `{ "nav.home": "Home" }`). This matches the existing `app.title` structure from Phase 00, the vue-i18n configuration (no `flatJson: true` option), and how `$t('nav.home')` resolves paths in nested message objects.
+- **Flat JSON structure**: Locale files use flat dot-notation keys (e.g., `{ "nav.home": "Home" }`) with `flatJson: true` in the vue-i18n configuration. The `$t('nav.home')` calls work identically — vue-i18n resolves dot-separated paths in flat key maps when `flatJson` is enabled.
 - **Test uses `fs.readFileSync`**: The test reads locale files directly from disk rather than importing them as modules. This provides explicit file existence validation and avoids potential interference from the `@intlify/unplugin-vue-i18n` Vite plugin that transforms locale files during build.
-- **Key path flattening in tests**: A recursive `flattenKeys` helper converts nested JSON to dot-notation paths for assertion, allowing the test to validate key parity and completeness regardless of the JSON nesting depth.
 
 ## Deviations from Plan
 
-- **Nested vs flat JSON**: The plan's "Expected flat JSON structure" section showed literal flat dot-notation keys. The implementation uses nested JSON instead, because the existing locale files (from Phase 00) already use nested format and the vue-i18n instance is not configured with `flatJson: true`. The key paths and values are identical — only the JSON structure differs. This is consistent with the project's technical conventions which describe keys as nested by feature area.
+None.
 
 ## Testing
 

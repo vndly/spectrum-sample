@@ -114,7 +114,7 @@ src/presentation/i18n/
 │   └── fr.json           # French
 ```
 
-Keys are nested by feature area, mirroring the component directory structure (e.g. `nav.home`, `library.empty.title`, `errors.loadFailed`). Shared keys reusable across multiple features use the `common.*` namespace (e.g., `common.empty.title`, `common.error.reload`). Toast notification labels use the `toast.*` namespace (e.g., `toast.error`, `toast.dismiss`). Use camelCase for key segments.
+Keys use flat dot-notation (e.g. `"nav.home": "Home"`, `"common.empty.title": "Nothing here yet"`), with `flatJson: true` in the vue-i18n configuration. Key paths are organized by feature area, mirroring the component directory structure (e.g. `nav.home`, `library.empty.title`, `errors.loadFailed`). Shared keys reusable across multiple features use the `common.*` namespace (e.g., `common.empty.title`, `common.error.reload`). Toast notification labels use the `toast.*` namespace (e.g., `toast.error`, `toast.dismiss`). Use camelCase for key segments.
 
 `en.json` is the source of truth. `es.json` and `fr.json` must mirror the same key structure. Any missing key silently falls back to the English value.
 
@@ -141,6 +141,7 @@ Components use vue-i18n's `useI18n()` directly — it is a Presentation layer to
 The vue-i18n instance is created in `src/presentation/i18n/index.ts` and registered as a plugin in `main.ts` alongside Vue Router:
 
 - `legacy: false` — Composition API mode
+- `flatJson: true` — locale files use flat dot-notation keys (e.g. `"nav.home": "Home"`)
 - `fallbackLocale: 'en'` — missing translations fall back to English
 - `missingWarn` / `fallbackWarn` — enabled in dev mode only (suppressed in production)
 

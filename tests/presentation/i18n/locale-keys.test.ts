@@ -33,29 +33,6 @@ function readLocale(filename: string): Record<string, unknown> {
   return JSON.parse(raw) as Record<string, unknown>
 }
 
-function flattenKeys(obj: Record<string, unknown>, prefix = ''): string[] {
-  return Object.entries(obj).flatMap(([key, value]) => {
-    const path = prefix ? `${prefix}.${key}` : key
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      return flattenKeys(value as Record<string, unknown>, path)
-    }
-    return [path]
-  })
-}
-
-function flattenValues(obj: Record<string, unknown>, prefix = ''): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}.${key}` : key
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.assign(result, flattenValues(value as Record<string, unknown>, path))
-    } else {
-      result[path] = value
-    }
-  }
-  return result
-}
-
 describe('locale key parity', () => {
   const locales = Object.fromEntries(LOCALE_FILES.map((file) => [file, readLocale(file)]))
 
@@ -71,9 +48,9 @@ describe('locale key parity', () => {
 
   it('all three files contain identical key paths', () => {
     // Arrange
-    const enKeys = flattenKeys(locales['en.json']).sort()
-    const esKeys = flattenKeys(locales['es.json']).sort()
-    const frKeys = flattenKeys(locales['fr.json']).sort()
+    const enKeys = Object.keys(locales['en.json']).sort()
+    const esKeys = Object.keys(locales['es.json']).sort()
+    const frKeys = Object.keys(locales['fr.json']).sort()
 
     // Act & Assert
     expect(esKeys).toEqual(enKeys)
@@ -83,10 +60,8 @@ describe('locale key parity', () => {
   it('all translation values are non-empty strings', () => {
     // Arrange
     for (const [file, locale] of Object.entries(locales)) {
-      const values = flattenValues(locale)
-
       // Act & Assert
-      for (const [key, value] of Object.entries(values)) {
+      for (const [key, value] of Object.entries(locale)) {
         expect(value, `${file} key "${key}" must be a non-empty string`).toBeTypeOf('string')
         expect(
           (value as string).trim().length,
@@ -98,7 +73,7 @@ describe('locale key parity', () => {
 
   it('contains exactly the expected 19 keys', () => {
     // Arrange
-    const enKeys = flattenKeys(locales['en.json']).sort()
+    const enKeys = Object.keys(locales['en.json']).sort()
 
     // Act & Assert
     expect(enKeys).toEqual(EXPECTED_KEYS)
@@ -107,16 +82,14 @@ describe('locale key parity', () => {
   it('preserves app.title with its original value', () => {
     // Arrange & Act
     for (const [file, locale] of Object.entries(locales)) {
-      const values = flattenValues(locale)
-
       // Assert
-      expect(values['app.title'], `${file} must preserve app.title`).toBe('Plot Twisted')
+      expect(locale['app.title'], `${file} must preserve app.title`).toBe('Plot Twisted')
     }
   })
 
   it('every key segment matches camelCase pattern', () => {
     // Arrange
-    const keys = flattenKeys(locales['en.json'])
+    const keys = Object.keys(locales['en.json'])
 
     // Act & Assert
     for (const key of keys) {

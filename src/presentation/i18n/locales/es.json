@@ -1,45 +1,21 @@
 {
-  "app": {
-    "title": "Plot Twisted"
-  },
-  "nav": {
-    "home": "Inicio",
-    "recommendations": "Recomendaciones",
-    "calendar": "Calendario",
-    "library": "Biblioteca",
-    "settings": "Ajustes"
-  },
-  "page": {
-    "home": {
-      "title": "Inicio"
-    },
-    "recommendations": {
-      "title": "Recomendaciones"
-    },
-    "calendar": {
-      "title": "Calendario"
-    },
-    "library": {
-      "title": "Biblioteca"
-    },
-    "settings": {
-      "title": "Ajustes"
-    }
-  },
-  "common": {
-    "empty": {
-      "title": "Nada aquí todavía",
-      "description": "Esta página está en construcción."
-    },
-    "error": {
-      "title": "Algo salió mal",
-      "description": "Ocurrió un error inesperado.",
-      "reload": "Recargar"
-    }
-  },
-  "toast": {
-    "error": "Ocurrió un error",
-    "dismiss": "Cerrar",
-    "retry": "Reintentar"
-  }
+  "app.title": "Plot Twisted",
+  "nav.home": "Inicio",
+  "nav.recommendations": "Recomendaciones",
+  "nav.calendar": "Calendario",
+  "nav.library": "Biblioteca",
+  "nav.settings": "Ajustes",
+  "page.home.title": "Inicio",
+  "page.recommendations.title": "Recomendaciones",
+  "page.calendar.title": "Calendario",
+  "page.library.title": "Biblioteca",
+  "page.settings.title": "Ajustes",
+  "common.empty.title": "Nada aquí todavía",
+  "common.empty.description": "Esta página está en construcción.",
+  "common.error.title": "Algo salió mal",
+  "common.error.description": "Ocurrió un error inesperado.",
+  "common.error.reload": "Recargar",
+  "toast.error": "Ocurrió un error",
+  "toast.dismiss": "Cerrar",
+  "toast.retry": "Reintentar"
 }

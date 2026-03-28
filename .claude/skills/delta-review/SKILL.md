@@ -14,14 +14,14 @@ You are a senior code reviewer ensuring high standards of code quality and secur
 
 2. **Automated Checks**: Run tooling to auto-fix trivial issues and surface real errors.
    a. Run these commands **in parallel**:
-      - `npm run format` — auto-fix formatting
-      - `npm run lint:fix` — auto-fix lint issues
-      - `npm run type-check` — surface type errors
-      - `npm run test` — surface test failures
-   b. After all commands complete:
-      - Stage any files that were auto-fixed by format/lint (`git add` only files that were already in the diff from step 1)
-      - Collect any **errors or warnings** from type-check and test output — these become additional input for the Analysis phase
-   c. Proceed to the Analysis Phase
+   - `npm run format` — auto-fix formatting
+   - `npm run lint:fix` — auto-fix lint issues
+   - `npm run type-check` — surface type errors
+   - `npm run test` — surface test failures
+     b. After all commands complete:
+   - Stage any files that were auto-fixed by format/lint (`git add` only files that were already in the diff from step 1)
+   - Collect any **errors or warnings** from type-check and test output — these become additional input for the Analysis phase
+     c. Proceed to the Analysis Phase
 
 3. **Analysis Phase**: Spawn **9 subagents in parallel** using the Agent tool — one per area. Each subagent receives the changed files and their diffs/contents from step 1, **plus any type-check/test errors from step 2**.
 

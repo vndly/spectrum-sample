@@ -1,45 +1,21 @@
 {
-  "app": {
-    "title": "Plot Twisted"
-  },
-  "nav": {
-    "home": "Home",
-    "recommendations": "Recommendations",
-    "calendar": "Calendar",
-    "library": "Library",
-    "settings": "Settings"
-  },
-  "page": {
-    "home": {
-      "title": "Home"
-    },
-    "recommendations": {
-      "title": "Recommendations"
-    },
-    "calendar": {
-      "title": "Calendar"
-    },
-    "library": {
-      "title": "Library"
-    },
-    "settings": {
-      "title": "Settings"
-    }
-  },
-  "common": {
-    "empty": {
-      "title": "Nothing here yet",
-      "description": "This page is under construction."
-    },
-    "error": {
-      "title": "Something went wrong",
-      "description": "An unexpected error occurred.",
-      "reload": "Reload"
-    }
-  },
-  "toast": {
-    "error": "An error occurred",
-    "dismiss": "Dismiss",
-    "retry": "Retry"
-  }
+  "app.title": "Plot Twisted",
+  "nav.home": "Home",
+  "nav.recommendations": "Recommendations",
+  "nav.calendar": "Calendar",
+  "nav.library": "Library",
+  "nav.settings": "Settings",
+  "page.home.title": "Home",
+  "page.recommendations.title": "Recommendations",
+  "page.calendar.title": "Calendar",
+  "page.library.title": "Library",
+  "page.settings.title": "Settings",
+  "common.empty.title": "Nothing here yet",
+  "common.empty.description": "This page is under construction.",
+  "common.error.title": "Something went wrong",
+  "common.error.description": "An unexpected error occurred.",
+  "common.error.reload": "Reload",
+  "toast.error": "An error occurred",
+  "toast.dismiss": "Dismiss",
+  "toast.retry": "Retry"
 }
