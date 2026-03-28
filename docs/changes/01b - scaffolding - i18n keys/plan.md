@@ -8,7 +8,7 @@
 
 ### Step 1 — Write locale key parity test (covering: SC-12-03)
 
-- [ ] Create `tests/presentation/i18n/locale-keys.test.ts`:
+- [ ] Create `tests/presentation/i18n/locale-keys.test.ts` (directory `tests/presentation/i18n/` does not exist yet and must be created):
   - Test that `en.json`, `es.json`, `fr.json` all exist and parse as valid JSON (covering: AC5)
   - Test that all three files contain identical key paths (covering: AC2)
   - Test that all translation values are non-empty strings (covering: AC3)
@@ -25,11 +25,12 @@
 
 > Tests must follow the Arrange-Act-Assert (AAA) pattern per project conventions.
 
-> **Deferred scenarios:**
+> **Scenario traceability:**
 >
+> - SC-12-03 → covered by `locale-keys.test.ts` above (structural parity, camelCase, value checks)
 > - SC-12-01 → deferred to 01i (navigation component tests, nav label rendering)
 > - SC-12-02 → deferred to 01j (placeholder view component tests, page title rendering)
-> - SC-12-04, SC-12-05, SC-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys)
+> - SC-12-04, SC-12-05, SC-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys); AC9 (fallback verification) is implicitly satisfied by the `fallbackLocale: 'en'` configuration in Phase 00 and will be explicitly exercised when 01i/01j provide rendering components
 
 ---
 
@@ -100,9 +101,10 @@
 
 ## Phase 3 — Verification
 
-### Step 1 — Run tests and build
+### Step 1 — Confirm test-first cycle and run build
 
-- [ ] Run `npx vitest run tests/presentation/i18n/locale-keys.test.ts` — all tests pass
+- [ ] Confirm that tests written in Phase 1 failed before Phase 2 implementation (expected: all tests fail since locale files were incomplete)
+- [ ] Run `npx vitest run tests/presentation/i18n/locale-keys.test.ts` — all tests now pass after Phase 2 implementation
 - [ ] Run `npx prettier --check src/presentation/i18n/locales/*.json` — formatting passes
 - [ ] Run `npx tsc --noEmit` — no type errors in the new test file
 - [ ] Run `npm run build` — build succeeds with no errors

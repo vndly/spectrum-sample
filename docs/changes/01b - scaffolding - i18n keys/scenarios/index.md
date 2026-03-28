@@ -1,4 +1,4 @@
-# Verification Scenarios: App Scaffolding — i18n Keys
+# Scenarios
 
 ## Contents
 

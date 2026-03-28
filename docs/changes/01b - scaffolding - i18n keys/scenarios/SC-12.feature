@@ -1,6 +1,8 @@
 Feature: SC-12 — i18n Keys
   All user-facing labels (navigation, page titles, empty state, error, and toast text)
   shall exist as i18n keys in all three locale files (en.json, es.json, fr.json).
+  SC-12-01 and SC-12-02 are @deferred (require downstream components from 01i/01j).
+  SC-12-04, SC-12-05, SC-12-06 are @deferred (require vue-i18n runtime rendering).
 
   # Note: SC-12-01 and SC-12-02 are integration-level scenarios that require UI
   # components from downstream features (01i for navigation, 01j for views).
@@ -72,14 +74,14 @@ Feature: SC-12 — i18n Keys
     And the es.json locale file has the key "toast.dismiss" removed
     When a component renders the toast.dismiss translation
     # Expected value matches en.json toast.dismiss
-    Then the displayed text falls back to the English value "Dismiss"
+    Then the rendered component displays "Dismiss"
 
   Scenario: SC-12-05 — Fallback when entire namespace missing from non-English locale
     Given all locale files contain the full default key set
     And the app language is set to French
     And the entire "toast" namespace is removed from fr.json
     When a component renders the toast.error translation
-    Then the displayed text falls back to the English value "An error occurred"
+    Then the rendered component displays "An error occurred"
 
   Scenario: SC-12-06 — Raw key path rendered when missing from all locales
     Given all locale files contain the full default key set
@@ -87,4 +89,4 @@ Feature: SC-12 — i18n Keys
     # fr.json is not consulted because the fallback chain is es → en
     And the key "toast.dismiss" is removed from both es.json and en.json
     When a component renders the toast.dismiss translation
-    Then the displayed text shows the raw key path "toast.dismiss"
+    Then the rendered component displays the raw key path "toast.dismiss"
