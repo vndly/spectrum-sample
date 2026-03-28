@@ -1,5 +1,7 @@
 # Implementation Plan: i18n Keys
 
+> **References:** [requirements.md](./requirements.md) · [scenarios/SC-12.feature](./scenarios/SC-12.feature)
+
 ---
 
 ## Phase 1 — Testing (test-first)
@@ -8,16 +10,26 @@
 
 - [ ] Create `tests/presentation/i18n/locale-keys.test.ts`:
   - Test that `en.json`, `es.json`, `fr.json` all exist and parse as valid JSON (covering: AC5)
-  - Test that all three files contain identical key paths
+  - Test that all three files contain identical key paths (covering: AC2)
   - Test that all translation values are non-empty strings (covering: AC3)
-  - Test that key paths include the expected keys: `app.title`, `nav.home`, `nav.recommendations`, `nav.calendar`, `nav.library`, `nav.settings`, `page.home.title`, `page.recommendations.title`, `page.calendar.title`, `page.library.title`, `page.settings.title`, `common.empty.title`, `common.empty.description`, `common.error.title`, `common.error.description`, `common.error.reload`, `toast.error`, `toast.dismiss`, `toast.retry`
+  - Test that key paths include the expected 19 keys (18 new + 1 existing `app.title`, matching SC-12's 18 new keys) (covering: AC1):
+    - `app.title`
+    - `nav.home`, `nav.recommendations`, `nav.calendar`, `nav.library`, `nav.settings`
+    - `page.home.title`, `page.recommendations.title`, `page.calendar.title`, `page.library.title`, `page.settings.title`
+    - `common.empty.title`, `common.empty.description`
+    - `common.error.title`, `common.error.description`, `common.error.reload`
+    - `toast.error`, `toast.dismiss`, `toast.retry`
   - Test that the existing `app.title` key is preserved with its original value (covering: AC4)
   - Test that every key segment matches the camelCase pattern `^[a-z][a-zA-Z0-9]*$` (covering: AC6)
 - [ ] Run test to confirm failure before implementation
 
-> SC-12-01 and SC-12-02 are integration-level scenarios requiring UI components from downstream features (01i for navigation, 01j for views). They will be implicitly exercised by 01i component tests (nav label rendering) and 01j component tests (page title rendering) after those features are implemented.
+> Tests must follow the Arrange-Act-Assert (AAA) pattern per project conventions.
+
+> **Deferred scenarios:**
 >
-> SC-12-04, SC-12-05, and SC-12-06 are integration-level scenarios requiring vue-i18n runtime rendering. They will be exercised after downstream features provide components that consume the scaffolded keys.
+> - SC-12-01 → deferred to 01i (navigation component tests, nav label rendering)
+> - SC-12-02 → deferred to 01j (placeholder view component tests, page title rendering)
+> - SC-12-04, SC-12-05, SC-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys)
 
 ---
 
@@ -25,11 +37,11 @@
 
 ### Step 1 — Verify prerequisite
 
-- [ ] Confirm `app.title` key exists in all three locale files (`src/presentation/i18n/locales/en.json`, `es.json`, `fr.json`) from Phase 00.
+- [ ] Confirm `app.title` key exists in all three locale files (`src/presentation/i18n/locales/en.json`, `es.json`, `fr.json`) from Phase 00. If missing, stop and complete Phase 00 first.
 
 ### Step 2 — Update locale files
 
-- [ ] Add keys to `en.json`, `es.json`, `fr.json`. All three files must be updated atomically to maintain key path parity. Rollback: `git checkout -- src/presentation/i18n/locales/` restores all locale files to their prior state.
+- [ ] Add keys to `en.json`, `es.json`, `fr.json`. All three files must be updated atomically to maintain key path parity. Rollback: `git checkout -- src/presentation/i18n/locales/` restores all locale files to their prior state; `rm tests/presentation/i18n/locale-keys.test.ts` removes the test file.
 
 **Expected nested JSON structure (`en.json`):**
 
@@ -96,6 +108,8 @@
 
 `page.*.title` keys mirror `nav.*` values initially (separate keys to allow divergence later).
 
+> **Key count verification:** The translation table above contains exactly 18 entries, matching SC-12's requirement of 18 new keys across 5 namespaces.
+
 ---
 
 ## Phase 3 — Verification
@@ -104,4 +118,5 @@
 
 - [ ] Run `npx vitest run tests/presentation/i18n/locale-keys.test.ts` — all tests pass
 - [ ] Run `npx prettier --check src/presentation/i18n/locales/*.json` — formatting passes
+- [ ] Run `npx tsc --noEmit` — no type errors in the new test file
 - [ ] Run `npm run build` — build succeeds with no errors

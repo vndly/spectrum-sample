@@ -10,6 +10,7 @@ Feature: SC-12 — i18n Keys
   # vue-i18n runtime rendering. They will be exercised after downstream features
   # provide components that consume the scaffolded keys.
 
+  @deferred
   Scenario Outline: SC-12-01 — Nav labels are translated
     Given the app language is set to <language>
     When I view the sidebar navigation
@@ -25,6 +26,7 @@ Feature: SC-12 — i18n Keys
       | Spanish  | Inicio  | Recomendaciones | Calendario | Biblioteca   | Ajustes    |
       | French   | Accueil | Recommandations | Calendrier | Bibliothèque | Paramètres |
 
+  @deferred
   Scenario Outline: SC-12-02 — Page header is translated
     Given the app language is set to <language>
     When I navigate to <route>
