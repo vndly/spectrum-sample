@@ -1,7 +1,7 @@
 ---
 id: R-01d
 title: App Scaffolding — Router
-status: approved
+status: under_test
 type: infrastructure
 importance: critical
 tags: [routing, navigation]

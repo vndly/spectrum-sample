@@ -6,7 +6,7 @@
 
 ### Step 1 — Write router tests and confirm they fail
 
-- [ ] Create `tests/presentation/router.test.ts`.
+- [x] Create `tests/presentation/router.test.ts`.
 
   Import the router instance from `@/presentation/router` and use `router.resolve()` to verify route definitions. Use `vi.mock('@/presentation/i18n', () => ({ default: { global: { t: (key: string) => key } } }))` to mock the i18n instance with an identity function, allowing title format assertions without depending on actual translations. Follow AAA (Arrange-Act-Assert) pattern per project conventions.
 
@@ -25,13 +25,13 @@
   - `(implementation detail)` — All 4 named routes exist with correct paths and names
   - `(implementation detail)` — Each route has `meta.titleKey` matching the expected i18n key
 
-- [ ] Run `npm run test` to confirm all new tests fail (`router.ts` does not exist yet). All tests should fail with import/resolution errors.
+- [x] Run `npm run test` to confirm all new tests fail (`router.ts` does not exist yet). All tests should fail with import/resolution errors.
 
 ## Phase 2 — Implement Router & Register
 
 ### Step 1 — Create router configuration
 
-- [ ] Create `src/presentation/router.ts`:
+- [x] Create `src/presentation/router.ts`:
   - `createWebHistory()` for clean URLs
   - `scrollBehavior(_to, _from, _savedPosition)` always returning `{ top: 0 }` — all three parameters are ignored per SC-01d-11
   - 4 routes with lazy-loaded views via `() => import('./views/...')`
@@ -56,11 +56,11 @@
 
 ### Step 2 — Register router
 
-- [ ] Modify `src/main.ts` to import router and register with `app.use(router)` (after existing `app.use(i18n)` call). **Rollback:** Remove the `import router from ...` line and the `app.use(router)` call from `main.ts`.
+- [x] Modify `src/main.ts` to import router and register with `app.use(router)` (after existing `app.use(i18n)` call). **Rollback:** Remove the `import router from ...` line and the `app.use(router)` call from `main.ts`.
 
 ## Phase 3 — Verification
 
-- [ ] `npm run test` — all router tests pass
-- [ ] `npm run type-check` — no type errors
-- [ ] `npm run build` — production build succeeds and produces lazy-loaded chunks
-- [ ] `npm run lint` — no linting errors in new files
+- [x] `npm run test` — all router tests pass
+- [x] `npm run type-check` — no type errors
+- [x] `npm run build` — production build succeeds and produces lazy-loaded chunks
+- [x] `npm run lint` — no linting errors in new files
