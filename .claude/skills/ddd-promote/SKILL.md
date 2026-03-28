@@ -164,9 +164,9 @@ After successful promotion:
 
 Update the affected index files:
 
-1. If `docs/product/index.md` exists, add an entry for the promoted feature (if not already present) and invoke the `ddd-index` skill to reformat it.
-2. If `docs/changes/index.md` exists, remove the entry for the deleted source folder and invoke the `ddd-index` skill to reformat it.
-3. If a new `index.md` was created or needs to be created in the target folder, invoke the `ddd-index` skill on it.
+1. If `docs/product/index.md` exists, add an entry for the promoted feature (if not already present) and invoke the `audit-index` skill to reformat it.
+2. If `docs/changes/index.md` exists, remove the entry for the deleted source folder and invoke the `audit-index` skill to reformat it.
+3. If a new `index.md` was created or needs to be created in the target folder, invoke the `audit-index` skill on it.
 
 ## 7. Roadmap Cross-Reference
 

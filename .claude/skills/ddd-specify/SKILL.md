@@ -156,7 +156,7 @@ Write the final `requirements.md` to `docs/changes/<feature-name>/requirements.m
 
 ### 7.3 Create index.md
 
-Create `index.md` in the new folder, then apply the `ddd-index` skill to format it.
+Create `index.md` in the new folder, then apply the `audit-index` skill to format it.
 
 ## 8. Handoff to Review
 
