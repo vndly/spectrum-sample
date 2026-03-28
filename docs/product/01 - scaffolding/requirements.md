@@ -4,7 +4,19 @@ title: App Scaffolding — Dependencies & Test Infrastructure
 status: released
 type: infrastructure
 importance: critical
-tags: [dependencies, testing, dx, i18n, localization, tailwind, transitions, constants]
+tags:
+  [
+    dependencies,
+    testing,
+    dx,
+    i18n,
+    localization,
+    tailwind,
+    transitions,
+    constants,
+    routing,
+    navigation,
+  ]
 ---
 
 ## Intent
@@ -12,6 +24,8 @@ tags: [dependencies, testing, dx, i18n, localization, tailwind, transitions, con
 Install vue-router and @vue/test-utils, configure the Vitest test infrastructure so all subsequent scaffolding phases can write and run tests. Add all i18n keys needed by the scaffolding phases (navigation labels, page titles, empty state text, error text, toast labels) to all three locale files.
 
 Add Tailwind theme color tokens (success, error), all transition/animation CSS (fade, toast, modal, reduced-motion), and the domain constant for toast auto-dismiss, preparing the visual foundation for subsequent components.
+
+Configure Vue Router with 4 lazy-loaded routes, catch-all redirect, scroll-to-top, and i18n-based document title updates.
 
 ## Context & Background
 
@@ -40,7 +54,6 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 ### Dependents
 
-- **01d (Router)** — uses `page.*.title` keys for document title.
 - **01e (Composables)** — consumes `TOAST_DISMISS_MS` from `src/domain/constants.ts`.
 - **01g (Toast Container & Modal Dialog)** — consumes `--color-success` and `--color-error` theme colors.
 - **01h (Error Handling)** — uses `common.error.*` and `toast.error` keys.
@@ -59,6 +72,8 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 | Toast action labels               | `toast.*` (e.g., `toast.dismiss`, `toast.retry`)          | Groups toast-related labels under a dedicated top-level namespace. Avoids nesting under `common.*` since toasts are a distinct UI pattern used across many features.                                                  |
 | Transition CSS in main.css        | Global CSS exception                                      | Vue `<Transition>` requires class-based CSS. Centralizing in `main.css` avoids duplication. Acknowledged exception to the "Tailwind only" rule.                                                                       |
 | Domain file in scaffolding        | Early creation                                            | `src/domain/constants.ts` is introduced during a Presentation-focused scaffolding phase because downstream phases (R-01e, R-01g) depend on `TOAST_DISMISS_MS`.                                                        |
+| Router history mode               | `createWebHistory()`                                      | Clean URLs without hash fragments. Firebase SPA rewrite already handles fallback.                                                                                                                                     |
+| Home route matching               | Exact match only                                          | Prevents the Home nav item from appearing active on every route.                                                                                                                                                      |
 
 ## Scope
 
@@ -76,6 +91,9 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - Add modal transition CSS for the content card (`.modal-enter-active`, `.modal-leave-active`, `.modal-enter-from`, `.modal-leave-to`).
 - Add `prefers-reduced-motion` override disabling all transitions, animations, and `animate-pulse` shimmer.
 - Create `src/domain/constants.ts` with `TOAST_DISMISS_MS = 4000`.
+- Create router configuration in `src/presentation/router.ts`.
+- Register router in `src/main.ts`.
+- Write router unit tests.
 
 > **Note:** `nav.recommendations` and `page.recommendations.title` are included for forward compatibility with the Recommendations feature phase, even though no scaffolding sibling currently consumes them.
 
@@ -83,7 +101,6 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 ### Out of Scope
 
-- Router configuration and route definitions (handled in 01d).
 - No composables or components are introduced in this phase.
 - No application tests are written in this phase — only the test infrastructure is set up.
 - Vue component creation or modification.
@@ -94,6 +111,11 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - Toast and modal components (covered by R-01g).
 - Additional domain constants beyond `TOAST_DISMISS_MS` (added in their respective feature phases).
 - Modal backdrop transition CSS (backdrop uses a simple opacity toggle managed by the modal component in R-01g).
+- Detail routes (`/movie/:id`, `/show/:id`) — deferred to their respective feature phases.
+- `/stats` and `/recommendations` routes — deferred to their respective feature phases. These are primary nav destinations but depend on feature-specific views and composables not yet built.
+- Route transition animations — covered by 01k.
+- Navigation guards beyond catch-all redirect.
+- Route-level middleware or authentication guards.
 
 > All subsequent scaffolding features (01b through 01k) depend on the infrastructure established here.
 
@@ -113,6 +135,13 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 | SC-01c-23 | Modal transition CSS     | Define `.modal-*` CSS classes for the content card: fade in with slight scale-up on enter (200ms `ease-out`), reverse on leave (150ms `ease-in`). Backdrop transition is managed separately by the modal component (R-01g).                                                                                                                                                                                                                                         | P1       |
 | SC-01c-24 | Reduced-motion override  | Add `@media (prefers-reduced-motion: reduce)` block that disables all `.fade-*`, `.toast-*`, `.modal-*` transitions and `animate-pulse` animations.                                                                                                                                                                                                                                                                                                                 | P1       |
 | SC-01c-25 | Domain constants         | Create `src/domain/constants.ts` with `export const TOAST_DISMISS_MS = 4000` (auto-dismiss timeout in milliseconds for toast notifications).                                                                                                                                                                                                                                                                                                                        | P1       |
+
+| SC-01d-29 | Vue Router setup | vue-router (installed via 01a). `createWebHistory()`, router registered in `main.ts`. Routes defined in `src/presentation/router.ts`. | P0 |
+| SC-01d-02 | Route definitions | 4 named routes (`home` at `/`, `calendar` at `/calendar`, `library` at `/library`, `settings` at `/settings`) plus catch-all `/:pathMatch(.*)*` redirecting to `/`. Remaining routes from `architecture.md` (`/movie/:id`, `/show/:id`, `/stats`, `/recommendations`) are deferred. | P0 |
+| SC-01d-03 | Route lazy loading | All 4 view components loaded via dynamic `import()` for code splitting. | P0 |
+| SC-01d-10 | Document title | `router.afterEach` guard sets `document.title` to `${t(meta.titleKey)} — ${t('app.title')}`. Each route's `meta.titleKey` uses the pattern `page.<route-name>.title`. If `meta.titleKey` is undefined (e.g., catch-all route during redirect), fall back to just `t('app.title')`. | P1 |
+| SC-01d-11 | Scroll-to-top | Router `scrollBehavior` returns `{ top: 0 }` on every navigation. | P1 |
+| SC-01d-22 | Router unit tests | Tests in `tests/presentation/router.test.ts` for route definitions (4 named routes + catch-all), `scrollBehavior` returning `{ top: 0 }`, and `afterEach` guard setting `document.title`. | P0 |
 
 > **Note:** `src/domain/constants.ts` is created in this phase with `TOAST_DISMISS_MS` only (additional constants will be added in their respective feature phases). See Decisions table for rationale.
 
@@ -141,6 +170,12 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 - **CSS centralization:** No CSS files other than `src/assets/main.css` shall exist in the project. All transition and animation styles are centralized in the single Tailwind entry point.
 
+### Performance
+
+- **Initial load:** The main bundle (before lazy-loaded route chunks) should remain under 150 KB gzipped, establishing a baseline before feature code is added.
+- **Lazy chunks:** Each route's lazy-loaded chunk should remain under 20 KB gzipped.
+- **Measurement:** Measured from `vite build` output sizes.
+
 ## Risks & Assumptions
 
 ### Assumptions
@@ -152,6 +187,8 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - Spanish and French translations use standard UI terminology; native speaker review is deferred to a later phase.
 - Tailwind v4 `@theme` block supports arbitrary CSS custom properties for extending the design token set.
 - Vue 3 `<Transition>` class naming convention (`name-enter-active`, `name-leave-active`, etc.) is stable and will not change in minor versions.
+- Firebase SPA rewrite is configured in Phase 00.
+- 01a has been completed: vue-router is installed and i18n title keys (`page.*.title`) exist (SC-01b-12).
 
 ### Risks
 
@@ -160,6 +197,7 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - **Translation accuracy** (low likelihood, low impact): Translations cannot be verified in context until downstream features (01i, 01j) render the keys in UI components. Mitigation: translations use standard, well-known UI terms.
 - **Key path mismatch** (medium likelihood, medium impact): Downstream features (01d, 01h, 01i, 01j) may reference key paths that do not match the exact paths defined here. Mitigation: downstream requirements explicitly list the keys they consume; the locale key parity test catches missing keys.
 - **Low likelihood, low impact:** If Tailwind v4 changes the `@theme` block syntax in a future update, the custom property declarations may need to be moved. Mitigation: pin Tailwind version in `package.json`.
+- **Firebase SPA fallback** (low likelihood, high impact): `createWebHistory()` requires Firebase SPA rewrite. Mitigation: verify `hosting.rewrites` from Phase 00.
 
 ## Acceptance Criteria
 
@@ -190,8 +228,22 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - [ ] Existing theme variables (`--color-bg-primary`, `--color-bg-secondary`, `--color-surface`, `--color-accent`, `--font-sans`) in `src/assets/main.css` are preserved
 - [ ] Unit test verifies `TOAST_DISMISS_MS` value and type
 - [ ] `npm run check` passes with no errors
+- [ ] [SC-01d-29] Router uses `createWebHistory()` (HTML5 history mode, no hash fragments)
+- [ ] [SC-01d-29] Router registered in `src/main.ts` with `app.use(router)`
+- [ ] [SC-01d-02] 4 named routes exist (`home`, `calendar`, `library`, `settings`) with correct paths
+- [ ] [SC-01d-02] Catch-all `/:pathMatch(.*)*` redirects to `/`
+- [ ] [SC-01d-03] Router config uses `() => import(...)` syntax for all 4 route components
+- [ ] [SC-01d-03] Lazy-loaded chunks appear in `vite build` output
+- [ ] [SC-01d-10] `document.title` updates via i18n on every navigation (`afterEach` guard)
+- [ ] [SC-01d-11] `scrollBehavior` returns `{ top: 0 }`
+- [ ] [NFR, Performance] Main bundle remains under 150 KB gzipped
+- [ ] [NFR, Performance] Each route's lazy-loaded chunk remains under 20 KB gzipped
+- [ ] [SC-01d-22] Router unit tests pass
 
 ## Constraints
 
 - **Runtime dependencies:** No new runtime dependencies beyond `vue-router@^4.5`. All other tools (Tailwind, vue-i18n, lucide-vue-next, Zod) are already installed from Phase 00.
 - **Dev dependencies:** `@vue/test-utils@^2.4` is the only new dev dependency.
+- Must use `createWebHistory()` (no hash mode) — requires Firebase SPA rewrite for server-side fallback.
+- View component files (`*-screen.vue`) are provided by change 01j — router configuration will reference them before they exist.
+- All new files live in `src/presentation/` (router configuration). `src/main.ts` is the only existing file modified.

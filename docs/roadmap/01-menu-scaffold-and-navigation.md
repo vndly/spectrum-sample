@@ -1,7 +1,7 @@
 # Menu Scaffold and Navigation
 
 - App shell with sidebar on desktop, bottom navigation bar on mobile
-- Route structure: `/`, `/movie/:id`, `/show/:id`, `/library`, `/stats`, `/recommendations`, `/calendar`, `/settings`
+- Route structure: `/movie/:id`, `/show/:id`, `/stats`, `/recommendations` (base routes `/`, `/library`, `/calendar`, `/settings` already scaffolded)
 - Active route is visually highlighted in both sidebar and bottom nav
 - Navigation remains visible on all screens (no full-page takeovers)
 
@@ -10,7 +10,6 @@
 - [ ] `AppShell` component renders a sidebar on viewports ≥ 768 px and a bottom nav bar below 768 px
 - [ ] All 5 navigation-bar routes are navigable and render a placeholder view
 - [ ] Active route indicator updates on navigation (both sidebar and bottom nav)
-- [ ] Browser back/forward buttons work correctly with Vue Router history mode
 - [ ] `ErrorBoundary` wraps the router outlet and displays a fallback UI on unhandled errors
 
 ## Key Decisions
