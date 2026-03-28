@@ -59,7 +59,7 @@ Add all i18n keys needed by the scaffolding phases (navigation labels, page titl
 
 ### NFR-01b-01 — Key Structure Compliance
 
-- **camelCase nesting:** Zero violations — every key segment in all locale JSON files must be a camelCase identifier (matching `^[a-z][a-zA-Z0-9]*$`). Verified by a unit test to be created at `tests/presentation/i18n/locale-keys.test.ts` per [conventions.md Section 11](../../technical/conventions.md#11-internationalization-i18n).
+- **camelCase key segments:** Zero violations — every dot-separated segment of each key in all locale JSON files must be a camelCase identifier (matching `^[a-z][a-zA-Z0-9]*$`). Verified by a unit test to be created at `tests/presentation/i18n/locale-keys.test.ts` per [conventions.md Section 11](../../technical/conventions.md#11-internationalization-i18n).
 
 ## Risks & Assumptions
 
@@ -80,7 +80,7 @@ Add all i18n keys needed by the scaffolding phases (navigation labels, page titl
 - [ ] All translation values are non-empty strings in all three files
 - [ ] Existing `app.title` key is preserved in all three files
 - [ ] All locale files are valid JSON after modification
-- [ ] All key paths follow camelCase nested structure per conventions.md Section 11
+- [ ] All key paths follow flat dot-notation with camelCase segments per conventions.md Section 11
 - [ ] Each locale file contains exactly 18 new keys across the 5 specified namespaces
 - [ ] Unit test at `tests/presentation/i18n/locale-keys.test.ts` passes, confirming all key segments match camelCase regex (NFR-01b-01)
 - [ ] vue-i18n fallback to English is verified for the scaffolded keys (e.g., removing a key from `es.json` causes vue-i18n to fall back to the English value)

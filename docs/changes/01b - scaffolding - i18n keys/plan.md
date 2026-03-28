@@ -20,7 +20,7 @@
     - `common.error.title`, `common.error.description`, `common.error.reload`
     - `toast.error`, `toast.dismiss`, `toast.retry`
   - Test that the existing `app.title` key is preserved with its original value (covering: AC4)
-  - Test that every key segment matches the camelCase pattern `^[a-z][a-zA-Z0-9]*$` (covering: AC6)
+  - Test that every dot-separated segment of each key matches the camelCase pattern `^[a-z][a-zA-Z0-9]*$` (covering: AC6)
 - [ ] Run test to confirm failure before implementation
 
 > Tests must follow the Arrange-Act-Assert (AAA) pattern per project conventions.
@@ -43,43 +43,29 @@
 
 - [ ] Add keys to `en.json`, `es.json`, `fr.json`. All three files must be updated atomically to maintain key path parity. Rollback: `git checkout -- src/presentation/i18n/locales/` restores all locale files to their prior state; `rm tests/presentation/i18n/locale-keys.test.ts` removes the test file.
 
-**Expected nested JSON structure (`en.json`):**
+**Expected flat JSON structure (`en.json`):**
 
 ```json
 {
-  "app": {
-    "title": "Plot Twisted"
-  },
-  "nav": {
-    "home": "Home",
-    "recommendations": "Recommendations",
-    "calendar": "Calendar",
-    "library": "Library",
-    "settings": "Settings"
-  },
-  "page": {
-    "home": { "title": "Home" },
-    "recommendations": { "title": "Recommendations" },
-    "calendar": { "title": "Calendar" },
-    "library": { "title": "Library" },
-    "settings": { "title": "Settings" }
-  },
-  "common": {
-    "empty": {
-      "title": "Nothing here yet",
-      "description": "This page is under construction."
-    },
-    "error": {
-      "title": "Something went wrong",
-      "description": "An unexpected error occurred.",
-      "reload": "Reload"
-    }
-  },
-  "toast": {
-    "error": "An error occurred",
-    "dismiss": "Dismiss",
-    "retry": "Retry"
-  }
+  "app.title": "Plot Twisted",
+  "nav.home": "Home",
+  "nav.recommendations": "Recommendations",
+  "nav.calendar": "Calendar",
+  "nav.library": "Library",
+  "nav.settings": "Settings",
+  "page.home.title": "Home",
+  "page.recommendations.title": "Recommendations",
+  "page.calendar.title": "Calendar",
+  "page.library.title": "Library",
+  "page.settings.title": "Settings",
+  "common.empty.title": "Nothing here yet",
+  "common.empty.description": "This page is under construction.",
+  "common.error.title": "Something went wrong",
+  "common.error.description": "An unexpected error occurred.",
+  "common.error.reload": "Reload",
+  "toast.error": "An error occurred",
+  "toast.dismiss": "Dismiss",
+  "toast.retry": "Retry"
 }
 ```
 

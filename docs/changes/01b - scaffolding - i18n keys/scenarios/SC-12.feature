@@ -64,7 +64,7 @@ Feature: SC-12 — i18n Keys
     And every leaf value in each locale file is a non-empty string
     And the existing "app.title" key is preserved with its original value
     And each locale file is valid JSON
-    And every key segment matches the camelCase pattern "^[a-z][a-zA-Z0-9]*$"
+    And every dot-separated segment of each key matches the camelCase pattern "^[a-z][a-zA-Z0-9]*$"
 
   Scenario: SC-12-04 — Fallback to English on missing key
     Given all locale files contain the full default key set
