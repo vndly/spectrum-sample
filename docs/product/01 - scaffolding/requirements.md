@@ -84,7 +84,7 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 | Router history mode               | `createWebHistory()`                                      | Clean URLs without hash fragments. Firebase SPA rewrite already handles fallback.                                                                                                                                     |
 | Home route matching               | Exact match only                                          | Prevents the Home nav item from appearing active on every route.                                                                                                                                                      |
 | Composable state pattern          | Module-level singleton                                    | Toast and modal composables use module-level reactive state so they work both inside and outside component `setup()` (needed for the global error handler).                                                           |
-| Composable return shape           | Custom per composable                                     | The `{ data, loading, error, refresh? }` return convention applies to Application-layer composables wrapping async operations. Presentation-layer UI-state composables use a shape suited to their purpose.            |
+| Composable return shape           | Custom per composable                                     | The `{ data, loading, error, refresh? }` return convention applies to Application-layer composables wrapping async operations. Presentation-layer UI-state composables use a shape suited to their purpose.           |
 
 ## Scope
 

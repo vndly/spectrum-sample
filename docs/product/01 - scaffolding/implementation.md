@@ -146,20 +146,20 @@ No new dependencies were added for the router phase. `vue-router` (^5.0.4) and `
 
 ## Requirement Coverage
 
-| Requirement                    | Implementation                                                                              |
-| :----------------------------- | :------------------------------------------------------------------------------------------ |
-| SC-01c-21 (Theme additions)    | `--color-success` and `--color-error` added to `@theme` block in `src/assets/main.css:9-10` |
-| SC-01c-09 (Fade transition)    | `.fade-*` classes at `src/assets/main.css:13-21`                                            |
-| SC-01c-22 (Toast transition)   | `.toast-*` classes at `src/assets/main.css:23-37`                                           |
-| SC-01c-23 (Modal transition)   | `.modal-*` classes at `src/assets/main.css:39-53`                                           |
-| SC-01c-24 (Reduced-motion)     | `@media (prefers-reduced-motion: reduce)` block at `src/assets/main.css:55-68`              |
-| SC-01c-25 (Domain constants)   | `TOAST_DISMISS_MS` exported from `src/domain/constants.ts:2`                                |
-| SC-01d-29 (Vue Router setup)   | `createWebHistory()` in `src/presentation/router.ts`, registered in `src/main.ts`           |
-| SC-01d-02 (Route definitions)  | 4 named routes + catch-all redirect in `src/presentation/router.ts`                         |
-| SC-01d-03 (Route lazy loading) | Dynamic `import()` for all 4 route components                                               |
-| SC-01d-10 (Document title)     | `afterEach` guard with i18n `t()` in `src/presentation/router.ts`                           |
-| SC-01d-11 (Scroll-to-top)      | `scrollBehavior` returning `{ top: 0 }` in `src/presentation/router.ts`                     |
-| SC-01d-22 (Router unit tests)  | 16 tests in `tests/presentation/router.test.ts`                                             |
+| Requirement                    | Implementation                                                                                         |
+| :----------------------------- | :----------------------------------------------------------------------------------------------------- |
+| SC-01c-21 (Theme additions)    | `--color-success` and `--color-error` added to `@theme` block in `src/assets/main.css:9-10`            |
+| SC-01c-09 (Fade transition)    | `.fade-*` classes at `src/assets/main.css:13-21`                                                       |
+| SC-01c-22 (Toast transition)   | `.toast-*` classes at `src/assets/main.css:23-37`                                                      |
+| SC-01c-23 (Modal transition)   | `.modal-*` classes at `src/assets/main.css:39-53`                                                      |
+| SC-01c-24 (Reduced-motion)     | `@media (prefers-reduced-motion: reduce)` block at `src/assets/main.css:55-68`                         |
+| SC-01c-25 (Domain constants)   | `TOAST_DISMISS_MS` exported from `src/domain/constants.ts:2`                                           |
+| SC-01d-29 (Vue Router setup)   | `createWebHistory()` in `src/presentation/router.ts`, registered in `src/main.ts`                      |
+| SC-01d-02 (Route definitions)  | 4 named routes + catch-all redirect in `src/presentation/router.ts`                                    |
+| SC-01d-03 (Route lazy loading) | Dynamic `import()` for all 4 route components                                                          |
+| SC-01d-10 (Document title)     | `afterEach` guard with i18n `t()` in `src/presentation/router.ts`                                      |
+| SC-01d-11 (Scroll-to-top)      | `scrollBehavior` returning `{ top: 0 }` in `src/presentation/router.ts`                                |
+| SC-01d-22 (Router unit tests)  | 16 tests in `tests/presentation/router.test.ts`                                                        |
 | SC-13 (Toast notification)     | `src/presentation/composables/use-toast.ts` with `addToast()`, `removeToast()`, auto-dismiss, eviction |
 | SC-12 (Modal/dialog)           | `src/presentation/composables/use-modal.ts` with `open()`, `close()`, single-instance replacement      |
 | SC-23 (Composable unit tests)  | 21 tests in `tests/presentation/composables/` (13 toast + 8 modal)                                     |
