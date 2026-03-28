@@ -79,6 +79,19 @@ Use `AskUserQuestion` to confirm before proceeding:
   1. **Proceed** — "Continue with promotion"
   2. **Abort** — "Cancel"
 
+### Optional Verification
+
+After the user confirms "Proceed", offer an optional verification step using `AskUserQuestion`:
+
+- **Header**: "Run Verification?"
+- **Question**: "Would you like to re-run the plan's verification commands before promoting? This ensures tests still pass after any changes since implementation."
+- **Options**:
+  1. **Verify** — "Run verification commands from plan.md's verification phase"
+  2. **Skip** — "Proceed without re-verification"
+
+If **Verify**: parse `plan.md`'s verification phase and execute all runnable commands (e.g., `npm run test`, `npm run build`). If any fail, present the failures and ask whether to proceed anyway or abort. If all pass, continue to step 3.
+If **Skip**: continue to step 3.
+
 ## 3. Context Loading
 
 Use the Agent tool to spawn subagents **in parallel**:
@@ -140,6 +153,7 @@ This is the core of the skill. Each file type is merged at the **section/require
 
 - New `.feature` files (not present in target) are copied into the target's `scenarios/` folder.
 - If a `.feature` file with the same name exists in both, merge at the scenario level: new `Scenario:` blocks are appended. If a scenario with the same name exists, trigger a conflict.
+- After merging all `.feature` files, regenerate `scenarios/index.md` to reflect the combined set of scenarios. Apply the `audit-index` skill to format it.
 
 **implementation.md**:
 

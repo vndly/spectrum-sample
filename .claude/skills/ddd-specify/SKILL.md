@@ -35,7 +35,7 @@ On-demand only, invoked via `/ddd-specify <feature-name>` (e.g., `/ddd-specify 0
   - If **Resume**: read the existing `requirements.md` as the draft and skip to step 5 (Review & Refinement) after context loading.
   - If **Overwrite**: proceed as if the folder does not exist (existing files will be overwritten in step 7).
   - If **Abort**: STOP.
-- **Auto-generate the feature ID**: Scan all `requirements.md` files in `docs/changes/` and `docs/product/` to collect existing `id` values from their frontmatter. Determine the next available ID using the project's convention (e.g., `R-02a`). The ID prefix is derived from the feature name — the numeric/alphanumeric prefix before the first `-` separator. When resuming, reuse the existing ID from the file's frontmatter instead of generating a new one.
+- **Feature ID**: When resuming, read the existing ID from the file's frontmatter. For new features, the ID is generated after context loading (step 2).
 
 ## 2. Context Loading
 
@@ -45,7 +45,9 @@ Use the Agent tool to spawn **three subagents in parallel** to collect all neces
 
 **Subagent B — Requirements standard**: Read `docs/standards/requirements.md`. Return the full content.
 
-**Subagent C — Existing specifications**: List all folders in `docs/changes/` and `docs/product/`. For each folder that contains a `requirements.md`, read only the `Intent`, `Scope`, and `Functional Requirements` sections plus the frontmatter. Return a brief summary of each feature (ID, title, scope boundaries, requirement IDs) — not the full content.
+**Subagent C — Existing specifications**: List all folders in `docs/changes/` and `docs/product/`. For each folder that contains a `requirements.md`, read only the `Intent`, `Scope`, and `Functional Requirements` sections plus the frontmatter. Return a brief summary of each feature (ID, title, scope boundaries, requirement IDs) — not the full content. Also collect all `id` values from frontmatter to support unique ID generation.
+
+After all subagents return, **auto-generate the feature ID** (unless resuming with an existing ID from step 1). Use the IDs collected by Subagent C to determine the next available ID following the project's convention (e.g., `R-02a`). The ID prefix is derived from the feature name — the numeric/alphanumeric prefix before the first `-` separator.
 
 ## 3. Feature Description
 

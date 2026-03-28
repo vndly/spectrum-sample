@@ -28,7 +28,19 @@ On-demand only, invoked via `/ddd-implement <folder-path>` (path relative to pro
 - Validate the folder exists.
 - Validate that `requirements.md` exists — if missing, STOP with an error.
 - Validate that `plan.md` exists — if missing, STOP with an error.
-- **Status gate**: Read the `status` field from `requirements.md` frontmatter. If status is not `approved`, STOP with an error: "Documentation must be reviewed and approved before implementation. Current status: {status}. Run `/ddd-review` to review the documentation first."
+- **Status gate**: Read the `status` field from `requirements.md` frontmatter.
+  - If status is `approved`: proceed.
+  - If status is `in_development`: a previous implementation was started. Use `AskUserQuestion`:
+    - **Header**: "In-Progress Implementation"
+    - **Question**: "This feature has an in-progress implementation (status: `in_development`)."
+    - **Options**:
+      1. **Resume** — "Continue from where the previous implementation left off"
+      2. **Reset** — "Reset status to `approved` and uncheck all plan steps, then start fresh"
+      3. **Abort** — "Cancel"
+    - If **Resume**: proceed to step 2 (Context Loading). Checked steps in `plan.md` will be skipped during implementation (step 5).
+    - If **Reset**: update `requirements.md` status to `approved`, uncheck all `[x]` checkboxes in `plan.md` (replace `- [x]` with `- [ ]`), and proceed from step 2.
+    - If **Abort**: STOP.
+  - For any other status (`draft`, `review`, `planned`, `under_test`, `released`): STOP with an error: "Documentation must be reviewed and approved before implementation. Current status: {status}. Run `/ddd-review` to review the documentation first."
 - Note the presence of optional files: `scenarios/`, `implementation.md`, `index.md`.
 - If `implementation.md` already exists, warn the user that it will be regenerated at the end.
 
@@ -56,14 +68,19 @@ Performed by the orchestrator directly — no subagents. This is a quick cross-r
 3. **Plan structure**: Plan has at least one step with a checkbox. If zero steps found, STOP.
 4. **Scope contradictions**: Plan steps do not create or implement anything listed as out of scope in `requirements.md`. Flag obvious contradictions.
 5. **Dependency check**: If `requirements.md` lists dependencies on other features, warn the user to confirm those are already implemented.
+6. **Scenario reference validation**: Every scenario ID referenced in plan test steps (e.g., `covering: SC-04-01`) must exist in `scenarios/`. If `scenarios/` is missing but the plan references scenario IDs, warn that test-first implementation will lack scenario context.
+7. **Technical consistency**: Plan steps must be consistent with the current technical reference docs — no steps reference deprecated patterns, removed APIs, or technologies not in `tech-stack.md`. Flag any drift between the plan and the technical docs.
 
 ### Outcomes
 
-- **Critical issues found** (missing requirement coverage, dangling references, zero steps, scope contradictions): STOP and present all issues to the user. Use `AskUserQuestion` to ask whether to abort or proceed despite the issues.
+- **Critical issues found** (missing requirement coverage, dangling references, zero steps, scope contradictions, technical drift): STOP and present all issues to the user. Use `AskUserQuestion` to ask whether to abort or proceed despite the issues.
+- **Warnings found** (missing scenario references, dependency confirmation needed): Present warnings to the user alongside the start/resume summary. Proceed unless the user chooses to abort.
 - **Resume detected** (some steps already marked `[x]`): Present a resume summary — how many steps done, which phase/step to resume from. Use `AskUserQuestion` to confirm before continuing.
 - **Clean start** (no steps marked `[x]`): Present a brief summary — feature title, number of phases, number of steps. Use `AskUserQuestion` to confirm before starting.
 
 ## 4. Compliance Brief
+
+> **Sync note**: This section is shared with `ddd-plan` step 4. Keep both in sync.
 
 Before starting implementation, the orchestrator synthesizes a **compliance brief** from the technical reference docs (Subagent A output). This is a condensed set of rules that apply to code generation. The brief is held in memory and referenced during every implementation step.
 
@@ -211,6 +228,10 @@ The generated `implementation.md` must satisfy the review checks in `docs/standa
 - Every functional requirement must have corresponding implementation notes.
 - Content must align with `plan.md` phases and steps.
 - Deviations from the plan must be noted with justification.
+
+### Independent review
+
+After writing `implementation.md`, spawn a review subagent to validate it against `docs/standards/implementation.md` and the technical reference docs. The subagent reads the written file and checks it against the quality requirements above. If the subagent finds issues, fix them in place before proceeding.
 
 ### Update Index
 

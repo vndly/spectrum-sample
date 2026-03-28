@@ -26,7 +26,7 @@ On-demand only, invoked via `/ddd-plan <folder-path>`.
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists. If it does not, STOP with an error.
 - Validate that `requirements.md` exists in the folder. If it does not, STOP with an error.
-- **Status gate**: Read the `status` field from `requirements.md` frontmatter. If status is not `approved`, STOP with an error: "Requirements must be reviewed and approved before planning. Current status: {status}. Run `/ddd-review` to review the requirements first."
+- **Status gate**: Read the `status` field from `requirements.md` frontmatter. If status is not `approved` or `planned`, STOP with an error: "Requirements must be reviewed and approved before planning. Current status: {status}. Run `/ddd-review` to review the requirements first."
 - **Check for existing artifacts**: If `plan.md` or `scenarios/` already exist in the folder, use `AskUserQuestion` to ask the user how to proceed:
   - **Header**: "Existing Artifacts"
   - **Question**: List which artifacts already exist (`plan.md`, `scenarios/`, or both).
@@ -86,6 +86,8 @@ Performed by the orchestrator directly — no subagents. This is a critical gate
 - **Clean** (no issues): Proceed to step 4.
 
 ## 4. Compliance Brief
+
+> **Sync note**: This section is shared with `ddd-implement` step 4. Keep both in sync.
 
 Before generating the plan and scenarios, synthesize a **compliance brief** from the technical reference docs (Subagent A output). This is a condensed set of rules that apply to plan generation, ensuring every plan step and scenario respects the project's standards.
 
@@ -212,6 +214,10 @@ If the target folder has an `index.md`, update it to include entries for `plan.m
 
 Run `npm run format` once to ensure consistent formatting across all written files. Note: `audit-index` (steps 9.2/9.3) may already format index files — this final pass covers all remaining files and is idempotent.
 
+### 9.5 Status Update
+
+Update the `status` field in `requirements.md` frontmatter from `approved` to `planned`. This signals that planning is complete and the feature must be reviewed before implementation can begin.
+
 ## 10. Completion Summary
 
 Present a summary to the user before handing off to review:
@@ -221,6 +227,7 @@ Present a summary to the user before handing off to review:
 
 **Feature**: [title] ([feature ID])
 **Location**: [folder path]
+**Status**: planned → requires `/ddd-review` before implementation
 
 ### Artifacts Written
 - `plan.md` — [phase count] phases, [step count] steps

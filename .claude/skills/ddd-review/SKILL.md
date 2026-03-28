@@ -24,10 +24,10 @@ On-demand only, invoked via `/ddd-review <folder-path>` (path relative to projec
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists and contains the expected files. The expected structure is:
   - **Required**: `requirements.md`
-  - **Optional**: `implementation.md`, `api.md`, `data-model.md`, `plan.md`, `scenarios/`, `index.md`
+  - **Optional**: `implementation.md`, `api.md`, `data-model.md`, `plan.md`, `scenarios/` (`.feature` files and `index.md`), `index.md`
 - If required files are missing, note it as a Critical finding but continue reviewing whatever files exist.
 - If the folder contains files not in the expected list above, ignore them.
-- **Status update**: Read the `status` field from the target folder's `requirements.md` frontmatter. If the current status is `draft` or `approved`, update it to `review`. If the status is `in_development`, `under_test`, or `released`, do not change it — the review is informational only for features past the approval stage.
+- **Status update**: Read the `status` field from the target folder's `requirements.md` frontmatter. If the current status is `draft`, `approved`, or `planned`, update it to `review`. If the status is `in_development`, `under_test`, or `released`, do not change it — the review is informational only for features past the approval stage.
 
 ## 2. Information Collection
 
@@ -100,9 +100,9 @@ For each file type below, read the review checks from the corresponding file in 
 
 #### scenarios/
 
-The `scenarios/` folder contains one `.feature` file per requirement. Spawn a single subagent that reads all `.feature` files in the folder and reviews them together.
+The `scenarios/` folder contains one `.feature` file per requirement. Spawn a single subagent that reads all `.feature` files in the folder and reviews them together. If `scenarios/index.md` exists, also review it using the `index.md` review checks (from `docs/standards/index-file.md`).
 
-**Review checks:** Embedded from `docs/standards/scenarios.md` by the orchestrator.
+**Review checks:** Embedded from `docs/standards/scenarios.md` by the orchestrator. For `scenarios/index.md`, also embed `docs/standards/index-file.md`.
 
 > Coverage checks (every requirement has a scenario) are performed by the cross-cutting subagent in step 4.
 
@@ -111,6 +111,7 @@ The `scenarios/` folder contains one `.feature` file per requirement. Spawn a si
 - List of `.feature` files with their Feature names
 - List of scenario IDs and names with referenced requirement IDs
 - Entity names and terms used
+- `scenarios/index.md` links and descriptions (if present)
 
 #### index.md
 
@@ -271,6 +272,20 @@ X critical | Y warnings | Z suggestions — across N files.
 
 Present each finding to the user for triage using `AskUserQuestion`, ordered by priority: all Critical findings first, then Warnings, then Suggestions.
 
+### Pre-triage
+
+Before item-by-item triage, present a summary of findings by severity and offer batch operations using `AskUserQuestion`:
+
+- **Header**: "Triage"
+- **Question**: `N critical | M warnings | K suggestions. You can batch-process entire severity levels or triage individually.`
+- **Options**:
+  1. **Triage individually** — "Review each finding one by one"
+  2. **Fix all suggestions** — "Auto-fix all suggestions, triage critical and warnings individually"
+  3. **Skip all suggestions** — "Skip all suggestions, triage critical and warnings individually"
+  4. **Ignore all suggestions** — "Discard all suggestions, triage critical and warnings individually"
+
+Apply the user's batch choice to the relevant severity level, then proceed with item-by-item triage for the remaining findings. If a severity level has no findings, omit its batch options.
+
 ### How to present
 
 - Process findings in batches of up to **4 at a time**.
@@ -334,5 +349,5 @@ After presenting the final report, update the `status` field in the target folde
 - **Read before fixing**: Always read the current file content before editing. Fixes may interact with each other — apply them against the latest state, not a stale snapshot.
 - **Severity discipline**: **Critical** = will cause implementation failures, architectural violations, or missing required content. **Warning** = could lead to problems, ambiguities, or inconsistencies. **Suggestion** = would improve quality but is not blocking. Do not inflate or deflate severity.
 - **Evidence-based findings only**: Every finding must cite the specific text in the reviewed file and the reference doc or standard that contradicts it. Do not flag subjective preferences or stylistic opinions.
-- **Status transitions are conditional**: Only update `requirements.md` status for features in `draft` or `approved` state. Never regress status for features in `in_development`, `under_test`, or `released` — those reviews are informational only.
+- **Status transitions are conditional**: Only update `requirements.md` status for features in `draft`, `approved`, or `planned` state. Never regress status for features in `in_development`, `under_test`, or `released` — those reviews are informational only.
 - **Format after fixes**: After applying fixes (step 7.2), run `npm run format` to ensure consistent formatting across all modified files.
