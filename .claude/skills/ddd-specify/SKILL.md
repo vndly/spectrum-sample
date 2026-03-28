@@ -32,8 +32,8 @@ On-demand only, invoked via `/ddd-specify <feature-name>` (e.g., `/ddd-specify 0
     1. **Resume** — "Continue from the existing requirements.md"
     2. **Overwrite** — "Start fresh, discarding existing content"
     3. **Abort** — "Cancel and choose a different name"
-  - If **Resume**: read the existing `requirements.md` as the draft and skip to step 5 (Review & Refinement) after context loading.
-  - If **Overwrite**: proceed as if the folder does not exist (existing files will be overwritten in step 7).
+  - If **Resume**: read the existing `requirements.md` as the draft and skip to step 6 (Review & Refinement) after context loading. If the existing status is anything other than `draft`, inform the user that the status will be reset to `draft` when the file is written, since requirements are being modified.
+  - If **Overwrite**: proceed as if the folder does not exist (existing files will be overwritten in step 8).
   - If **Abort**: STOP.
 - **Feature ID**: When resuming, read the existing ID from the file's frontmatter. For new features, the ID is generated after context loading (step 2).
 
@@ -68,15 +68,34 @@ Present a structured prompt requesting:
 - **Question**: Present the four items above as a numbered list, with brief guidance for each.
 - **Options**: None — use free-text input only.
 
-## 4. Draft Generation
+## 4. Compliance Brief
 
-Generate a complete `requirements.md` draft using the user's description (step 3), the requirements standard (Subagent B), and the technical reference (Subagent A).
+> **Sync note**: This section is shared with `ddd-plan` step 4 and `ddd-implement` step 4. Keep all three in sync.
+
+Before generating the draft, synthesize a **compliance brief** from the technical reference docs (Subagent A output). This is a condensed set of rules that apply to requirements drafting, ensuring every requirement respects the project's technical constraints.
+
+Extract from each technical doc:
+
+- **architecture.md**: Layer boundaries, import rules, folder structure, component organization.
+- **conventions.md**: Naming conventions, SFC order, ESLint/Prettier config, guardrails, i18n rules.
+- **testing.md**: Test file structure, naming, what to test per layer, AAA pattern, mocking strategy.
+- **security.md**: Input validation, sanitization rules, token handling.
+- **tech-stack.md**: Allowed technologies and version constraints.
+- **ui-ux.md**: Design tokens, responsive patterns, component guidelines.
+- **api.md**: Endpoint patterns, error handling, pagination.
+- **data-model.md**: Schema shapes, storage patterns, relationships.
+
+This is NOT a subagent step — the orchestrator condenses the already-loaded content into a working reference that informs step 5.
+
+## 5. Draft Generation
+
+Generate a complete `requirements.md` draft using the user's description (step 3), the requirements standard (Subagent B), the technical reference (Subagent A), and the compliance brief (step 4).
 
 ### Drafting rules
 
 - Follow the section structure defined in `docs/standards/requirements.md` exactly.
 - Include the **frontmatter** with the auto-generated ID (step 1), the user-provided type/importance/tags (step 3), a title derived from the feature name, and `status: draft`.
-- Include all sections that are supported by the user's description. For sections where the user provided no information, **omit them** — they will be flagged as potential gaps in step 5.
+- Include all sections that are supported by the user's description. For sections where the user provided no information, **omit them** — they will be flagged as potential gaps in step 6.
 - Functional requirements must have unique IDs with a feature-specific prefix derived from the feature ID.
 - Every functional requirement must have a corresponding acceptance criterion.
 - Non-functional requirements must have concrete, measurable thresholds where applicable.
@@ -94,7 +113,7 @@ Generate a complete `requirements.md` draft using the user's description (step 3
 
 Do **not** write the file yet. Hold the draft in memory for the review step.
 
-## 5. Review & Refinement
+## 6. Review & Refinement
 
 Present the full draft to the user and ask all follow-up questions in a single `AskUserQuestion` prompt.
 
@@ -117,9 +136,9 @@ Present the full draft to the user and ask all follow-up questions in a single `
 
 - Apply the user's answers to the draft.
 - If the user's responses introduce **significant changes** (new requirements, scope changes, or resolved conflicts that affect multiple sections), do **one more round** of follow-ups on the affected areas only. Use the same format as above but only include the new questions.
-- If the changes are minor (wording tweaks, confirmations, filling in optional sections), proceed directly to step 6.
+- If the changes are minor (wording tweaks, confirmations, filling in optional sections), proceed directly to step 7.
 
-## 6. Overlap Check
+## 7. Overlap Check
 
 Compare the refined draft against the existing specifications collected by Subagent C (step 2).
 
@@ -144,23 +163,23 @@ For **Adjust**: ask the user what to change and apply it. For **Discuss**: engag
 
 ### No conflicts
 
-If no conflicts are found, proceed directly to step 7.
+If no conflicts are found, proceed directly to step 8.
 
-## 7. Write Files
+## 8. Write Files
 
-### 7.1 Create the folder
+### 8.1 Create the folder
 
 Create the folder `docs/changes/<feature-name>/`.
 
-### 7.2 Write requirements.md
+### 8.2 Write requirements.md
 
 Write the final `requirements.md` to `docs/changes/<feature-name>/requirements.md`.
 
-### 7.3 Create index.md
+### 8.3 Create index.md
 
 Create `index.md` in the new folder, then apply the `audit-index` skill to format it.
 
-## 8. Completion Summary
+## 9. Completion Summary
 
 Present a summary to the user before handing off to review:
 
@@ -179,7 +198,7 @@ Present a summary to the user before handing off to review:
 - [list of all functional and non-functional requirement IDs with brief descriptions]
 ```
 
-## 9. Handoff to Review
+## 10. Handoff to Review
 
 Run `/ddd-review docs/changes/<feature-name>` to perform a formal review of the new specification.
 
@@ -189,10 +208,10 @@ Before running, inform the user:
 
 ## Rules
 
-- **Never guess requirements**: If the user's description is insufficient to draft a section, omit it and flag it as a gap in step 5. Do not invent requirements.
+- **Never guess requirements**: If the user's description is insufficient to draft a section, omit it and flag it as a gap in step 6. Do not invent requirements.
 - **Standards are the source of truth**: The section structure, naming, and quality criteria from `docs/standards/requirements.md` override any other convention.
 - **Technical docs constrain the draft**: Every requirement must be consistent with the project's technical reference. If a user request conflicts with the technical docs, flag it — do not silently override the technical docs.
-- **One round-trip minimum**: Always present the draft and ask follow-up questions (step 5), even if the user's description seems complete. There are always gaps or ambiguities worth surfacing.
-- **No scope creep**: Do not add requirements, sections, or acceptance criteria that the user did not ask for or confirm. Suggest them in step 5, but only include them if the user agrees.
+- **One round-trip minimum**: Always present the draft and ask follow-up questions (step 6), even if the user's description seems complete. There are always gaps or ambiguities worth surfacing.
+- **No scope creep**: Do not add requirements, sections, or acceptance criteria that the user did not ask for or confirm. Suggest them in step 6, but only include them if the user agrees.
 - **ID uniqueness is mandatory**: The feature ID and all requirement IDs must be unique across the entire project. If a collision is detected, resolve it before writing files.
-- **Format after writing**: After writing `requirements.md` and `index.md` (step 7), run `npm run format` to ensure consistent formatting.
+- **Format after writing**: After writing `requirements.md` and `index.md` (step 8), run `npm run format` to ensure consistent formatting.

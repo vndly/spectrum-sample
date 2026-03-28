@@ -40,7 +40,12 @@ On-demand only, invoked via `/ddd-implement <folder-path>` (path relative to pro
     - If **Resume**: proceed to step 2 (Context Loading). Checked steps in `plan.md` will be skipped during implementation (step 5).
     - If **Reset**: update `requirements.md` status to `approved`, uncheck all `[x]` checkboxes in `plan.md` (replace `- [x]` with `- [ ]`), and proceed from step 2.
     - If **Abort**: STOP.
-  - For any other status (`draft`, `review`, `planned`, `under_test`, `released`): STOP with an error: "Documentation must be reviewed and approved before implementation. Current status: {status}. Run `/ddd-review` to review the documentation first."
+  - For any other status, STOP with a status-specific error:
+    - `draft` → "Requirements are still in draft. Run `/ddd-specify` to complete the specification, then `/ddd-review` to review it."
+    - `review` → "A review is currently in progress. Wait for it to complete or re-run `/ddd-review` to finish the review."
+    - `planned` → "Planning is complete but not yet reviewed. Run `/ddd-review` to review the plan before implementation."
+    - `under_test` → "This feature is already implemented and under testing. Run `/ddd-promote` when testing is complete."
+    - `released` → "This feature has already been promoted to the product specification."
 - Note the presence of optional files: `scenarios/`, `implementation.md`, `index.md`.
 - If `implementation.md` already exists, warn the user that it will be regenerated at the end.
 
@@ -50,11 +55,12 @@ Use the Agent tool to spawn **two subagents in parallel** to collect all necessa
 
 **Subagent A — Technical reference**: Read all files in `docs/technical/`. Return the full content of each file.
 
-**Subagent B — Feature docs**: Read `requirements.md` and `plan.md` from the target folder. If `scenarios/` exists, read all `.feature` files. Return:
+**Subagent B — Feature docs**: Read `requirements.md` and `plan.md` from the target folder. If `scenarios/` exists, read all `.feature` files. If `api.md` or `data-model.md` exist in the target folder, read them as well — these are manually authored and may contain constraints that affect implementation. Return:
 
 - **Requirements**: feature ID, title, status, all functional requirement IDs with descriptions and priorities, acceptance criteria, scope boundaries (in scope / out of scope), decisions, dependencies.
 - **Plan**: full content (needed for step-by-step execution).
 - **Plan structure**: list of phases (or "flat" if no phases), list of steps with their checkbox state (`[ ]` or `[x]`), step descriptions, scenario references.
+- **Feature-specific docs** (if present): content of `api.md` and/or `data-model.md` from the target folder.
 - **Scenarios** (if present): list of scenario IDs and their names.
 
 ## 3. Pre-flight Check
@@ -69,18 +75,32 @@ Performed by the orchestrator directly — no subagents. This is a quick cross-r
 4. **Scope contradictions**: Plan steps do not create or implement anything listed as out of scope in `requirements.md`. Flag obvious contradictions.
 5. **Dependency check**: If `requirements.md` lists dependencies on other features, warn the user to confirm those are already implemented.
 6. **Scenario reference validation**: Every scenario ID referenced in plan test steps (e.g., `covering: SC-04-01`) must exist in `scenarios/`. If `scenarios/` is missing but the plan references scenario IDs, warn that test-first implementation will lack scenario context.
-7. **Technical consistency**: Plan steps must be consistent with the current technical reference docs — no steps reference deprecated patterns, removed APIs, or technologies not in `tech-stack.md`. Flag any drift between the plan and the technical docs.
+7. **Technical consistency**: Validate that plan steps are still consistent with the current technical reference docs. Since time may pass between planning and implementation, actively check for drift:
+   - No steps reference deprecated patterns, removed APIs, or technologies not in `tech-stack.md`.
+   - Architecture boundaries in `architecture.md` have not changed in ways that affect the plan.
+   - Conventions in `conventions.md` still match what the plan assumes.
+   - Security guidelines in `security.md` have not introduced new constraints.
+     Flag any drift between the plan and the current technical docs. For each instance of drift, explain how it affects the plan and what would need to change.
 
 ### Outcomes
 
-- **Critical issues found** (missing requirement coverage, dangling references, zero steps, scope contradictions, technical drift): STOP and present all issues to the user. Use `AskUserQuestion` to ask whether to abort or proceed despite the issues.
+- **Critical issues found** (missing requirement coverage, dangling references, zero steps, scope contradictions, technical drift): STOP and present all issues to the user. For each issue, explain why it is critical and what the impact on implementation would be. Use `AskUserQuestion`:
+  - **Header**: "Critical Issues"
+  - **Question**: List each critical issue with context and impact.
+  - **Options**:
+    1. **Re-validate** — "I've updated the plan/requirements, re-run pre-flight checks"
+    2. **Proceed** — "Continue implementation despite these issues (they become warnings)"
+    3. **Abort** — "Stop and fix the plan/requirements first"
+  - If **Re-validate**: re-run from step 2 (Context Loading) to pick up any changes.
+  - If **Proceed**: downgrade all critical issues to warnings, note them as assumptions, and continue to step 4.
+  - If **Abort**: STOP.
 - **Warnings found** (missing scenario references, dependency confirmation needed): Present warnings to the user alongside the start/resume summary. Proceed unless the user chooses to abort.
 - **Resume detected** (some steps already marked `[x]`): Present a resume summary — how many steps done, which phase/step to resume from. Use `AskUserQuestion` to confirm before continuing.
 - **Clean start** (no steps marked `[x]`): Present a brief summary — feature title, number of phases, number of steps. Use `AskUserQuestion` to confirm before starting.
 
 ## 4. Compliance Brief
 
-> **Sync note**: This section is shared with `ddd-plan` step 4. Keep both in sync.
+> **Sync note**: This section is shared with `ddd-specify` step 4 and `ddd-plan` step 4. Keep all three in sync.
 
 Before starting implementation, the orchestrator synthesizes a **compliance brief** from the technical reference docs (Subagent A output). This is a condensed set of rules that apply to code generation. The brief is held in memory and referenced during every implementation step.
 
@@ -237,6 +257,17 @@ After writing `implementation.md`, spawn a review subagent to validate it agains
 
 After writing `implementation.md`, update the target folder's `index.md` to include an entry for `implementation.md`. If no `index.md` exists, create one listing all files in the folder. Apply the `audit-index` skill to format it.
 
+### Post-Write Consistency Check
+
+After writing `implementation.md` and updating the index, verify internal consistency across the feature folder:
+
+1. **Dangling references**: All requirement IDs referenced in `implementation.md` must exist in `requirements.md`. Flag any dangling references.
+2. **Coverage**: Every functional requirement in `requirements.md` should have corresponding implementation notes in `implementation.md`. Flag requirements with no implementation mention.
+3. **File paths**: All file paths listed in `implementation.md`'s "Files Changed" section must exist in the codebase. Flag any missing files.
+4. **Term consistency**: Entity names and domain terms used in `implementation.md` are consistent with `requirements.md` and `plan.md`.
+
+If issues are found, fix them in place before proceeding to step 8.
+
 ## 8. Summary
 
 Present a final summary to the user:
@@ -261,6 +292,10 @@ Present a final summary to the user:
 ### Issues Encountered
 - [Any step failures, retries, or deviations]
 - [If none: "No issues encountered."]
+
+### Next Steps
+- Status has been set to `under_test` — perform manual testing before promotion.
+- When testing is complete, run `/ddd-promote` to promote the feature to the product specification.
 ```
 
 ## 9. Handoff to Code Review

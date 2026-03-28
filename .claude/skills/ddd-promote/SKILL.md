@@ -79,15 +79,17 @@ Use `AskUserQuestion` to confirm before proceeding:
   1. **Proceed** — "Continue with promotion"
   2. **Abort** — "Cancel"
 
-### Optional Verification
+### Pre-Promotion Verification
 
-After the user confirms "Proceed", offer an optional verification step using `AskUserQuestion`:
+After the user confirms "Proceed", re-run the plan's verification commands. Code may have changed since implementation, so re-verification is the default.
 
-- **Header**: "Run Verification?"
-- **Question**: "Would you like to re-run the plan's verification commands before promoting? This ensures tests still pass after any changes since implementation."
+Use `AskUserQuestion`:
+
+- **Header**: "Verification"
+- **Question**: "Re-running the plan's verification commands to ensure tests still pass. You can skip this if you've just verified manually."
 - **Options**:
-  1. **Verify** — "Run verification commands from plan.md's verification phase"
-  2. **Skip** — "Proceed without re-verification"
+  1. **Verify** — "Run verification commands from plan.md's verification phase (recommended)"
+  2. **Skip** — "I've already verified, proceed without re-running"
 
 If **Verify**: parse `plan.md`'s verification phase and execute all runnable commands (e.g., `npm run test`, `npm run build`). If any fail, present the failures and ask whether to proceed anyway or abort. If all pass, continue to step 3.
 If **Skip**: continue to step 3.

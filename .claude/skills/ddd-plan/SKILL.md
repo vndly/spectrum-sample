@@ -26,7 +26,12 @@ On-demand only, invoked via `/ddd-plan <folder-path>`.
 - If no argument is provided, ask the user for the folder path before proceeding. Do not guess.
 - Validate the folder exists. If it does not, STOP with an error.
 - Validate that `requirements.md` exists in the folder. If it does not, STOP with an error.
-- **Status gate**: Read the `status` field from `requirements.md` frontmatter. If status is not `approved` or `planned`, STOP with an error: "Requirements must be reviewed and approved before planning. Current status: {status}. Run `/ddd-review` to review the requirements first."
+- **Status gate**: Read the `status` field from `requirements.md` frontmatter. Only `approved` and `planned` are accepted. For any other status, STOP with a status-specific error:
+  - `draft` → "Requirements are still in draft. Run `/ddd-specify` to complete the specification, then `/ddd-review` to review it."
+  - `review` → "A review is currently in progress. Wait for it to complete or re-run `/ddd-review` to finish the review."
+  - `in_development` → "This feature is already being implemented. Planning changes are not allowed during implementation."
+  - `under_test` → "This feature is already implemented and under testing. Run `/ddd-promote` when testing is complete."
+  - `released` → "This feature has already been promoted to the product specification."
 - **Check for existing artifacts**: If `plan.md` or `scenarios/` already exist in the folder, use `AskUserQuestion` to ask the user how to proceed:
   - **Header**: "Existing Artifacts"
   - **Question**: List which artifacts already exist (`plan.md`, `scenarios/`, or both).
@@ -44,9 +49,10 @@ Use the Agent tool to spawn **four subagents in parallel** to collect all necess
 
 **Subagent A — Technical reference**: Read all files in `docs/technical/`. Return the full content of each file.
 
-**Subagent B — Feature docs & dependency plans**: Read `requirements.md` from the target folder. Extract its dependency list. For each declared dependency, locate its folder (in `docs/product/` or `docs/changes/`) and read its `plan.md` if it exists. Return:
+**Subagent B — Feature docs & dependency plans**: Read `requirements.md` from the target folder. If `api.md` or `data-model.md` exist in the target folder, read them as well — these are manually authored and may contain constraints that affect planning. Extract the dependency list from `requirements.md`. For each declared dependency, locate its folder (in `docs/product/` or `docs/changes/`) and read its `plan.md` if it exists. Return:
 
 - **Requirements**: feature ID, title, status, type, importance, all functional requirement IDs with descriptions and priorities, all non-functional requirements with thresholds, all acceptance criteria, scope boundaries (in scope / out of scope), decisions, dependencies, risks and assumptions.
+- **Feature-specific docs** (if present): content of `api.md` and/or `data-model.md` from the target folder.
 - **Dependency plans**: For each dependency that has a `plan.md`, return the list of phases and steps (summaries only, not full content) — enough to verify ordering and avoid conflicts.
 
 **Subagent C — Standards**: Read the following files and return their full content:
@@ -87,7 +93,7 @@ Performed by the orchestrator directly — no subagents. This is a critical gate
 
 ## 4. Compliance Brief
 
-> **Sync note**: This section is shared with `ddd-implement` step 4. Keep both in sync.
+> **Sync note**: This section is shared with `ddd-specify` step 4 and `ddd-implement` step 4. Keep all three in sync.
 
 Before generating the plan and scenarios, synthesize a **compliance brief** from the technical reference docs (Subagent A output). This is a condensed set of rules that apply to plan generation, ensuring every plan step and scenario respects the project's standards.
 

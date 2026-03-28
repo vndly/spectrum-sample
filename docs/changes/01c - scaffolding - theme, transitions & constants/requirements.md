@@ -21,13 +21,15 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 ### Dependencies
 
-- Phase 00 (Setup) complete — Tailwind v4, Vue 3, Vite all installed and configured.
+- R-00 (Phase 00 / Setup) complete — Tailwind v4, Vue 3, Vite all installed and configured.
+- R-01a (Dependencies & Test Infrastructure) complete — Vitest, `@vue/test-utils`, and test configuration available.
 
 ## Decisions
 
-| Decision                   | Choice               | Rationale                                                                                                                                       |
-| :------------------------- | :------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Transition CSS in main.css | Global CSS exception | Vue `<Transition>` requires class-based CSS. Centralizing in `main.css` avoids duplication. Acknowledged exception to the "Tailwind only" rule. |
+| Decision                   | Choice               | Rationale                                                                                                                                                      |
+| :------------------------- | :------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Transition CSS in main.css | Global CSS exception | Vue `<Transition>` requires class-based CSS. Centralizing in `main.css` avoids duplication. Acknowledged exception to the "Tailwind only" rule.                |
+| Domain file in scaffolding | Early creation       | `src/domain/constants.ts` is introduced during a Presentation-focused scaffolding phase because downstream phases (R-01e, R-01g) depend on `TOAST_DISMISS_MS`. |
 
 ## Scope
 
@@ -50,32 +52,32 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 ## Functional Requirements
 
-| ID     | Requirement              | Description                                                                                                                                                                                                                                          | Priority |
-| :----- | :----------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
-| SC-21  | Tailwind theme additions | Add `--color-success: #22c55e` and `--color-error: #ef4444` to the `@theme` block for toast type accents. Note: these colors target the current dark theme only; light-theme counterparts will be added in the future theme-switching feature phase. | P1       |
-| SC-09a | Fade transition CSS      | Define `.fade-*` CSS classes for route transitions: 200ms opacity fade with `ease-in-out`. Note: this phase covers only the CSS definitions — the `<Transition>` wiring in the app shell is in R-01k.                                                | P1       |
-| SC-22  | Toast transition CSS     | Define `.toast-*` CSS classes: slide in horizontally from off-screen right (300ms `ease-out`), fade out on leave (200ms `ease-in`).                                                                                                                  | P1       |
-| SC-23  | Modal transition CSS     | Define `.modal-*` CSS classes for the content card: fade in with slight scale-up on enter (200ms `ease-out`), reverse on leave (150ms `ease-in`). Backdrop transition is managed separately by the modal component (R-01g).                          | P1       |
-| SC-24  | Reduced-motion override  | Add `@media (prefers-reduced-motion: reduce)` block that disables all `.fade-*`, `.toast-*`, `.modal-*` transitions and `animate-pulse` animations.                                                                                                  | P1       |
-| SC-25  | Domain constants         | Create `src/domain/constants.ts` with `export const TOAST_DISMISS_MS = 4000` (auto-dismiss timeout in milliseconds for toast notifications).                                                                                                         | P1       |
+| ID         | Requirement              | Description                                                                                                                                                                                                                                          | Priority |
+| :--------- | :----------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| SC-01c-21  | Tailwind theme additions | Add `--color-success: #22c55e` and `--color-error: #ef4444` to the `@theme` block for toast type accents. Note: these colors target the current dark theme only; light-theme counterparts will be added in the future theme-switching feature phase. | P1       |
+| SC-01c-09a | Fade transition CSS      | Define `.fade-*` CSS classes for route transitions: 200ms opacity fade with `ease-in-out`. Note: this phase covers only the CSS definitions — the `<Transition>` wiring in the app shell is in R-01k.                                                | P1       |
+| SC-01c-22  | Toast transition CSS     | Define `.toast-*` CSS classes: slide in horizontally from off-screen right with simultaneous opacity fade on enter (300ms `ease-out`), fade out on leave (200ms `ease-in`).                                                                          | P1       |
+| SC-01c-23  | Modal transition CSS     | Define `.modal-*` CSS classes for the content card: fade in with slight scale-up on enter (200ms `ease-out`), reverse on leave (150ms `ease-in`). Backdrop transition is managed separately by the modal component (R-01g).                          | P1       |
+| SC-01c-24  | Reduced-motion override  | Add `@media (prefers-reduced-motion: reduce)` block that disables all `.fade-*`, `.toast-*`, `.modal-*` transitions and `animate-pulse` animations.                                                                                                  | P1       |
+| SC-01c-25  | Domain constants         | Create `src/domain/constants.ts` with `export const TOAST_DISMISS_MS = 4000` (auto-dismiss timeout in milliseconds for toast notifications).                                                                                                         | P1       |
 
-> **Note:** `src/domain/constants.ts` is created in this phase with `TOAST_DISMISS_MS` only (additional constants defined in `data-model.md` will be added in their respective feature phases). This is an acknowledged architectural exception — a Domain layer file introduced during a Presentation-focused scaffolding phase. See Decisions table for rationale.
+> **Note:** `src/domain/constants.ts` is created in this phase with `TOAST_DISMISS_MS` only (additional constants will be added in their respective feature phases). See Decisions table for rationale.
 
 ## Non-Functional Requirements
 
 ### Transitions & Animation
 
 - **NFR-01c-01 — Route fade:** 200ms opacity transition, `ease-in-out`.
-- **NFR-01c-02 — Toast enter:** Slide in horizontally from off-screen right, 300ms `ease-out`.
+- **NFR-01c-02 — Toast enter:** Slide in horizontally from off-screen right with opacity fade, 300ms `ease-out`.
 - **NFR-01c-03 — Toast leave:** Fade out, 200ms `ease-in`.
 - **NFR-01c-04 — Modal enter:** Fade in + scale from 0.95 to 1 (content card only), 200ms `ease-out`.
-- **NFR-01c-05 — Modal leave:** Fade out + scale from 1 to 0.95 (content card only), 150ms `ease-in`.
+- **NFR-01c-05 — Modal leave:** Fade out + scale from 1 to 0.95 (content card only), 150ms `ease-in`. Note: 150ms is below the UI/UX spec's 200–300ms guideline; intentional for snappier leave feel.
 - **NFR-01c-06 — Motion sensitivity:** All transitions and `animate-pulse` animation disabled when `prefers-reduced-motion` is set.
 - **NFR-01c-07 — Duration cap:** No transition exceeds 300ms.
 
 ### Architecture Compliance
 
-- **Transition CSS in main.css:** Acknowledged exception to the "Tailwind only" rule. See Decisions table for rationale.
+- **CSS centralization:** No CSS files other than `src/assets/main.css` shall exist in the project. All transition and animation styles are centralized in the single Tailwind entry point.
 
 ## Risks & Assumptions
 
@@ -90,13 +92,13 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 
 ## Acceptance Criteria
 
-- [ ] [SC-21] `--color-success` (`#22c55e`) and `--color-error` (`#ef4444`) exist in the `@theme` block of `src/assets/main.css`
-- [ ] [SC-09a] Fade transition classes (`.fade-enter-active`, `.fade-leave-active`, `.fade-enter-from`, `.fade-leave-to`) are defined
-- [ ] [SC-22] Toast transition classes (`.toast-enter-active`, `.toast-leave-active`, `.toast-enter-from`, `.toast-leave-to`) are defined
-- [ ] [SC-23] Modal transition classes (`.modal-enter-active`, `.modal-leave-active`, `.modal-enter-from`, `.modal-leave-to`) are defined for the content card
-- [ ] [SC-24] `prefers-reduced-motion` disables all transitions and `animate-pulse` animation
-- [ ] [SC-24] No transition duration exceeds 300ms
-- [ ] [SC-25] `TOAST_DISMISS_MS` constant exists in `src/domain/constants.ts` with value `4000`
-- [ ] Existing theme variables in `src/assets/main.css` are preserved
+- [ ] [SC-01c-21] `--color-success` (`#22c55e`) and `--color-error` (`#ef4444`) exist in the `@theme` block of `src/assets/main.css`
+- [ ] [SC-01c-09a] Fade transition classes (`.fade-enter-active`, `.fade-leave-active`, `.fade-enter-from`, `.fade-leave-to`) are defined
+- [ ] [SC-01c-22] Toast transition classes (`.toast-enter-active`, `.toast-leave-active`, `.toast-enter-from`, `.toast-leave-to`) are defined
+- [ ] [SC-01c-23] Modal transition classes (`.modal-enter-active`, `.modal-leave-active`, `.modal-enter-from`, `.modal-leave-to`) are defined for the content card
+- [ ] [SC-01c-24] `prefers-reduced-motion` disables all transitions and `animate-pulse` animation
+- [ ] [NFR-01c-07] No transition duration exceeds 300ms
+- [ ] [SC-01c-25] `TOAST_DISMISS_MS` constant exists in `src/domain/constants.ts` with value `4000`
+- [ ] Existing theme variables (`--color-bg-primary`, `--color-bg-secondary`, `--color-surface`, `--color-accent`, `--font-sans`) in `src/assets/main.css` are preserved
 - [ ] Unit test verifies `TOAST_DISMISS_MS` value and type
 - [ ] `npm run check` passes with no errors

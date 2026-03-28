@@ -280,11 +280,12 @@ Before item-by-item triage, present a summary of findings by severity and offer 
 - **Question**: `N critical | M warnings | K suggestions. You can batch-process entire severity levels or triage individually.`
 - **Options**:
   1. **Triage individually** — "Review each finding one by one"
-  2. **Fix all suggestions** — "Auto-fix all suggestions, triage critical and warnings individually"
-  3. **Skip all suggestions** — "Skip all suggestions, triage critical and warnings individually"
-  4. **Ignore all suggestions** — "Discard all suggestions, triage critical and warnings individually"
+  2. **Fix all warnings** — "Auto-fix all warnings, triage critical and suggestions individually"
+  3. **Fix all suggestions** — "Auto-fix all suggestions, triage critical and warnings individually"
+  4. **Skip all suggestions** — "Skip all suggestions, triage critical and warnings individually"
+  5. **Ignore all suggestions** — "Discard all suggestions, triage critical and warnings individually"
 
-Apply the user's batch choice to the relevant severity level, then proceed with item-by-item triage for the remaining findings. If a severity level has no findings, omit its batch options.
+Apply the user's batch choice to the relevant severity levels, then proceed with item-by-item triage for the remaining findings. If a severity level has no findings, omit its batch options. The user may combine batch choices where applicable (e.g., fix all warnings AND fix all suggestions).
 
 ### How to present
 
