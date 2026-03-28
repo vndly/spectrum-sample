@@ -1,4 +1,4 @@
-# Verification Scenarios: App Scaffolding — Dependencies & Test Infrastructure
+# Verification Scenarios: App Scaffolding
 
 ## Contents
 
@@ -6,3 +6,11 @@
 2. **[SC-01a-02](./SC-01a-02.feature)**: Vitest configuration properties, test runner, CI check, and testing.md update.
 3. **[SC-01a-03](./SC-01a-03.feature)**: Test setup file, localStorage cleanup, and TypeScript globals.
 4. **[SC-12](./SC-12.feature)**: i18n keys for navigation, page titles, empty state, error, and toast labels.
+5. **[SC-01c-09a](./SC-01c-09a.feature)**: Fade transition CSS class definitions.
+6. **[SC-01c-21](./SC-01c-21.feature)**: Tailwind theme color token existence and values.
+7. **[SC-01c-22](./SC-01c-22.feature)**: Toast transition CSS classes and animation behavior.
+8. **[SC-01c-23](./SC-01c-23.feature)**: Modal transition CSS classes and content card animation.
+9. **[SC-01c-24](./SC-01c-24.feature)**: Reduced-motion override, pulse animation suppression, and duration cap verification.
+10. **[SC-01c-25](./SC-01c-25.feature)**: Domain constants for toast auto-dismiss.
+
+> **i18n note:** Theme, transitions, and constants deliver CSS definitions and a numeric constant with no user-facing text. i18n coverage is not applicable for those scenarios.
