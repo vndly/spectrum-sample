@@ -89,7 +89,7 @@ Format (`prettier`), lint (`eslint`), and type-check (`vue-tsc`) all pass indivi
 | Requirement                  | Implementation                                                                              |
 | :--------------------------- | :------------------------------------------------------------------------------------------ |
 | SC-01c-21 (Theme additions)  | `--color-success` and `--color-error` added to `@theme` block in `src/assets/main.css:9-10` |
-| SC-01c-09a (Fade transition) | `.fade-*` classes at `src/assets/main.css:13-21`                                            |
+| SC-01c-09 (Fade transition) | `.fade-*` classes at `src/assets/main.css:13-21`                                            |
 | SC-01c-22 (Toast transition) | `.toast-*` classes at `src/assets/main.css:23-37`                                           |
 | SC-01c-23 (Modal transition) | `.modal-*` classes at `src/assets/main.css:39-53`                                           |
 | SC-01c-24 (Reduced-motion)   | `@media (prefers-reduced-motion: reduce)` block at `src/assets/main.css:55-68`              |

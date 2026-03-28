@@ -63,15 +63,15 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 ## Phase 3 — Testing: i18n Keys (test-first)
 
-> **References:** [requirements.md](./requirements.md) · [scenarios/SC-12.feature](./scenarios/SC-12.feature)
+> **References:** [requirements.md](./requirements.md) · [scenarios/SC-01b-12.feature](./scenarios/SC-01b-12.feature)
 
-### Step 1 — Write locale key parity test (covering: SC-12-03)
+### Step 1 — Write locale key parity test (covering: SC-01b-12-03)
 
 - [x] Create `tests/presentation/i18n/locale-keys.test.ts` (directory `tests/presentation/i18n/` does not exist yet and must be created):
   - Test that `en.json`, `es.json`, `fr.json` all exist and parse as valid JSON (covering: AC5)
   - Test that all three files contain identical key paths (covering: AC2)
   - Test that all translation values are non-empty strings (covering: AC3)
-  - Test that key paths include the expected 19 keys (18 new + 1 existing `app.title`, matching SC-12's 18 new keys) (covering: AC1):
+  - Test that key paths include the expected 19 keys (18 new + 1 existing `app.title`, matching SC-01b-12's 18 new keys) (covering: AC1):
     - `app.title`
     - `nav.home`, `nav.recommendations`, `nav.calendar`, `nav.library`, `nav.settings`
     - `page.home.title`, `page.recommendations.title`, `page.calendar.title`, `page.library.title`, `page.settings.title`
@@ -86,14 +86,14 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 > **Scenario traceability:**
 >
-> - SC-12-03 → covered by `locale-keys.test.ts` above (structural parity, camelCase, value checks)
-> - SC-12-01 → deferred to 01i (navigation component tests, nav label rendering)
-> - SC-12-02 → deferred to 01j (placeholder view component tests, page title rendering)
-> - SC-12-04, SC-12-05, SC-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys); AC9 (fallback verification) is implicitly satisfied by the `fallbackLocale: 'en'` configuration in Phase 00 and will be explicitly exercised when 01i/01j provide rendering components
+> - SC-01b-12-03 → covered by `locale-keys.test.ts` above (structural parity, camelCase, value checks)
+> - SC-01b-12-01 → deferred to 01i (navigation component tests, nav label rendering)
+> - SC-01b-12-02 → deferred to 01j (placeholder view component tests, page title rendering)
+> - SC-01b-12-04, SC-01b-12-05, SC-01b-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys); AC9 (fallback verification) is implicitly satisfied by the `fallbackLocale: 'en'` configuration in Phase 00 and will be explicitly exercised when 01i/01j provide rendering components
 
 ---
 
-## Phase 4 — Implementation: i18n Keys (covering: SC-12)
+## Phase 4 — Implementation: i18n Keys (covering: SC-01b-12)
 
 ### Step 1 — Verify prerequisite
 
@@ -154,7 +154,7 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 `page.*.title` keys mirror `nav.*` values initially (separate keys to allow divergence later).
 
-> **Key count verification:** The translation table above contains exactly 18 entries, matching SC-12's requirement of 18 new keys across 5 namespaces.
+> **Key count verification:** The translation table above contains exactly 18 entries, matching SC-01b-12's requirement of 18 new keys across 5 namespaces.
 
 ---
 
@@ -172,7 +172,7 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 ## Phase 6 — Tests: Theme, Transitions & Constants
 
-> Test-first: tests are written and run before implementation code. CSS structural scenarios (SC-01c-21-01, SC-01c-09a-01, SC-01c-22-01, SC-01c-23-01, SC-01c-24-04, SC-01c-24-05) are verified via CSS inspection in Phase 8. Behavioral scenarios requiring downstream components (SC-01c-22-02, SC-01c-22-03, SC-01c-23-02, SC-01c-24-01 through SC-01c-24-03) are verified after R-01g and R-01k are complete.
+> Test-first: tests are written and run before implementation code. CSS structural scenarios (SC-01c-21-01, SC-01c-09-01, SC-01c-22-01, SC-01c-23-01, SC-01c-24-04, SC-01c-24-05) are verified via CSS inspection in Phase 8. Behavioral scenarios requiring downstream components (SC-01c-22-02, SC-01c-22-03, SC-01c-23-02, SC-01c-24-01 through SC-01c-24-03) are verified after R-01g and R-01k are complete.
 
 ### Step 1 — Write domain constants unit test
 
@@ -203,7 +203,7 @@ export const TOAST_DISMISS_MS = 4000
   - `--color-success: #22c55e`
   - `--color-error: #ef4444`
 
-### Step 5 — Add fade transition CSS [SC-01c-09a]
+### Step 5 — Add fade transition CSS [SC-01c-09]
 
 > Vue `<Transition>` requires class-based CSS. Centralizing in `main.css` avoids duplication. Acknowledged exception to the "Tailwind only" rule (see Decisions table in requirements.md).
 
@@ -298,7 +298,7 @@ export const TOAST_DISMISS_MS = 4000
 
 ### Step 11 — CSS verification
 
-> Covers CSS structural scenarios: SC-01c-21-01, SC-01c-09a-01, SC-01c-22-01, SC-01c-23-01, SC-01c-24-04, SC-01c-24-05.
+> Covers CSS structural scenarios: SC-01c-21-01, SC-01c-09-01, SC-01c-22-01, SC-01c-23-01, SC-01c-24-04, SC-01c-24-05.
 
 - [x] `--color-success` and `--color-error` exist in the `@theme` block of `src/assets/main.css`
 - [x] Existing theme variables (`--color-bg-primary`, `--color-bg-secondary`, `--color-surface`, `--color-accent`, `--font-sans`) are preserved

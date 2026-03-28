@@ -5,8 +5,8 @@
 1. **[SC-01a-01](./SC-01a-01.feature)**: Dependency installation (vue-router and @vue/test-utils).
 2. **[SC-01a-02](./SC-01a-02.feature)**: Vitest configuration properties, test runner, CI check, and testing.md update.
 3. **[SC-01a-03](./SC-01a-03.feature)**: Test setup file, localStorage cleanup, and TypeScript globals.
-4. **[SC-12](./SC-12.feature)**: i18n keys for navigation, page titles, empty state, error, and toast labels.
-5. **[SC-01c-09a](./SC-01c-09a.feature)**: Fade transition CSS class definitions.
+4. **[SC-01b-12](./SC-01b-12.feature)**: i18n keys for navigation, page titles, empty state, error, and toast labels.
+5. **[SC-01c-09](./SC-01c-09.feature)**: Fade transition CSS class definitions.
 6. **[SC-01c-21](./SC-01c-21.feature)**: Tailwind theme color token existence and values.
 7. **[SC-01c-22](./SC-01c-22.feature)**: Toast transition CSS classes and animation behavior.
 8. **[SC-01c-23](./SC-01c-23.feature)**: Modal transition CSS classes and content card animation.
