@@ -1,4 +1,4 @@
-import { ref, type Readonly, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { TOAST_DISMISS_MS, MAX_VISIBLE_TOASTS } from '@/domain/constants'
 
 /** A toast notification entry. */

@@ -1,4 +1,4 @@
-import { ref, shallowRef, type Readonly, type Ref, type ShallowRef } from 'vue'
+import { ref, shallowRef, type Ref, type ShallowRef } from 'vue'
 
 /** Props passed to the modal when opening it. */
 export interface ModalProps {

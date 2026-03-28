@@ -65,9 +65,10 @@ describe('useToast', () => {
     addToast({ message: 'With action', type: 'error', action: { label: 'Retry', handler } })
 
     // Assert
-    expect(toasts.value[0].action).toBeDefined()
-    expect(toasts.value[0].action!.label).toBe('Retry')
-    expect(toasts.value[0].action!.handler).toBe(handler)
+    const action = toasts.value[0].action
+    expect(action).toBeDefined()
+    expect(action?.label).toBe('Retry')
+    expect(action?.handler).toBe(handler)
   })
 
   // SC-13-04, SC-23-08 — adding a 6th toast evicts the oldest toast

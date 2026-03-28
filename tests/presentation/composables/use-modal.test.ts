@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useModal, _resetForTesting } from '@/presentation/composables/use-modal'
+import type { ModalProps } from '@/presentation/composables/use-modal'
 
 describe('useModal', () => {
   beforeEach(() => {
@@ -17,8 +18,9 @@ describe('useModal', () => {
     // Assert
     expect(isOpen.value).toBe(true)
     expect(props.value).not.toBeNull()
-    expect(props.value!.title).toBe('Confirm Action')
-    expect(props.value!.content).toBe('Are you sure?')
+    const p = props.value as ModalProps
+    expect(p.title).toBe('Confirm Action')
+    expect(p.content).toBe('Are you sure?')
   })
 
   // SC-12-02, SC-23-04 — close() sets isOpen to false and clears props to null
@@ -46,7 +48,8 @@ describe('useModal', () => {
 
     // Assert
     expect(isOpen.value).toBe(true)
-    expect(props.value!.title).toBe('Second')
+    const p = props.value as ModalProps
+    expect(p.title).toBe('Second')
   })
 
   // SC-23-05 — onConfirm callback is stored and accessible in modal props
@@ -59,7 +62,8 @@ describe('useModal', () => {
     open({ title: 'Delete Item', onConfirm })
 
     // Assert
-    expect(props.value!.onConfirm).toBe(onConfirm)
+    const p = props.value as ModalProps
+    expect(p.onConfirm).toBe(onConfirm)
   })
 
   // SC-23-06 — onCancel callback is stored and accessible in modal props
@@ -72,7 +76,8 @@ describe('useModal', () => {
     open({ title: 'Delete Item', onCancel })
 
     // Assert
-    expect(props.value!.onCancel).toBe(onCancel)
+    const p = props.value as ModalProps
+    expect(p.onCancel).toBe(onCancel)
   })
 
   // SC-12-04, SC-23-10 — close() when no modal is open has no effect
@@ -95,8 +100,9 @@ describe('useModal', () => {
     open({ title: 'Delete Item', confirmLabel: 'Delete', cancelLabel: 'Keep' })
 
     // Assert
-    expect(props.value!.confirmLabel).toBe('Delete')
-    expect(props.value!.cancelLabel).toBe('Keep')
+    const p = props.value as ModalProps
+    expect(p.confirmLabel).toBe('Delete')
+    expect(p.cancelLabel).toBe('Keep')
   })
 
   // Implementation detail — props include all optional fields
