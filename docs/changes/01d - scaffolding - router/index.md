@@ -2,6 +2,6 @@
 
 ## Contents
 
-1. **[Requirements](./requirements.md)**: Route definitions, lazy loading, scroll behavior, and document title.
-2. **[Scenarios](./scenarios/)**: Scenarios for routing, navigation, document title, and scroll behavior.
-3. **[Plan](./plan.md)**: Step-by-step implementation plan.
+1. **[Requirements](./requirements.md)**: Defines route structure, lazy loading, scroll behavior, and document titles.
+2. **[Plan](./plan.md)**: Outlines the step-by-step implementation approach.
+3. **[Scenarios](./scenarios/)**: Covers routing, navigation, document title, and scroll behavior scenarios.
