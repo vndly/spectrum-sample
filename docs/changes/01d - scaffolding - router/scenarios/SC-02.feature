@@ -1,15 +1,14 @@
-Feature: SC-29/SC-02/SC-03 — Routing
-  The router SHALL navigate between all defined routes.
+Feature: SC-02 — Route definitions
+  The router SHALL define 4 named routes and a catch-all redirect.
 
-  Scenario: SC-29-01 — Router uses HTML5 history mode
-    Given the app is running
-    When I navigate to /settings
-    Then the URL in the browser address bar is /settings without a hash fragment
+  # Note: Scenarios SC-02-01 and SC-02-02 require navigation components from 01i
+  # and placeholder views from 01j. They are integration-level scenarios verifiable
+  # after those changes are complete.
 
   Scenario Outline: SC-02-01 — Navigation between pages
     Given the app is running
     When I click the "<nav_item>" nav item
-    Then the URL changes to <route>
+    Then the URL changes to "<route>"
     And the <page_name> placeholder view is displayed
     And the page header shows "<page_name>"
 
@@ -20,19 +19,21 @@ Feature: SC-29/SC-02/SC-03 — Routing
       | Library  | /library  | Library   |
       | Settings | /settings | Settings  |
 
-  Scenario: SC-02-02 — Direct URL navigation
+  Scenario Outline: SC-02-02 — Direct URL navigation
     Given the app is running
-    When I navigate directly to /settings in the browser address bar
-    Then the settings placeholder view is displayed
-    And the sidebar highlights the Settings nav item
+    When I navigate directly to "<route>" in the browser address bar
+    Then the "<page_name>" placeholder view is displayed
+    And the sidebar highlights the "<nav_item>" nav item
+    And the page header shows "<page_name>"
+
+    Examples:
+      | route     | page_name | nav_item |
+      | /         | Home      | Home     |
+      | /settings | Settings  | Settings |
+      | /library  | Library   | Library  |
 
   Scenario: SC-02-03 — Catch-all redirect
     Given the app is running
     When I navigate to /nonexistent
     Then the router redirects to /
     And the home placeholder view is displayed
-
-  Scenario: SC-03-01 — Route lazy loading (build verification)
-    Given the app is built for production
-    When I inspect the build output
-    Then the production build output contains at least 4 separate JavaScript chunk files corresponding to route views
