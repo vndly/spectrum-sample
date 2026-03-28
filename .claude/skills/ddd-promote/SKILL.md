@@ -127,9 +127,10 @@ This is the core of the skill. Each file type is merged at the **section/require
   - **Header**: "Conflict"
   - **Question**: Show the section heading/requirement ID, the target version (current), and the source version (incoming). Keep both versions concise — trim to the relevant diff if sections are long.
   - **Options**:
-    1. **Keep target** — "Keep the existing product version"
-    2. **Use source** — "Replace with the incoming change version"
-    3. **Manual** — "I'll provide a merged version"
+    1. **Combine both** — "Merge both versions together"
+    2. **Keep target** — "Keep the existing product version"
+    3. **Use source** — "Replace with the incoming change version"
+    4. **Manual** — "I'll provide a merged version"
   - If the user picks **Manual**, use `AskUserQuestion` to ask them to provide the merged content.
 
 #### File-specific merge strategies
