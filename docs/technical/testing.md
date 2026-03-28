@@ -20,6 +20,15 @@ npx vitest --watch      # Watch mode — re-runs on file changes
 npx vitest --coverage   # Run with coverage report
 ```
 
+## TypeScript Configuration
+
+Test files are covered by `tsconfig.vitest.json`, which extends `tsconfig.app.json` and adds:
+
+- `types: ["vitest/globals", "node"]` — provides IDE type-checking for Vitest globals (`describe`, `it`, `expect`) and Node.js APIs (`fs`, `path`, `process`).
+- `include: ["tests/**/*.ts"]` — covers all test files.
+
+This config is referenced in the root `tsconfig.json` project references, so VS Code and other editors resolve test types correctly.
+
 ## Test File Structure
 
 Test files live in a dedicated `tests/` folder at the project root, **mirroring** the `src/` directory structure. Files use the naming convention `*.test.ts`.

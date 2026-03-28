@@ -52,4 +52,4 @@ Format (`prettier`), lint (`eslint`), and type-check (`vue-tsc`) all pass indivi
 ## Known Limitations
 
 - `npm run test` and `npm run check` fail until at least one `tests/**/*.test.ts` file exists. This is a transient state resolved by the next phase that introduces tests.
-- No `tsconfig` changes were needed — Vitest handles TypeScript compilation for test files via its own resolution, independent of `tsconfig.app.json` which covers only `src/`.
+- A dedicated `tsconfig.vitest.json` was added (extending `tsconfig.app.json`) to provide IDE type-checking for test files. It adds `vitest/globals` and `node` types and includes `tests/**/*.ts`. Without this, VS Code cannot resolve `describe`, `it`, `expect`, or Node.js APIs in test files.

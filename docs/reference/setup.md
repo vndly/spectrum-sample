@@ -30,11 +30,12 @@ The `VITE_` prefix is required — Vite only exposes environment variables with 
 
 ## TypeScript Configuration
 
-The project uses three tsconfig files with project references:
+The project uses four tsconfig files with project references:
 
-- **`tsconfig.json`** — Root config with project references to `tsconfig.app.json` and `tsconfig.node.json`.
+- **`tsconfig.json`** — Root config with project references to `tsconfig.app.json`, `tsconfig.node.json`, and `tsconfig.vitest.json`.
 - **`tsconfig.app.json`** — App source code. `strict: true`, `target: "ES2022"`, `module: "ESNext"`, `moduleResolution: "bundler"`, path alias `@/* → ./src/*`, `include: ["src/**/*"]`.
 - **`tsconfig.node.json`** — Tooling config files. Covers `vite.config.ts`, `vitest.config.ts`, `eslint.config.js`.
+- **`tsconfig.vitest.json`** — Test files. Extends `tsconfig.app.json`, adds `vitest/globals` and `node` types, `include: ["tests/**/*.ts"]`.
 
 ## Commands
 

@@ -38,11 +38,12 @@ Created with `name: "plot-twisted"`, `version: "0.0.1"`, `private: true`, `type:
 
 ### TypeScript configuration
 
-Three config files using project references:
+Four config files using project references:
 
-- **`tsconfig.json`** — root file with references to `tsconfig.app.json` and `tsconfig.node.json`
+- **`tsconfig.json`** — root file with references to `tsconfig.app.json`, `tsconfig.node.json`, and `tsconfig.vitest.json`
 - **`tsconfig.app.json`** — `strict: true`, `target: "ES2022"`, `module: "ESNext"`, `moduleResolution: "bundler"`, path alias `@/* → ./src/*`, includes `src/**/*` and `src/**/*.vue`, enables `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`
 - **`tsconfig.node.json`** — covers `vite.config.ts`, `vitest.config.ts`, `eslint.config.js`
+- **`tsconfig.vitest.json`** — extends `tsconfig.app.json`, adds `vitest/globals` and `node` types, includes `tests/**/*.ts`
 
 ### Vite configuration (`vite.config.ts`)
 
@@ -199,6 +200,7 @@ dist/assets/index-CD4m2BkO.js   110.04 kB │ gzip: 40.61 kB
 | `tsconfig.json`                         | TypeScript project references        |
 | `tsconfig.app.json`                     | App TypeScript config                |
 | `tsconfig.node.json`                    | Node tooling TypeScript config       |
+| `tsconfig.vitest.json`                  | Test file TypeScript config          |
 | `vite.config.ts`                        | Vite build configuration             |
 | `vitest.config.ts`                      | Test runner configuration            |
 | `eslint.config.js`                      | Linting rules                        |

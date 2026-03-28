@@ -30,7 +30,7 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 
 - [x] Create `tests/setup.ts` with `/// <reference types="vitest/globals" />` at the top and `beforeEach(() => { localStorage.clear() })`. The `beforeEach` function is available at runtime due to `globals: true` set in the previous substep; TypeScript recognizes it via the `/// <reference types="vitest/globals" />` directive — both are required (covering SC-01a-03-01, SC-01a-03-02).
 
-> Note: `tsconfig.app.json` includes only `src/**/*` and does not cover the `tests/` directory. Vitest handles TypeScript compilation for test files separately via its own resolution, so no `tsconfig` changes are needed.
+> Note: `tsconfig.app.json` includes only `src/**/*` and does not cover the `tests/` directory. A dedicated `tsconfig.vitest.json` (extending `tsconfig.app.json`) provides IDE type-checking for test files, adding `vitest/globals` and `node` types with `include: ["tests/**/*.ts"]`.
 
 > Rollback: revert `vitest.config.ts` to its previous state and delete `tests/setup.ts`.
 

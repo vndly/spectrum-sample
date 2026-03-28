@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "composite": true,
+    "types": ["vitest/globals", "node"],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["tests/**/*.ts"]
+}
