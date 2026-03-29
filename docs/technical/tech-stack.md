@@ -16,6 +16,7 @@
 - **ESLint** — Enforces code quality rules, including the no-`any` guardrail defined in conventions.
 - **Prettier** — Consistent code formatting across the project, integrated with ESLint.
 - **Vitest** — Vite-native test runner — fast, compatible with Vue components, and shares the same config as the dev build.
+- **@vitest/coverage-v8** — V8-based code coverage provider for Vitest. Generates coverage reports via `npm run test:coverage`.
 - **@intlify/unplugin-vue-i18n** — Vite plugin that pre-compiles translation JSON at build time, stripping the runtime message compiler from production bundles.
 
 ## Infrastructure

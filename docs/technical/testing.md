@@ -2,7 +2,7 @@
 
 ## Test Runner
 
-The project uses [Vitest](https://vitest.dev/), a Vite-native test framework that shares the same config and transform pipeline as the dev build.
+The project uses [Vitest](https://vitest.dev/), a Vite-native test framework that shares the same config and transform pipeline as the dev build. Code coverage is provided by [`@vitest/coverage-v8`](https://vitest.dev/guide/coverage), which uses V8's built-in coverage instrumentation.
 
 `vitest.config.ts` settings:
 

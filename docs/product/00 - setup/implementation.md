@@ -32,7 +32,7 @@ Created with `name: "plot-twisted"`, `version: "0.0.1"`, `private: true`, `type:
 
 **Production dependencies:** `vue@^3.5.31`, `zod@^4.3.6`, `lucide-vue-next@^1.0.0`, `vue-i18n@^11.3.0`, `vue-router@^5.0.4`
 
-**Dev dependencies:** `typescript@~5.9.3`, `vite@^8.0.3`, `vitest@^4.1.2`, `@vitejs/plugin-vue@^6.0.5`, `@tailwindcss/vite@^4.2.2`, `tailwindcss@^4.2.2`, `@intlify/unplugin-vue-i18n@^11.0.7`, `eslint@^10.1.0`, `@eslint/js@^10.0.1`, `typescript-eslint@^8.57.2`, `eslint-plugin-vue@^10.8.0`, `eslint-config-prettier@^10.1.8`, `prettier@^3.8.1`, `vue-tsc@^3.2.6`, `jsdom@^29.0.1`, `@types/node@^25.5.0`, `@vue/test-utils@^2.4.6`
+**Dev dependencies:** `typescript@~5.9.3`, `vite@^8.0.3`, `vitest@^4.1.2`, `@vitest/coverage-v8@^4.1.2`, `@vitejs/plugin-vue@^6.0.5`, `@tailwindcss/vite@^4.2.2`, `tailwindcss@^4.2.2`, `@intlify/unplugin-vue-i18n@^11.0.7`, `eslint@^10.1.0`, `@eslint/js@^10.0.1`, `typescript-eslint@^8.57.2`, `eslint-plugin-vue@^10.8.0`, `eslint-config-prettier@^10.1.8`, `prettier@^3.8.1`, `vue-tsc@^3.2.6`, `jsdom@^29.0.1`, `@types/node@^25.5.0`, `@vue/test-utils@^2.4.6`
 
 296 packages installed, 0 vulnerabilities.
 
