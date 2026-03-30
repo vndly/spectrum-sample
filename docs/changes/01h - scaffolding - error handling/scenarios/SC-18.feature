@@ -9,4 +9,12 @@ Feature: SC-18 — Error boundary
   Scenario: SC-18-02 — Reload button refreshes the page
     Given the error boundary fallback is displayed
     When I click the "Reload" button
-    Then `window.location.reload()` is called
+    Then the page is refreshed
+
+  Scenario: SC-18-03 — Error boundary prevents propagation
+    Given the error boundary wraps a child component
+    And the global error handler is registered
+    When the child component throws an unhandled error
+    Then the error boundary catches the error
+    And the global error handler is NOT invoked
+    And no error toast appears

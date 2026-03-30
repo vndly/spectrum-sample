@@ -1,7 +1,7 @@
 ---
 id: R-01h
 title: App Scaffolding — Error Handling
-status: draft
+status: approved
 type: infrastructure
 importance: critical
 tags: [error-handling, error-boundary, toast]
@@ -19,13 +19,24 @@ Create the ErrorBoundary component (catches component errors, shows fallback UI)
 
 ## Decisions
 
-None specific to this sub-phase.
+| Decision                   | Choice                                                         | Rationale                                                                                                       |
+| :------------------------- | :------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- |
+| main.ts layer exception    | Allow `main.ts` to import from `src/presentation/composables/` | Global error handler must call `useToast()` outside component `setup()`; consistent with module-level singleton |
+| Error boundary propagation | Return `false` from `onErrorCaptured`                          | Prevents double-handling: boundary shows fallback UI, global handler should not also show toast                 |
 
 ## Scope
+
+### In Scope
 
 - Create `src/presentation/components/error/error-boundary.vue`.
 - Add `app.config.errorHandler` to `src/main.ts`.
 - Write tests for both.
+
+### Out of Scope
+
+- Recovery strategies beyond page reload.
+- Error reporting to external services.
+- Custom error types or error categorization.
 
 ## Functional Requirements
 
@@ -39,15 +50,20 @@ None specific to this sub-phase.
 
 ### Architecture Compliance
 
-- **main.ts exception:** `main.ts` importing from `src/presentation/composables/` is an intentional exception to typical layer boundaries, consistent with the module-level singleton decision. The global error handler must call `useToast()` outside component `setup()`.
+- **NFR-01h-01 — main.ts exception:** `main.ts` importing from `src/presentation/composables/` is an intentional exception to typical layer boundaries, consistent with the module-level singleton decision. The global error handler must call `useToast()` outside component `setup()`. _Threshold: No additional cross-layer imports beyond this documented exception._
+
+### Accessibility
+
+- **NFR-01h-02 — Fallback UI accessibility:** The error boundary fallback UI should use `role="alert"` to announce the error to screen readers. _Threshold: Error message is announced by assistive technology when displayed._
 
 ## Acceptance Criteria
 
-- [ ] Error boundary renders slot content in normal state
-- [ ] Error boundary shows fallback UI with translated error heading, description, and "Reload" button when a child component throws
-- [ ] Error boundary returns `false` from `onErrorCaptured` to prevent propagation
-- [ ] Reload button calls `window.location.reload()`
-- [ ] Global error handler logs errors to `console.error`
-- [ ] Global error handler dispatches an error toast via `useToast()`
-- [ ] Error boundary component tests pass
-- [ ] Global error handler test passes
+- [ ] [SC-18] Error boundary renders slot content in normal state
+- [ ] [SC-18] Error boundary shows fallback UI with translated error heading, description, and "Reload" button when a child component throws
+- [ ] [SC-18] Error boundary returns `false` from `onErrorCaptured` to prevent propagation
+- [ ] [SC-18] Reload button calls `window.location.reload()`
+- [ ] [SC-19] Global error handler logs errors to `console.error`
+- [ ] [SC-19] Global error handler dispatches an error toast via `useToast()`
+- [ ] [SC-24] Error boundary component tests pass
+- [ ] [SC-19] Global error handler test passes
+- [ ] [NFR-01h-02] Error boundary fallback UI uses `role="alert"` for accessibility
