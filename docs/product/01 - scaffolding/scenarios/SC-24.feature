@@ -1,6 +1,6 @@
 Feature: SC-24 — UI primitive tests
   UI primitive component tests SHALL verify rendering and behavior.
-  Note: This feature covers EmptyState, SkeletonLoader, ToastContainer, and ModalDialog. ErrorBoundary tests are in R-01h.
+  Note: This feature covers EmptyState, SkeletonLoader, ErrorBoundary, ToastContainer, and ModalDialog.
 
   Scenario: SC-24-01 — EmptyState component test suite
     Given the EmptyState test file exists at tests/presentation/components/common/empty-state.test.ts
@@ -19,6 +19,11 @@ Feature: SC-24 — UI primitive tests
     And it verifies default prop values
     And it verifies aria-hidden="true" on the rendered div
 
+  Scenario: SC-24-03 — ErrorBoundary renders slot in normal state
+    Given the ErrorBoundary component wraps child content
+    When no error occurs
+    Then the child content is displayed normally
+
   @coverage: toast queue rendering, dismiss button removal, type-colored borders,
   @coverage: enter/leave transitions, max-toast eviction, auto-dismiss, container positioning
   Scenario: SC-24-04 — ToastContainer component test
@@ -32,3 +37,8 @@ Feature: SC-24 — UI primitive tests
     Given the test file tests/presentation/components/common/modal-dialog.test.ts exists
     When the test suite runs
     Then all tests pass
+
+  Scenario: SC-24-06 — ErrorBoundary shows fallback on error
+    Given the ErrorBoundary component wraps a failing child
+    When the child throws an error
+    Then the full-screen fallback UI is displayed with error heading, description, a primary reload button, and `role="alert"`

@@ -12,6 +12,10 @@ Created the `ToastContainer` and `ModalDialog` overlay components that render th
 
 Implemented the `useToast` and `useModal` composables as module-level singleton reactive state managers for toast notifications and modal dialogs. Both composables live in `src/presentation/composables/` — a new directory in the Presentation layer for UI-only state composables that have no domain or infrastructure dependencies. The module-level pattern ensures both composables work outside Vue component `setup()`, which is required by the global error handler (01h). Unit tests were written test-first in `tests/presentation/composables/`, covering all functional requirements. Architecture and reference documentation was updated to reflect the new `composables/` directory and the distinction between Application-layer and Presentation-layer composables.
 
+Added an `ErrorBoundary` presentation component and wired it around the routed application content in `src/App.vue`. The boundary catches descendant render/setup errors, replaces the normal UI with a translated full-screen fallback state, exposes a reload action, and returns `false` from `onErrorCaptured` so handled crashes do not propagate.
+
+`src/main.ts` now also registers `app.config.errorHandler` after plugin setup. Uncaught Vue component/render errors outside the boundary are logged to `console.error` and dispatched to the shared toast queue with `i18n.global.t('toast.error')`, giving the scaffolded shell a documented recovery path for unexpected failures.
+
 ## Files Changed
 
 ### Created
@@ -38,6 +42,9 @@ Implemented the `useToast` and `useModal` composables as module-level singleton 
 - `src/presentation/components/common/modal-dialog.vue` — Modal overlay component with backdrop (`fixed inset-0 z-40 bg-black/50`) and centered content card. Uses `<Transition name="modal">` for enter/leave animations. Escape key listener is registered/unregistered via `watch` on `isOpen` state to avoid stale listeners.
 - `tests/presentation/components/common/toast-container.test.ts` — Component test suite covering SC-14 scenarios: container positioning, toast stacking, dismiss button, type-colored borders, transition classes, auto-dismiss timing, i18n labels, and action button callbacks.
 - `tests/presentation/components/common/modal-dialog.test.ts` — Component test suite covering SC-15 scenarios: backdrop click close, Escape key close, confirm/cancel callbacks, modal replacement, transition classes, i18n labels, and content card click propagation stop.
+- `src/presentation/components/error/error-boundary.vue` — Error boundary component with translated fallback UI, `role="alert"`, and reload handling.
+- `tests/presentation/components/error/error-boundary.test.ts` — Component tests for normal rendering, fallback UI, reload behavior, and propagation suppression.
+- `tests/main.test.ts` — Bootstrap test that captures `app.config.errorHandler` and verifies console logging plus toast dispatch.
 
 ### Modified
 
@@ -50,7 +57,8 @@ Implemented the `useToast` and `useModal` composables as module-level singleton 
 - `src/presentation/i18n/locales/fr.json` — Added 18 French translation keys across 5 namespaces.
 - `src/assets/main.css` — Added `--color-success: #22c55e` and `--color-error: #ef4444` to the existing `@theme` block. Added `.fade-*` transition classes (200ms opacity, ease-in-out), `.toast-*` transition classes (300ms enter with translateX slide + opacity, 200ms leave fade), `.modal-*` transition classes (200ms enter with scale + opacity, 150ms leave), and a `@media (prefers-reduced-motion: reduce)` block disabling all transitions and `animate-pulse` animation.
 - `tsconfig.vitest.json` — Added `src/**/*` and `src/**/*.vue` to the `include` array so that test files can import source modules without TypeScript project boundary errors.
-- `src/main.ts` — Added `import router from './presentation/router'` and `app.use(router)` after `app.use(i18n)`.
+- `src/main.ts` — Registers the router after i18n and configures the global Vue error handler that logs uncaught component/render errors and dispatches translated error toasts via `useToast()`.
+- `src/App.vue` — Wraps routed application content in `ErrorBoundary` so component crashes surface the documented fallback UI.
 - `src/domain/constants.ts` — Added `MAX_VISIBLE_TOASTS = 5` constant.
 - `docs/technical/architecture.md` — Added `composables/` to the Presentation-layer folder structure and description.
 - `docs/technical/testing.md` — Added `tests/presentation/composables/` to the test directory tree example.
@@ -63,7 +71,7 @@ Implemented the `useToast` and `useModal` composables as module-level singleton 
 
 ## Key Decisions
 
-- **No `passWithNoTests` added**: Vitest exits with code 1 when no test files match the `include` pattern. Since this phase creates no test files, `npm run test` and `npm run check` fail. This resolves naturally once downstream phases (01b+) add test files. Adding `passWithNoTests: true` was considered but deferred to avoid config changes outside the plan's scope.
+- **No `passWithNoTests` added during initial setup**: The original 01a setup kept Vitest defaults rather than changing config solely to accommodate an empty suite. Later scaffolding phases introduced the current passing test suite, so the configuration remains unchanged.
 - **Flat JSON structure**: Locale files use flat dot-notation keys (e.g., `{ "nav.home": "Home" }`) with `flatJson: true` in the vue-i18n configuration. The `$t('nav.home')` calls work identically — vue-i18n resolves dot-separated paths in flat key maps when `flatJson` is enabled.
 - **Test uses `fs.readFileSync`**: The test reads locale files directly from disk rather than importing them as modules. This provides explicit file existence validation and avoids potential interference from the `@intlify/unplugin-vue-i18n` Vite plugin that transforms locale files during build.
 - **Theme colors appended to existing `@theme` block**: Kept all theme tokens in a single block rather than creating a separate one, maintaining the existing pattern established in R-00.
@@ -84,12 +92,17 @@ Implemented the `useToast` and `useModal` composables as module-level singleton 
 - **Click propagation stop on content card**: The modal content card uses `@click.stop` to prevent clicks inside the card from bubbling to the backdrop. The backdrop uses `@click.self="close"` to only respond to direct clicks on itself.
 - **Type-to-border-class mapping function**: Toast border colors are mapped via a `getBorderClass` function that returns Tailwind classes (`border-l-error`, `border-l-success`, `border-l-accent`) rather than inline styles, maintaining Tailwind-only styling convention.
 - **Minimum touch targets**: Both dismiss and action buttons on toasts, as well as modal buttons, use `min-h-11` (44px) to meet the 44×44px touch target requirement from ui-ux.md § 11.
+- `src/main.ts` continues to use the documented layer exception by importing `useToast()` and `i18n` directly so the global handler works outside component `setup()`.
+- `ErrorBoundary` returns `false` from `onErrorCaptured`, which prevents propagation to the global handler and avoids double-handling crashes that already show the fallback UI.
+- `ErrorBoundary` accepts an optional `reloadPage` callback with a production default of `window.location.reload()` so the required reload behavior remains directly testable in jsdom.
 
 ## Deviations from Plan
 
 - **tsconfig.vitest.json fix**: The vitest TypeScript config only included `tests/**/*.ts` in its `include` array, which meant source files imported by tests were outside the project boundary. Added `src/**/*` and `src/**/*.vue` to fix TS error 6307. This was a pre-existing config issue that surfaced when the first test importing from `src/` was introduced.
 - **Placeholder view files added**: The plan expected view files from 01j and noted that "TypeScript will not error on dynamic `import()` targets." While true for TypeScript, Vite's import analysis also validates dynamic imports at transform time, blocking both tests and builds. Created minimal stubs to unblock.
 - **`scrollBehavior` signature simplified**: Plan specified `scrollBehavior(_to, _from, _savedPosition)` but ESLint `no-unused-vars` flagged all three parameters. Simplified to `scrollBehavior()` since the return value is unconditional.
+- `src/App.vue` was updated in addition to the plan's originally listed files because the existing root component needed to place the router outlet inside the global error boundary.
+- The visual fallback and toast-dispatch verification items were satisfied through automated tests rather than a separate manual browser check.
 
 ## Testing
 
@@ -163,9 +176,20 @@ Format (`prettier`), lint (`eslint`), and type-check (`vue-tsc`) all pass indivi
 - **`modal-dialog.test.ts`** (18 tests): Covers all SC-15 scenarios plus additional edge cases (optional callbacks, listener cleanup).
 - All 95 tests across 9 test files pass. `npm run type-check` — PASS (zero errors). `npm run test` — PASS.
 
+### Error Handling
+
+- `tests/presentation/components/error/error-boundary.test.ts` covers SC-24-03, SC-18-01, SC-18-02, SC-18-03, and NFR-01h-02.
+- `tests/main.test.ts` covers SC-19-01 by importing `src/main.ts`, capturing the production `app.config.errorHandler`, and asserting console logging plus toast queue updates.
+- Verification results:
+  - `npm test` — PASS (11 files, 100 tests)
+  - `npm run lint` — PASS
+  - `npm run type-check` — PASS
+
 ## Verification Results
 
-- `npx vitest run` — PASS (9 files, 95 tests)
+- `npm test` — PASS (11 files, 100 tests)
+- `npm run lint` — PASS
+- `npm run type-check` — PASS
 - `npm run check` — PASS (format, lint, type-check, test, build all clean)
 
 ## Dependencies
@@ -174,6 +198,7 @@ Format (`prettier`), lint (`eslint`), and type-check (`vue-tsc`) all pass indivi
 - `@vue/test-utils@^2.4.6` — Official Vue test utilities for mounting and interacting with components in tests (dev dependency, used starting in phase 01f+).
 
 No new dependencies were added for the router phase. `vue-router` (^5.0.4) and `vue-i18n` (^11.3.0) were already installed by change 01a.
+No new dependencies were added for error handling.
 
 ## Performance
 
@@ -203,11 +228,12 @@ No new dependencies were added for the router phase. `vue-router` (^5.0.4) and `
 | SC-17 (Skeleton loader)        | `skeleton-loader.vue` — shimmer div with `animate-pulse bg-surface`, configurable dimensions, `aria-hidden="true"`                                                                                                |
 | SC-14 (Toast container)        | `toast-container.vue` — fixed top-right positioning, z-50, TransitionGroup with `toast-*` classes, type-colored borders, dismiss button with X icon, optional action button, max 5 toasts (handled by composable) |
 | SC-15 (Modal/dialog)           | `modal-dialog.vue` — backdrop with `bg-black/50`, centered content card, Escape key listener, confirm/cancel buttons with i18n defaults, `@click.stop` on content card                                            |
-| SC-24 (UI primitive tests)     | `empty-state.test.ts` (SC-24-01), `skeleton-loader.test.ts` (SC-24-02), `toast-container.test.ts` (SC-24-04), `modal-dialog.test.ts` (SC-24-05)                                                                   |
+| SC-18 (Error boundary)         | `src/presentation/components/error/error-boundary.vue` in `src/App.vue` catches descendant render/setup errors, renders translated fallback UI with `role="alert"`, and reloads via a primary action              |
+| SC-19 (Global error handler)   | `app.config.errorHandler` in `src/main.ts` logs uncaught component/render errors and dispatches translated error toasts through `useToast()`                                                                      |
+| SC-24 (UI primitive tests)     | `empty-state.test.ts` (SC-24-01), `skeleton-loader.test.ts` (SC-24-02), `error-boundary.test.ts` (SC-24-03, SC-24-06), `toast-container.test.ts` (SC-24-04), `modal-dialog.test.ts` (SC-24-05)                    |
 
 ## Known Limitations
 
-- `npm run test` and `npm run check` fail until at least one `tests/**/*.test.ts` file exists. This is a transient state resolved by the next phase that introduces tests.
 - A dedicated `tsconfig.vitest.json` was added (extending `tsconfig.app.json`) to provide IDE type-checking for test files. It adds `vitest/globals` and `node` types and includes `tests/**/*.ts`. Without this, VS Code cannot resolve `describe`, `it`, `expect`, or Node.js APIs in test files.
 - **Translation accuracy**: Spanish and French translations use standard UI terminology but have not been reviewed by native speakers. This is noted as a deferred concern in the requirements.
 - **Fallback verification (AC9)**: vue-i18n fallback to English is implicitly satisfied by the `fallbackLocale: 'en'` configuration from Phase 00. Explicit runtime fallback testing is deferred to downstream features (01i, 01j) that provide rendering components to exercise the fallback chain.

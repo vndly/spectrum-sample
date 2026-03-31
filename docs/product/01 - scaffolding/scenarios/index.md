@@ -24,7 +24,9 @@
 20. **[SC-15](./SC-15.feature)**: Modal dialog component — rendering, backdrop, callbacks, and transitions.
 21. **[SC-16](./SC-16.feature)**: Empty state component rendering and props.
 22. **[SC-17](./SC-17.feature)**: Skeleton loader animation and dimensions.
-23. **[SC-23](./SC-23.feature)**: Composable unit tests — toast and modal state management verification.
-24. **[SC-24](./SC-24.feature)**: UI primitive component tests (EmptyState, SkeletonLoader, ToastContainer, ModalDialog).
+23. **[SC-18](./SC-18.feature)**: Error boundary fallback UI, reload, and propagation prevention.
+24. **[SC-19](./SC-19.feature)**: Global error handler toast dispatch and boundary interaction.
+25. **[SC-23](./SC-23.feature)**: Composable unit tests — toast and modal state management verification.
+26. **[SC-24](./SC-24.feature)**: UI primitive component tests for EmptyState, SkeletonLoader, ErrorBoundary, ToastContainer, and ModalDialog.
 
 > **i18n note:** Theme, transitions, and constants deliver CSS definitions and a numeric constant with no user-facing text. i18n coverage is not applicable for those scenarios.

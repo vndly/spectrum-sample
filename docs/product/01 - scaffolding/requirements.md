@@ -13,6 +13,8 @@ tags:
     localization,
     tailwind,
     transitions,
+    error-handling,
+    error-boundary,
     constants,
     routing,
     navigation,
@@ -40,6 +42,8 @@ Create the SkeletonLoader and EmptyState reusable UI primitives with their compo
 
 Create the ToastContainer and ModalDialog overlay components that render the toast queue and modal state managed by the composables.
 
+Add an `ErrorBoundary` component that catches descendant Vue render/setup errors and shows a translated full-screen fallback UI with a reload action. Register `app.config.errorHandler` in `src/main.ts` so uncaught component/render errors outside the boundary are logged and surfaced to the shared toast queue.
+
 ## Context & Background
 
 ### Problem Statement
@@ -48,10 +52,13 @@ Downstream scaffolding features (01b through 01k) need test infrastructure and r
 
 Downstream features (01g — Toast Container, 01h — Error Handling) require shared reactive state for toast notifications and modal dialogs. These composables must be available both inside and outside Vue component `setup()` so the global error handler can dispatch toast notifications.
 
+The scaffolding layer also needs a consistent crash path for unexpected Vue component/render failures. Errors inside the routed experience should fall back to a recoverable full-screen state, while uncaught errors outside that boundary should still surface a translated toast and console logging.
+
 ### User Stories
 
 - As a developer working on phases 01b–01k, I need Vitest globals and `@vue/test-utils` available so I can write component and unit tests without additional setup.
 - As a developer working on phase 01d (Router), I need `vue-router` installed so I can configure routing without additional dependency setup.
+- As a user, I need unexpected UI crashes to surface a clear recovery path instead of a blank screen.
 
 ### Visual Foundation
 
@@ -67,12 +74,13 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - [Phase 00 (Setup)](../../product/00%20-%20setup/) complete — vue-i18n installed, locale files exist with `app.title` key.
 - R-01a (Dependencies & Test Infrastructure) complete — Vitest, `@vue/test-utils`, and test configuration available.
 - R-01c — `TOAST_DISMISS_MS` constant in `src/domain/constants.ts`.
+- R-01b — `common.error.*` and `toast.error` locale keys exist in all supported locales.
+- R-01e — `useToast()` is available as a module-level singleton outside component `setup()`.
 
 ### Dependents
 
 - **01e (Composables)** — consumes `TOAST_DISMISS_MS` from `src/domain/constants.ts`.
 - **01g (Toast Container & Modal Dialog)** — consumes `--color-success` and `--color-error` theme colors.
-- **01h (Error Handling)** — uses `common.error.*` and `toast.error` keys.
 - **01i (Navigation Components)** — uses `nav.*` keys for sidebar and bottom nav labels.
 - **01j (Placeholder Views)** — uses `page.*.title` and `common.empty.*` keys.
 - **01k (App Shell & Assembly)** — wires the fade transition CSS into `<Transition>` around `<RouterView>`.
@@ -99,6 +107,8 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 | Dismiss button icon               | X icon (lucide-vue-next)                                  | Consistent with common UI patterns and the project's icon library.                                                                                                                                                    |
 | Max toast limit                   | Fixed at 5 (not configurable)                             | Prevents UI clutter; configurability deferred to future enhancement if user feedback requests it.                                                                                                                     |
 | Modal button order                | Cancel left, Confirm right                                | Primary action rightmost follows common web conventions.                                                                                                                                                              |
+| `main.ts` layer exception         | Allow `src/main.ts` to import Presentation composables    | The global error handler must call `useToast()` outside component `setup()`, so the bootstrap layer uses a documented exception for this single import path.                                                          |
+| Error boundary propagation        | Return `false` from `onErrorCaptured`                     | Prevents double-handling: the boundary already renders the fallback UI, so the global handler should not also emit an error toast for the same crash.                                                                 |
 
 ## Scope
 
@@ -127,6 +137,10 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - Create `src/presentation/components/common/toast-container.vue` (consumes `toast-*` CSS transition classes).
 - Create `src/presentation/components/common/modal-dialog.vue` (consumes `modal-*` CSS transition classes).
 - Write component tests: `tests/presentation/components/common/toast-container.test.ts` and `tests/presentation/components/common/modal-dialog.test.ts`.
+- Create `src/presentation/components/error/error-boundary.vue`.
+- Wrap routed application content in `src/App.vue` with the error boundary.
+- Add `app.config.errorHandler` to `src/main.ts`.
+- Write component and bootstrap tests covering the error boundary and global error handler.
 
 > **Note:** `nav.recommendations` and `page.recommendations.title` are included for forward compatibility with the Recommendations feature phase, even though no scaffolding sibling currently consumes them.
 
@@ -147,7 +161,6 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - Route transition animations — covered by 01k.
 - Navigation guards beyond catch-all redirect.
 - Route-level middleware or authentication guards.
-- Global error handler integration — covered by 01h.
 - Toast container component (`toast-container.vue`) — covered by 01g.
 - Modal dialog component (`modal-dialog.vue`) — covered by 01g.
 - Toast animations and transitions — covered by 01g.
@@ -155,12 +168,17 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 - i18n integration within SkeletonLoader/EmptyState primitives — consuming components pass pre-translated strings via props.
 - Responsive-specific skeleton behavior beyond standard Tailwind responsiveness.
 - Toast/modal integration into App.vue (handled by 01k).
+- Recovery strategies beyond page reload.
+- Error reporting to external services.
+- Custom error types or error categorization.
+- API request failures beyond their existing request-specific handling.
+- Rendering the toast UI in the root shell; this phase only dispatches to the shared toast queue.
 
-> All subsequent scaffolding features (01b through 01k) depend on the infrastructure established here.
+> The scaffolding sequence builds cumulatively on the infrastructure, shared UI primitives, overlays, and error handling documented here.
 
 ## Functional Requirements
 
-> Requirement IDs use a feature-scoped prefix (`SC-01a-`, `SC-01c-`) to avoid collisions with IDs in sibling features that share the scaffolding numbering space.
+> Canonical scaffolding requirements preserve the original IDs from each merged subfeature. Infrastructure items use scoped prefixes such as `SC-01a-*` and `SC-01c-*`, while component features retain their standalone IDs (`SC-12` through `SC-24`).
 
 | ID        | Requirement              | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Priority |
 | :-------- | :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------- |
@@ -188,7 +206,9 @@ This phase is part of the Phase 01 scaffolding sequence. It delivers the visual 
 | SC-17 | Skeleton loader | Reusable shimmer placeholder. Props: `width` (string, default `'100%'`), `height` (string, default `'1rem'`), `rounded` (string, default `'rounded-md'`). Renders a div with `animate-pulse bg-surface`. | P1 |
 | SC-14 | Toast container | Fixed top-right container (`z-50`) rendering the toast queue with `<TransitionGroup>` using the `toast-*` CSS transition classes (300 ms slide-in from the right, 200 ms fade-out on dismiss). Each toast has a dismiss button (X icon from lucide-vue-next) and an optional action button (text-style, positioned left of the dismiss button). Maximum 5 simultaneous toasts (fixed limit); when exceeded, the oldest toast is evicted. Supported toast types: `error`, `success`, `info` (warning type out of scope for this phase). | P0 |
 | SC-15 | Modal/dialog | `modal-dialog.vue` with backdrop (`bg-black/50`), centered content card, title, optional content, confirm/cancel buttons (cancel left, confirm right). Escape key listener registered on `document` when the modal is open, removed on close. Confirm defaults to `$t('modal.confirm')`, cancel defaults to `$t('modal.cancel')` when labels are not provided. Opening a new modal while one is active replaces the current. Clicks on the content card do not propagate to the backdrop (only backdrop clicks close the modal). Modal content scrolls internally (`overflow-y-auto max-h-[80vh]`) when content exceeds viewport height. | P1 |
-| SC-24 | UI primitive tests | Component tests for EmptyState (SC-24-01: renders icon/title/description/CTA props), SkeletonLoader (SC-24-02: renders with width/height/rounded props), ToastContainer (SC-24-04: renders toast queue, dismiss, positioning), and ModalDialog (SC-24-05: renders title/content/buttons, closes on backdrop click and Escape). Remaining SC-24 coverage (ErrorBoundary) is in R-01h. | P0 |
+| SC-18 | Error boundary | `ErrorBoundary` component using `onErrorCaptured`. Normal state renders slot content. Error state replaces routed content with a full-screen centered fallback UI showing translated error heading, description, and a primary reload button that calls `window.location.reload()`. The boundary returns `false` from `onErrorCaptured` so handled crashes do not propagate to the global error handler. | P0 |
+| SC-19 | Global error handler | Register `app.config.errorHandler` in `src/main.ts`. Uncaught Vue component/render errors outside the `ErrorBoundary` are logged to `console.error` and dispatch an error toast to the shared `useToast()` queue using translated `toast.error` text. API request failures remain on their request-specific handling paths. | P0 |
+| SC-24 | UI primitive tests | Component tests for EmptyState (SC-24-01: renders icon/title/description/CTA props), SkeletonLoader (SC-24-02: renders with width/height/rounded props), ErrorBoundary (SC-24-03: renders slot content normally; SC-24-06: shows fallback on error), ToastContainer (SC-24-04: renders toast queue, dismiss, positioning), and ModalDialog (SC-24-05: renders title/content/buttons, closes on backdrop click and Escape). | P0 |
 
 > **Note:** `src/domain/constants.ts` is created in this phase with `TOAST_DISMISS_MS` only (additional constants will be added in their respective feature phases). See Decisions table for rationale.
 
@@ -225,6 +245,7 @@ Overlay elements use the following z-index scale. Navigation component z-indices
 
 - **CSS centralization:** No CSS files other than `src/assets/main.css` shall exist in the project. All transition and animation styles are centralized in the single Tailwind entry point.
 - **Composable location:** Toast and modal composables live in `src/presentation/composables/` rather than `src/application/` because they manage UI-only state with no domain or infrastructure dependencies. This introduces a `composables/` subdirectory under `src/presentation/` not currently defined in `architecture.md` — both `architecture.md` and the glossary entry for "Composable" should be updated to acknowledge that purely UI-state composables may reside in the Presentation layer.
+- **NFR-01h-01 — `main.ts` exception:** `src/main.ts` importing from `src/presentation/composables/` is an intentional exception to typical layer boundaries because the global handler must call `useToast()` outside component `setup()`. _Threshold: No additional cross-layer imports beyond this documented exception._
 - **SFC block order:** `<script setup>` then `<template>` then `<style>` (rare). Verifiable by linting SFC files.
 - **File naming:** kebab-case for all component files. Verifiable by checking file names match `[a-z0-9-]+\.vue`.
 
@@ -235,6 +256,7 @@ Overlay elements use the following z-index scale. Navigation component z-indices
 - `animate-pulse` on SkeletonLoader is disabled when `prefers-reduced-motion: reduce` is active, handled by the existing CSS rule in `src/assets/main.css`. Verifiable by toggling the media query in dev tools.
 - Toast and modal transitions must respect `prefers-reduced-motion` by setting transition duration to 0ms when the user preference is `reduce`.
 - Dismiss and action buttons must meet minimum touch target size of 44×44px per ui-ux.md guidelines.
+- **NFR-01h-02 — Error fallback accessibility:** The error-boundary fallback uses `role="alert"` so assistive technology announces the crash state when it appears. _Threshold: The fallback message is announced when displayed._
 
 ### Performance
 
@@ -366,6 +388,15 @@ Visual contracts per `docs/technical/ui-ux.md`:
 - [ ] [SC-15] Modal content scrolls internally when content exceeds viewport height
 - [ ] [SC-24] Component tests for ToastContainer pass
 - [ ] [SC-24] Component tests for ModalDialog pass
+- [ ] [SC-18] Error boundary renders slot content in normal state
+- [ ] [SC-18] Error boundary shows a full-screen centered fallback UI with translated error heading, description, and primary "Reload" button when a child component throws
+- [ ] [SC-18] Error boundary returns `false` from `onErrorCaptured` to prevent propagation
+- [ ] [SC-18] Reload button calls `window.location.reload()`
+- [ ] [SC-19] Global error handler logs uncaught component/render errors to `console.error`
+- [ ] [SC-19] Global error handler dispatches an error toast with the translated `toast.error` message to the shared `useToast()` queue
+- [ ] [SC-24] ErrorBoundary component tests pass
+- [ ] [SC-19] Global error handler test passes
+- [ ] [NFR-01h-02] Error boundary fallback UI uses `role="alert"` for accessibility
 
 ## Constraints
 
@@ -373,6 +404,6 @@ Visual contracts per `docs/technical/ui-ux.md`:
 - **Dev dependencies:** `@vue/test-utils@^2.4` is the only new dev dependency.
 - Must use `createWebHistory()` (no hash mode) — requires Firebase SPA rewrite for server-side fallback.
 - View component files (`*-screen.vue`) are provided by change 01j — router configuration will reference them before they exist.
-- All new files live in `src/presentation/` (router configuration). `src/main.ts` is the only existing file modified.
+- Existing bootstrap files modified in this scaffolding sequence are limited to `src/main.ts` and `src/App.vue`; most new implementation lives under `src/presentation/`.
 - Composables must work both inside and outside Vue component `setup()` context (needed by the global error handler in 01h).
 - `MAX_VISIBLE_TOASTS` must be defined as a named constant in `src/domain/constants.ts`.
