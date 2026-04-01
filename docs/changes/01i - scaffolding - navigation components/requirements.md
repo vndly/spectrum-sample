@@ -1,7 +1,7 @@
 ---
 id: R-01i
 title: App Scaffolding — Navigation Components
-status: approved
+status: under_test
 type: infrastructure
 importance: critical
 tags: [layout, navigation, sidebar, responsive]
