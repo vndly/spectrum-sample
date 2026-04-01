@@ -87,9 +87,10 @@ The `@` path alias (`@ → ./src`) is inherited from `vite.config.ts` via `merge
 > **Scenario traceability:**
 >
 > - SC-01b-12-03 → covered by `locale-keys.test.ts` above (structural parity, camelCase, value checks)
-> - SC-01b-12-01 → deferred to 01i (navigation component tests, nav label rendering)
-> - SC-01b-12-02 → deferred to 01j (placeholder view component tests, page title rendering)
-> - SC-01b-12-04, SC-01b-12-05, SC-01b-12-06 → deferred to downstream integration tests (require vue-i18n runtime rendering with components that consume the scaffolded keys); AC9 (fallback verification) is implicitly satisfied by the `fallbackLocale: 'en'` configuration in Phase 00 and will be explicitly exercised when 01i/01j provide rendering components
+> - SC-01b-12-01 → deferred to 01i (navigation component tests for Home, Calendar, Library, and Settings label rendering); Recommendations remains deferred to the future change that introduces that route and nav item
+> - SC-01b-12-02 → deferred to 01i (page-header component tests for Home, Calendar, Library, and Settings title rendering); Recommendations remains deferred to the future change that introduces that route
+> - SC-01b-12-07, SC-01b-12-08 → deferred to the future change that introduces the Recommendations route and nav item
+> - SC-01b-12-04, SC-01b-12-05, SC-01b-12-06 → deferred to downstream integration tests that render `toast.*` and `common.error.*` keys; AC9 (fallback verification) is implicitly satisfied by the `fallbackLocale: 'en'` configuration in Phase 00 and will be explicitly exercised by the later toast/error-handling phases rather than by 01i/01j
 
 ---
 
