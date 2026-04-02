@@ -1,7 +1,7 @@
 ---
 id: R-01j
 title: App Scaffolding — Placeholder Views
-status: approved
+status: under_test
 type: infrastructure
 importance: high
 tags: [views, placeholder]
