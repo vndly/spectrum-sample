@@ -1,7 +1,7 @@
 ---
 id: R-01b
 title: Menu Scaffold and Navigation
-status: approved
+status: planned
 type: functional
 importance: medium
 tags: []
