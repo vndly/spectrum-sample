@@ -1,7 +1,7 @@
 ---
 id: R-01k
 title: App Scaffolding — App Shell & Assembly
-status: approved
+status: in_development
 type: infrastructure
 importance: critical
 tags: [layout, app-shell, assembly, transitions, testing, verification]
