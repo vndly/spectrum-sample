@@ -1,17 +1,19 @@
 ---
 id: R-01k
 title: App Scaffolding — App Shell & Assembly
-status: review
+status: approved
 type: infrastructure
 importance: critical
-tags: [layout, app-shell, assembly, transitions]
+tags: [layout, app-shell, assembly, transitions, testing, verification]
 ---
 
 ## Intent
 
-Create the AppShell layout component that assembles all navigation, overlay, and content components, update App.vue to use ErrorBoundary + AppShell, and perform final verification of the complete scaffolding.
+Define the assembled app shell for the current scaffolding sequence so the app boots into a responsive shell that combines shared navigation chrome, routed content, global overlays, and root-level error recovery.
 
-## Prerequisites
+## Context & Background
+
+### Dependencies
 
 - **01d** — Router (`RouterView`)
 - **01g** — ToastContainer, ModalDialog
@@ -19,24 +21,40 @@ Create the AppShell layout component that assembles all navigation, overlay, and
 - **01i** — SidebarNav, BottomNav, PageHeader
 - **01j** — Placeholder views (for verification)
 
+### Current Scaffolding Boundaries
+
+- This change assembles the current scaffolded route set: Home, Calendar, Library, and Settings.
+- Recommendations remains a follow-up dependency. The shell preserves its documented insertion point between Home and Calendar, but the route and view stay out of scope until the Recommendations feature phase exists.
+
 ## Decisions
 
-| Decision                 | Choice                | Rationale                                                                              |
-| :----------------------- | :-------------------- | :------------------------------------------------------------------------------------- |
-| Desktop-first responsive | `max-md:` breakpoints | Per conventions §10. Base styles target desktop; `max-md:` overrides adapt for mobile. |
+| Decision                   | Choice                            | Rationale                                                                                             |
+| :------------------------- | :-------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| Desktop-first responsive   | `max-md:` breakpoints             | Per conventions §10. Base styles target desktop; `max-md:` overrides adapt for mobile.                |
+| Current scaffolded nav set | Home, Calendar, Library, Settings | Matches the routes currently delivered by `01 - scaffolding`; Recommendations stays deferred for now. |
 
 ## Scope
 
-- Create `src/presentation/components/layout/app-shell.vue`
-- Update `src/App.vue`
-- Run full verification
+### In Scope
+
+- Create `src/presentation/components/layout/app-shell.vue`.
+- Update `src/App.vue` so the routed experience boots through `ErrorBoundary` and `AppShell`.
+- Assemble the current scaffolded navigation chrome, routed content, and global overlays in one shell.
+- Add local shell scenarios plus test-first verification for shell assembly.
+
+### Out of Scope
+
+- Adding the Recommendations route, view, or nav item before its feature phase exists.
+- Changing router definitions, navigation-component internals, or overlay implementations outside shell assembly.
+- New motion systems beyond the existing `fade`, `toast`, and `modal` transition contracts.
 
 ## Functional Requirements
 
-| ID    | Requirement       | Description                                                                                                                                  | Priority |
-| :---- | :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
-| SC-04 | App shell layout  | Flexbox layout with fixed sidebar on the left and scrollable content area on the right. Sidebar hidden below `md`, bottom nav shown instead. | P0       |
-| SC-09 | Route transitions | `<Transition name="fade" mode="out-in">` wrapping `<RouterView>`. 200ms opacity fade between views. Respects `prefers-reduced-motion`.       | P1       |
+| ID    | Requirement         | Description                                                                                                                                                                                                                                          | Priority |
+| :---- | :------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| SC-04 | App shell layout    | `AppShell` renders a fixed desktop sidebar and a mobile bottom nav around the current scaffolded routes (Home, Calendar, Library, Settings). At `md` and above, the routed content column is offset so it does not render beneath the fixed sidebar. | P0       |
+| SC-09 | Route transitions   | Route changes between scaffolded views use the existing `fade` transition contract for a 200ms opacity-only fade. When `prefers-reduced-motion: reduce` is enabled, route changes occur without animated fade.                                       | P1       |
+| SC-10 | Root shell assembly | `App.vue` boots the routed experience through `ErrorBoundary` and `AppShell`. `AppShell` renders `PageHeader`, the routed view outlet, `ToastContainer`, and `ModalDialog` so navigation, content, and global overlays can be verified together.     | P0       |
 
 ## Non-Functional Requirements
 
@@ -57,12 +75,18 @@ Create the AppShell layout component that assembles all navigation, overlay, and
 - Modal content card: `z-40` (same layer as backdrop; stacks above via DOM order)
 - Toast container: `z-50` (renders above modals — toasts remain visible when a modal is open)
 
+### Testing
+
+- **Automated coverage:** `tests/App.test.ts` and `tests/presentation/components/layout/app-shell.test.ts` cover shell assembly, responsive switching, overlay stacking, and route-transition behavior in Vitest + jsdom.
+- **Verification commands:** Final verification uses non-mutating commands only: `npm run type-check`, `npm run lint`, `npm run format:check`, `npm run test`, and `npm run build`.
+
 ## Acceptance Criteria
 
-- [ ] `npm run dev` starts and renders app shell with sidebar (desktop)
-- [ ] Resizing below 768px switches sidebar/bottom nav
-- [ ] All 4 nav items navigate correctly
-- [ ] Route transitions fade in/out at 200ms
-- [ ] Content area has bottom padding clearance on mobile
-- [ ] `npm run test` passes with zero failures
-- [ ] `npm run check` passes (full pipeline)
+- [ ] `(SC-10)` `App.vue` renders the current scaffolded routes through `ErrorBoundary` and `AppShell`, with `PageHeader`, routed content, `ToastContainer`, and `ModalDialog` mounted in the assembled shell.
+- [ ] `(SC-04)` Desktop (`>= 768px`) renders the sidebar; mobile (`< 768px`) hides the sidebar, shows the bottom nav, and keeps the final routed content visible above the fixed bottom nav.
+- [ ] `(SC-04)` The current scaffolded nav items `Home`, `Calendar`, `Library`, and `Settings` navigate correctly in both shell navs. Recommendations remains deferred until its prerequisite route/view feature exists.
+- [ ] `(SC-09)` Route changes between scaffolded views use a 200ms opacity-only fade, and `prefers-reduced-motion: reduce` removes the animated fade.
+- [ ] `(SC-10, Stacking Order)` With a modal open, the modal overlays page content and shell chrome, and a toast remains visible above the modal.
+- [ ] `(Testing)` `tests/App.test.ts` and `tests/presentation/components/layout/app-shell.test.ts` pass and cover the local shell scenarios.
+- [ ] `(Verification)` `npm run type-check`, `npm run lint`, `npm run format:check`, `npm run test`, and `npm run build` pass without mutating the worktree.
+- [ ] `(Performance)` Running `npm run build` followed by gzip inspection of the emitted main entry and route-view chunks confirms the main entry remains under 150 KB and each lazy-loaded route chunk remains under 20 KB.
