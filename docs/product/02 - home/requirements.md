@@ -4,7 +4,7 @@
 
 id: 02-home-search
 title: Home Screen Search
-status: under_test
+status: released
 importance: high
 type: functional
 tags: [home, search, api]
@@ -173,20 +173,20 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 
 ## Acceptance Criteria
 
-- [ ] SearchBar debounces input by 300 ms before firing an API request (HS-01)
-- [ ] API request uses `GET /search/multi` with trimmed query and language parameter (HS-02)
-- [ ] Results are filtered to `media_type === "movie"` or `media_type === "tv"` (person results discarded) (HS-03)
-- [ ] Each MovieCard displays poster, title, year, and vote average (HS-04)
-- [ ] Tapping a movie card navigates to `/movie/:id` (HS-05)
-- [ ] Tapping a TV show card navigates to `/show/:id` (HS-05)
-- [ ] Empty state displays heading and subtitle when query returns zero results after filtering (HS-06)
-- [ ] Loading skeleton (8 placeholders) displays while API request is in flight (HS-07)
-- [ ] SearchBar remains interactive during loading (not disabled, Tab/Escape work) (HS-07)
-- [ ] API errors surface an inline error message "Failed to load search results" with Retry button (not full-page) (HS-08)
-- [ ] Clicking Retry re-attempts search with current query value (HS-08)
-- [ ] Browse sections (TrendingCarousel, PopularGrid, FilterBar, ViewToggle) display when query is empty (HS-09)
-- [ ] Browse sections hide and SearchResults display when query is non-empty (HS-10)
-- [ ] Clearing the query restores browse sections with no intermediate mixed state (HS-11)
-- [ ] SearchBar input has `type="search"` and `placeholder` attributes (HS-NFR-06)
-- [ ] Clear button has `aria-label="Clear search"` and is keyboard accessible (HS-NFR-07)
-- [ ] Tab and Escape keys remain functional during loading state (HS-NFR-08)
+- [x] SearchBar debounces input by 300 ms before firing an API request (HS-01)
+- [x] API request uses `GET /search/multi` with trimmed query and language parameter (HS-02)
+- [x] Results are filtered to `media_type === "movie"` or `media_type === "tv"` (person results discarded) (HS-03)
+- [x] Each MovieCard displays poster, title, year, and vote average (HS-04)
+- [x] Tapping a movie card navigates to `/movie/:id` (HS-05)
+- [x] Tapping a TV show card navigates to `/show/:id` (HS-05)
+- [x] Empty state displays heading and subtitle when query returns zero results after filtering (HS-06)
+- [x] Loading skeleton (8 placeholders) displays while API request is in flight (HS-07)
+- [x] SearchBar remains interactive during loading (not disabled, Tab/Escape work) (HS-07)
+- [x] API errors surface an inline error message "Failed to load search results" with Retry button (not full-page) (HS-08)
+- [x] Clicking Retry re-attempts search with current query value (HS-08)
+- [x] Browse sections (TrendingCarousel, PopularGrid, FilterBar, ViewToggle) display when query is empty (HS-09)
+- [x] Browse sections hide and SearchResults display when query is non-empty (HS-10)
+- [x] Clearing the query restores browse sections with no intermediate mixed state (HS-11)
+- [x] SearchBar input has `type="search"` and `placeholder` attributes (HS-NFR-06)
+- [x] Clear button has `aria-label="Clear search"` and is keyboard accessible (HS-NFR-07)
+- [x] Tab and Escape keys remain functional during loading state (HS-NFR-08)
