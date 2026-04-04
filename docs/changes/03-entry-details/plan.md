@@ -2,33 +2,43 @@
 
 ## Phase 0: Prerequisites
 
-### 0.1 Verify or Create Detail Schemas
+### 0.1 Create Detail Schemas
 
-- [ ] Verify `src/domain/movie.schema.ts` has `MovieDetailSchema` with all fields from `docs/technical/api.md#MovieDetail`
-  - If missing, create schema including: `id`, `title`, `overview`, `tagline`, `release_date`, `runtime`, `poster_path`, `backdrop_path`, `vote_average`, `imdb_id`, `budget`, `revenue`, `genres`, `spoken_languages`, `credits`, `videos`, `watch/providers`, `release_dates`
+- [ ] Create `MovieDetailSchema` in `src/domain/movie.schema.ts`
+  - Fields: `id`, `title`, `overview`, `tagline`, `release_date`, `runtime`, `poster_path`, `backdrop_path`, `vote_average`, `imdb_id`, `budget`, `revenue`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `belongs_to_collection`, `credits`, `videos`, `watch/providers`, `release_dates`
   - Export inferred type: `MovieDetail`
-- [ ] Verify `src/domain/show.schema.ts` has `ShowDetailSchema` with all fields from `docs/technical/api.md#ShowDetail`
-  - If missing, create schema including: `id`, `name`, `overview`, `tagline`, `first_air_date`, `number_of_seasons`, `number_of_episodes`, `episode_run_time`, `poster_path`, `backdrop_path`, `vote_average`, `genres`, `spoken_languages`, `created_by`, `credits`, `videos`, `watch/providers`, `content_ratings`
+- [ ] Create `ShowDetailSchema` in `src/domain/show.schema.ts`
+  - Fields: `id`, `name`, `overview`, `tagline`, `first_air_date`, `last_air_date`, `number_of_seasons`, `number_of_episodes`, `episode_run_time`, `poster_path`, `backdrop_path`, `vote_average`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `origin_country`, `networks`, `created_by`, `credits`, `videos`, `watch/providers`, `content_ratings`, `next_episode_to_air`
   - Export inferred type: `ShowDetail`
 
-### 0.2 Verify or Create Shared Sub-schemas
+### 0.2 Create Shared Sub-schemas
 
-- [ ] Verify `src/domain/shared.schema.ts` exists with schemas for: `GenreSchema`, `CastMemberSchema`, `CrewMemberSchema`, `VideoSchema`, `StreamingProviderSchema`, `WatchProviderRegionSchema`, `SpokenLanguageSchema`
-  - If missing, create schemas matching types in `docs/technical/api.md#shared-sub-types`
-  - Export inferred types
+- [ ] Create `src/domain/shared.schema.ts` with the following schemas:
+  - `GenreSchema`: `{ id: number, name: string }`
+  - `CastMemberSchema`: `{ id: number, name: string, character: string, profile_path: string | null, order: number }`
+  - `CrewMemberSchema`: `{ id: number, name: string, job: string, department: string, profile_path: string | null }`
+  - `VideoSchema`: `{ id: string, key: string, name: string, site: string, type: string, official: boolean }`
+  - `StreamingProviderSchema`: `{ provider_id: number, provider_name: string, logo_path: string }`
+  - `WatchProviderRegionSchema`: `{ link: string, flatrate?: StreamingProvider[], rent?: StreamingProvider[], buy?: StreamingProvider[] }`
+  - `SpokenLanguageSchema`: `{ iso_639_1: string, name: string, english_name: string }`
+  - Export inferred types for all schemas
 
-### 0.3 Verify Storage Service
+### 0.3 Create Storage Service
 
-- [ ] Verify `src/infrastructure/storage.service.ts` is implemented with:
-  - `getLibraryEntry(id: number, mediaType: 'movie' | 'tv'): LibraryEntry | null`
-  - `saveLibraryEntry(entry: LibraryEntry): void`
-  - If stub implementation exists, complete it per `docs/technical/data-model.md`
-  - Rollback: if storage is not yet implemented, create minimal implementation for this feature
+- [ ] Create `src/infrastructure/storage.service.ts` with:
+  - `STORAGE_KEY = 'plot-twisted-library'`
+  - `getLibraryEntry(id: number, mediaType: 'movie' | 'tv'): LibraryEntry | null` - reads from localStorage, returns entry matching id and mediaType or null
+  - `saveLibraryEntry(entry: LibraryEntry): void` - upserts entry to localStorage by id and mediaType
+  - `getAllLibraryEntries(): LibraryEntry[]` - returns all entries
+  - Validate with `LibraryEntrySchema` on read per `docs/technical/data-model.md`
+  - Rollback: file can be removed without affecting other infrastructure
 
-### 0.4 Verify Settings Composable
+### 0.4 Update Settings Composable
 
-- [ ] Verify `src/application/use-settings.ts` provides `preferredRegion` (or stub with default `'US'`)
-  - Until Settings feature (roadmap 11) is implemented, use hardcoded default
+- [ ] Update `src/application/use-settings.ts` to add `preferredRegion`:
+  - Add `preferredRegion: ref('US')` to the returned object
+  - Note: This is a stub with default value until Settings feature (roadmap 11) is implemented
+  - ED-05 (StreamingBadges) depends on this value for region filtering
 
 ## Phase 1: Testing - Domain Layer
 
@@ -281,9 +291,44 @@
   - Conditionally render only if budget > 0 or revenue > 0
   - Run tests: expect pass
 
-### 4.13 Write RatingStars Component Tests
+### 4.13 Write ProviderRatingBadge Component Tests
 
-- [ ] Create `tests/presentation/components/details/rating-stars.test.ts` (covering: ED-06; scenario IDs: ED-06-01 through ED-06-04)
+- [ ] Create `tests/presentation/components/details/provider-rating-badge.test.ts` (covering: ED-13; scenario IDs: ED-13-01 through ED-13-03)
+  - Test renders vote average as badge (e.g., "8.4")
+  - Test formats value to one decimal place
+  - Test rounds correctly (7.856 → "7.9")
+  - Test displays star icon alongside the number
+  - Test uses teal accent styling
+  - Run tests: expect failure (component not yet implemented)
+
+### 4.14 Create ProviderRatingBadge Component
+
+- [ ] Create `src/presentation/components/details/provider-rating-badge.vue`
+  - Props: `voteAverage: number`
+  - Template: badge with star icon and formatted rating
+  - Format: `voteAverage.toFixed(1)`
+  - Style: teal accent background, white text
+  - Run tests: expect pass
+
+### 4.15 Write Synopsis Component Tests
+
+- [ ] Create `tests/presentation/components/details/synopsis.test.ts` (covering: ED-15; scenario IDs: ED-15-01 through ED-15-02)
+  - Test renders full overview text when provided
+  - Test component not rendered when overview is empty
+  - Test component not rendered when overview is null
+  - Run tests: expect failure (component not yet implemented)
+
+### 4.16 Create Synopsis Component
+
+- [ ] Create `src/presentation/components/details/synopsis.vue`
+  - Props: `overview: string | null`
+  - Template: paragraph with full overview text
+  - Conditionally render only if overview is non-empty
+  - Run tests: expect pass
+
+### 4.17 Write RatingStars Component Tests
+
+- [ ] Create `tests/presentation/components/details/rating-stars.test.ts` (covering: ED-06; scenario IDs: ED-06-01 through ED-06-06)
   - Test renders 5 star icons
   - Test filled stars match current rating value
   - Test hover previews selection
@@ -292,7 +337,7 @@
   - Test keyboard navigation (arrow keys, Enter)
   - Run tests: expect failure (component not yet implemented)
 
-### 4.14 Create RatingStars Component
+### 4.18 Create RatingStars Component
 
 - [ ] Create `src/presentation/components/details/rating-stars.vue`
   - Props: `modelValue: number` (0-5)
@@ -303,29 +348,32 @@
   - Keyboard accessibility with arrow keys
   - Run tests: expect pass
 
-### 4.15 Write ActionButtons Component Tests
+### 4.19 Write ActionButtons Component Tests
 
-- [ ] Create `tests/presentation/components/details/action-buttons.test.ts` (covering: ED-07, ED-08, ED-09, ED-10; scenario IDs: ED-07-01 through ED-07-03, ED-08-01 through ED-08-04, ED-09-01 through ED-09-03, ED-10-01 through ED-10-03)
+- [ ] Create `tests/presentation/components/details/action-buttons.test.ts` (covering: ED-07, ED-08, ED-09, ED-10; scenario IDs: ED-07-01 through ED-07-04, ED-08-01 through ED-08-05, ED-09-01 through ED-09-04, ED-10-01 through ED-10-03)
   - Test favorite button toggles state and emits event
   - Test watch status cycles through states
   - Test IMDB button renders when imdb_id present
   - Test IMDB button not rendered when imdb_id null
+  - Test IMDB link has `rel="noopener noreferrer"` and indicates new tab (ED-NFR-09)
+  - Test share button has `aria-label="Share"` (ED-NFR-08)
   - Test share button triggers Web Share API when available
   - Test share button copies to clipboard when Web Share not available
   - Run tests: expect failure (component not yet implemented)
 
-### 4.16 Create ActionButtons Component
+### 4.20 Create ActionButtons Component
 
 - [ ] Create `src/presentation/components/details/action-buttons.vue`
   - Props: `favorite: boolean`, `status: string`, `imdbId: string | null`, `shareUrl: string`, `shareTitle: string`
   - Emits: `toggle-favorite`, `update-status`, `share`
   - Template: row of icon buttons with tooltips
-  - IMDB link with `rel="noopener noreferrer"` and `target="_blank"`
+  - Share button with `aria-label="Share"` (ED-NFR-08)
+  - IMDB link with `rel="noopener noreferrer"`, `target="_blank"`, and external link indicator (ED-NFR-09)
   - Run tests: expect pass
 
-### 4.17 Write DetailSkeleton Component Tests
+### 4.21 Write DetailSkeleton Component Tests
 
-- [ ] Create `tests/presentation/components/details/detail-skeleton.test.ts` (covering: ED-11; scenario IDs: ED-11-01 through ED-11-03)
+- [ ] Create `tests/presentation/components/details/detail-skeleton.test.ts` (covering: ED-11; scenario IDs: ED-11-01 through ED-11-04)
   - Test renders backdrop placeholder
   - Test renders title line placeholders
   - Test renders metadata line placeholders
@@ -333,7 +381,7 @@
   - Test has shimmer animation
   - Run tests: expect failure (component not yet implemented)
 
-### 4.18 Create DetailSkeleton Component
+### 4.22 Create DetailSkeleton Component
 
 - [ ] Create `src/presentation/components/details/detail-skeleton.vue`
   - No props needed
@@ -341,11 +389,11 @@
   - Use `animate-pulse` for shimmer effect
   - Run tests: expect pass
 
-### 4.19 Write MovieScreen View Tests
+### 4.23 Write MovieScreen View Tests
 
-- [ ] Create `tests/presentation/views/movie-screen.test.ts` (covering: ED-01 through ED-16; scenario IDs: all ED scenarios for movie context)
+- [ ] Update `tests/presentation/views/movie-screen.test.ts` (covering: ED-01 through ED-16; scenario IDs: all ED scenarios for movie context)
   - Test renders skeleton while loading
-  - Test renders all detail components when data loaded
+  - Test renders all detail components when data loaded (including ProviderRatingBadge, Synopsis)
   - Test renders error state on API failure
   - Test renders "Not found" on 404
   - Test Retry button triggers refresh
@@ -354,32 +402,32 @@
   - Test watch status changes persist
   - Run tests: expect failure (view not yet implemented beyond stub)
 
-### 4.20 Update MovieScreen View
+### 4.24 Update MovieScreen View
 
 - [ ] Update `src/presentation/views/movie-screen.vue`
   - Import and use `useMovieDetail(id)` and `useLibraryEntry(id, 'movie')`
   - Get `id` from route params (`useRoute().params.id`)
   - Conditional rendering: skeleton (loading), error (error), content (data)
-  - Compose all detail components: HeroBackdrop, MetadataPanel, BoxOffice, CastCarousel, TrailerEmbed, StreamingBadges, RatingStars, ActionButtons
+  - Compose all detail components: HeroBackdrop, ProviderRatingBadge, MetadataPanel, Synopsis, BoxOffice, CastCarousel, TrailerEmbed, StreamingBadges, RatingStars, ActionButtons
   - Wire up library actions (rating, favorite, status) to composable methods
   - Handle share action with Web Share API / clipboard fallback
   - Run tests: expect pass
 
-### 4.21 Write ShowScreen View Tests
+### 4.25 Write ShowScreen View Tests
 
-- [ ] Create `tests/presentation/views/show-screen.test.ts` (covering: ED-01 through ED-15; scenario IDs: all ED scenarios for TV context)
+- [ ] Update `tests/presentation/views/show-screen.test.ts` (covering: ED-01 through ED-15; scenario IDs: all ED scenarios for TV context)
   - Same tests as MovieScreen but for TV show context
   - Test TV-specific metadata (seasons, episodes, created_by)
   - Run tests: expect failure (view not yet implemented beyond stub)
 
-### 4.22 Update ShowScreen View
+### 4.26 Update ShowScreen View
 
 - [ ] Update `src/presentation/views/show-screen.vue`
   - Import and use `useShowDetail(id)` and `useLibraryEntry(id, 'tv')`
-  - Same structure as MovieScreen with TV-specific adaptations
+  - Same structure as MovieScreen with TV-specific adaptations (no BoxOffice)
   - Run tests: expect pass
 
-### 4.23 Add i18n Keys
+### 4.27 Add i18n Keys
 
 - [ ] Update `src/presentation/i18n/locales/en.json`
   - Add `details.loading`: "Loading..."

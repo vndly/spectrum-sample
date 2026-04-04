@@ -1,6 +1,6 @@
-Feature: Provider Rating Badge
+Feature: TMDB Rating Badge
 
-  The provider's vote average is displayed as a rating badge.
+  The TMDB community rating (vote_average) is displayed as a rating badge.
 
   Background:
     Given the app is running
@@ -17,6 +17,12 @@ Feature: Provider Rating Badge
     Then the rating badge displays "7.9" (rounded)
 
   Scenario: ED-13-03 - Rating badge styling
+    Given the entry has a vote_average
     When the detail page loads
     Then the rating badge uses teal accent styling
     And displays a star icon alongside the number
+
+  Scenario: ED-13-04 - Rating badge handles zero votes
+    Given the entry has vote_average 0
+    When the detail page loads
+    Then the rating badge displays "0.0"

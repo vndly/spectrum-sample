@@ -14,6 +14,6 @@
 10. **[ED-10](./ED-10.feature)**: Share button with Web Share API and clipboard fallback.
 11. **[ED-11](./ED-11.feature)**: Loading skeleton matching detail layout.
 12. **[ED-12](./ED-12.feature)**: Error handling with retry functionality.
-13. **[ED-13](./ED-13.feature)**: Provider rating badge with vote average.
+13. **[ED-13](./ED-13.feature)**: TMDB rating badge with vote average.
 14. **[ED-15](./ED-15.feature)**: Synopsis displaying full overview text.
 15. **[ED-16](./ED-16.feature)**: Box office data showing budget and revenue for movies.
