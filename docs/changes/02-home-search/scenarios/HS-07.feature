@@ -54,3 +54,8 @@ Feature: Loading Skeleton
     And skeleton placeholders are displayed
     Then the user can press Tab to move focus away from SearchBar
     And the user can press Escape to blur the SearchBar
+
+  Scenario: HS-07-09 — Skeleton displays exactly 8 placeholder cards
+    Given the API response is delayed
+    When the user searches for "test"
+    Then exactly 8 skeleton placeholder cards are displayed

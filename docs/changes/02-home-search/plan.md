@@ -1,5 +1,41 @@
 # Plan
 
+## Phase 0: Prerequisites
+
+### 0.1 Verify or Create Base Schemas
+
+- [ ] Verify `src/domain/movie.schema.ts` exists with `MovieListItemSchema`
+  - If missing, create it with fields: `id`, `title`, `poster_path`, `release_date`, `vote_average`, `media_type`
+  - Export inferred type: `MovieListItem`
+- [ ] Verify `src/domain/show.schema.ts` exists with `ShowListItemSchema`
+  - If missing, create it with fields: `id`, `name`, `poster_path`, `first_air_date`, `vote_average`, `media_type`
+  - Export inferred type: `ShowListItem`
+
+### 0.2 Verify or Create Provider Client
+
+- [ ] Verify `src/infrastructure/provider.client.ts` exists
+  - If missing, create it with base API client setup (Bearer token auth, base URL, error handling)
+  - See `docs/technical/api.md` for configuration details
+
+### 0.3 Verify or Create Settings Composable
+
+- [ ] Verify `src/application/use-settings.ts` exists with `useSettings()` returning `Settings.language`
+  - If missing, create stub with default language `'en'`:
+    ```typescript
+    export function useSettings() {
+      return {
+        language: ref('en'),
+      }
+    }
+    ```
+
+### 0.4 Verify or Create MovieCard Component
+
+- [ ] Verify `src/presentation/components/common/movie-card.vue` exists
+  - If missing, create it with props: `item: MovieListItem | ShowListItem`
+  - Displays: poster image, title (or name for TV), year (from release_date or first_air_date), vote_average
+  - Emits: `click` event for navigation
+
 ## Phase 1: Testing — Domain Layer
 
 ### 1.1 Write Search Schema Tests
@@ -15,8 +51,8 @@
 
 - [ ] Create `src/domain/search.schema.ts`
   - Define `SearchResultItemSchema` as a discriminated union based on `media_type`:
-    - For `media_type === 'movie'`: extends `MovieListItemSchema` fields
-    - For `media_type === 'tv'`: extends `ShowListItemSchema` fields
+    - For `media_type === 'movie'`: extends `MovieListItemSchema` fields (from `src/domain/movie.schema.ts`)
+    - For `media_type === 'tv'`: extends `ShowListItemSchema` fields (from `src/domain/show.schema.ts`)
     - For `media_type === 'person'`: minimal fields (id, name, media_type)
   - Define `SearchResponseSchema` wrapping paginated results with `SearchResultItemSchema` items
   - Export inferred types: `SearchResultItem`, `SearchResponse`
@@ -32,15 +68,17 @@
 
 ### 2.1 Write Search API Tests
 
-- [ ] Create `tests/infrastructure/provider.client.search.test.ts` (covering: HS-02, implementation detail)
-  - Test `searchMulti()` constructs correct URL with all query params (query, language, page=1, include_adult=false)
+- [ ] Create `tests/infrastructure/provider.client.search.test.ts` (covering: HS-02-01, HS-02-02, HS-02-03, HS-02-04, HS-02-05, HS-02-06, HS-08-06, HS-08-07, implementation detail)
+  - Test `searchMulti()` constructs correct URL with all query params (HS-02-01, HS-02-02, HS-02-03, HS-02-04, HS-02-06)
   - Test `searchMulti()` returns validated response
+  - Test `searchMulti()` rejects empty/whitespace query (HS-02-05)
   - Test `searchMulti()` handles API error responses (network error, 5xx, 429)
+  - Test exponential backoff on 429 rate limit (HS-08-06, HS-08-07)
   - Run tests: expect failure (method not yet implemented)
 
 ### 2.2 Add Search API Method
 
-- [ ] Update `src/infrastructure/provider.client.ts`
+- [ ] Update `src/infrastructure/provider.client.ts` (verified to exist in Phase 0.2)
   - Add `searchMulti(query: string, language: string): Promise<SearchResponse>` method
   - Construct URL: `${API_BASE_URL}/search/multi` with query params: `query`, `language`, `page=1`, `include_adult=false`
   - Validate response with `SearchResponseSchema.parse()`
@@ -51,18 +89,23 @@
 
 ### 3.1 Write Search Composable Tests
 
-- [ ] Create `tests/application/use-search.test.ts` (covering: HS-01-01, HS-01-02, HS-01-03, HS-01-04, HS-01-05, HS-03-03, HS-03-04, HS-03-05, HS-06-01, HS-07-01, HS-07-05, HS-07-06, HS-08-01, HS-08-03, HS-08-08, HS-09-01, HS-09-03, HS-10-01, HS-10-02, HS-11-01, HS-11-06)
+- [ ] Create `tests/application/use-search.test.ts` (covering: HS-01-01, HS-01-02, HS-01-03, HS-01-04, HS-01-05, HS-03-01, HS-03-02, HS-03-03, HS-03-04, HS-03-05, HS-06-01, HS-07-01, HS-07-05, HS-07-06, HS-07-08, HS-08-01, HS-08-03, HS-08-04, HS-08-08, HS-08-09, HS-09-01, HS-09-03, HS-10-01, HS-10-02, HS-11-01, HS-11-06)
   - Test debounce behavior: multiple rapid inputs trigger single API call (HS-01-02)
   - Test debounce timer reset on continued typing (HS-01-03)
   - Test no API call before debounce completes (HS-01-04)
   - Test clearing input cancels pending request (HS-01-05)
+  - Test movie results are returned (HS-03-01)
+  - Test TV show results are returned (HS-03-02)
   - Test results filtering: person results excluded (HS-03-03, HS-03-05)
   - Test all-person results yields empty array (HS-03-04)
   - Test loading state transitions: idle → loading → success (HS-07-01, HS-07-06)
   - Test SearchBar interactive during loading (HS-07-05)
+  - Test keyboard navigation during loading (HS-07-08)
   - Test error state: API failure sets error ref (HS-08-01)
   - Test retry triggers new API call with current query (HS-08-03)
+  - Test successful retry replaces error with results (HS-08-04)
   - Test new search clears previous error (HS-08-08)
+  - Test retry uses current query value (HS-08-09)
   - Test clear: resets query, results, and error (HS-11-01, HS-11-06)
   - Test empty results: results array empty when API returns no matches (HS-06-01)
   - Test browse/search mode state based on query (HS-09-01, HS-09-03, HS-10-01, HS-10-02)
@@ -80,8 +123,7 @@
   - `clear()`: resets query to empty string, clears results and error
   - Implement 300 ms debounce using `watch(query, ...)` with `setTimeout`/`clearTimeout`
   - Filter results client-side: `results.filter(r => r.media_type === 'movie' || r.media_type === 'tv')`
-  - Pass `Settings.language` from `useSettings()` to API call
-  - Note: Requires `useSettings()` composable to exist (verify or create stub)
+  - Pass `Settings.language` from `useSettings()` to API call (verified to exist in Phase 0.3)
   - Run tests: expect pass
 
 ## Phase 4: Testing — Presentation Layer
@@ -113,15 +155,18 @@
 
 ### 4.3 Write SearchResults Component Tests
 
-- [ ] Create `tests/presentation/components/home/search-results.test.ts` (covering: HS-04-01, HS-04-02, HS-04-03, HS-04-04, HS-04-05, HS-04-06, HS-04-07, HS-04-08, HS-05-01, HS-05-02, HS-05-04, HS-06-01, HS-06-02, HS-06-03, HS-07-01, HS-07-02, HS-07-03, HS-07-07, HS-08-01, HS-08-02, HS-08-05)
+- [ ] Create `tests/presentation/components/home/search-results.test.ts` (covering: HS-04-01, HS-04-02, HS-04-03, HS-04-04, HS-04-05, HS-04-06, HS-04-07, HS-04-08, HS-05-01, HS-05-02, HS-05-04, HS-06-01, HS-06-02, HS-06-03, HS-06-05, HS-06-06, HS-07-01, HS-07-02, HS-07-03, HS-07-07, HS-07-09, HS-08-01, HS-08-02, HS-08-05)
   - Test renders skeleton grid when loading (HS-07-01)
   - Test skeleton grid has responsive columns (HS-07-02, HS-07-07)
   - Test skeleton has 2:3 aspect ratio (HS-07-03)
+  - Test exactly 8 skeleton placeholders displayed (HS-07-09)
   - Test renders error message with retry button when error (HS-08-01, HS-08-02)
   - Test error is inline, not full-page (HS-08-05)
   - Test renders empty state when results empty and query non-empty (HS-06-01)
   - Test empty state shows heading and subtitle (HS-06-02)
   - Test empty state is centered (HS-06-03)
+  - Test empty state after filtering person-only results (HS-06-05)
+  - Test user can type new query from empty state (HS-06-06)
   - Test renders MovieCard grid when results present (HS-04-01 through HS-04-06)
   - Test grid responsive columns (HS-04-07, HS-04-08)
   - Test MovieCard click navigates to correct route (HS-05-01, HS-05-02)
@@ -144,9 +189,10 @@
 
 ### 4.5 Write MovieCardSkeleton Component Tests
 
-- [ ] Create `tests/presentation/components/common/movie-card-skeleton.test.ts` (covering: HS-07-03, HS-07-04, implementation detail)
+- [ ] Create `tests/presentation/components/common/movie-card-skeleton.test.ts` (covering: HS-07-03, HS-07-04, HS-07-09, implementation detail)
   - Test skeleton has 2:3 aspect ratio
   - Test skeleton has shimmer animation class
+  - Test skeleton component can be rendered 8 times for loading grid (HS-07-09)
   - Run tests: expect failure (component not yet implemented)
 
 ### 4.6 Create MovieCardSkeleton Component
@@ -159,11 +205,12 @@
 
 ### 4.7 Write HomeScreen Integration Tests
 
-- [ ] Update `tests/presentation/views/home-screen.test.ts` (covering: HS-05-03, HS-09-01, HS-09-02, HS-09-03, HS-09-04, HS-10-01, HS-10-02, HS-10-03, HS-10-04, HS-10-05, HS-11-01, HS-11-04, HS-11-05)
+- [ ] Update `tests/presentation/views/home-screen.test.ts` (covering: HS-05-03, HS-06-04, HS-09-01, HS-09-02, HS-09-03, HS-09-04, HS-10-01, HS-10-02, HS-10-03, HS-10-04, HS-10-05, HS-11-01, HS-11-04, HS-11-05)
   - Test browse sections visible on initial load (HS-09-01)
   - Test SearchBar visible in browse mode (HS-09-02)
   - Test no search results in browse mode (HS-09-03)
   - Test browse sections maintain state (HS-09-04)
+  - Test empty state not shown when query is empty (HS-06-04)
   - Test browse sections hidden when query entered (HS-10-01)
   - Test SearchResults displayed when query entered (HS-10-02)
   - Test SearchBar remains visible in search mode (HS-10-03)

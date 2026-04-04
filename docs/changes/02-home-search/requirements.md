@@ -2,7 +2,7 @@
 
 ---
 
-id: home-search
+id: 02-home-search
 title: Home Screen Search
 status: approved
 importance: high
@@ -37,6 +37,8 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 
 - **R-01a (Scaffolding)**: Provides routing, SkeletonLoader, EmptyState, useToast composable
 - **Browse mode components** (TrendingCarousel, PopularGrid, FilterBar, ViewToggle): Required for HS-09 — may be stubbed if not yet implemented
+- **MovieCard component**: Required for HS-04 — created as part of this change if not already implemented
+- **useSettings composable**: Required for HS-02 to access `Settings.language` — created as part of this change if not already implemented
 
 ## Decisions
 
@@ -54,6 +56,8 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 - SearchBar component with debounced input
 - API integration with `/search/multi` endpoint
 - Search results display as MovieCard grid (note: MovieCard renders both movies and TV shows)
+- MovieCard component (if not already implemented) — reusable card displaying poster, title, year, and vote average for movies and TV shows
+- useSettings composable (if not already implemented) — provides `Settings.language` for API localization
 - Client-side filtering to exclude person results
 - Loading skeleton during API requests (8 placeholders)
 - Empty state when no results found
@@ -164,8 +168,8 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 ### Assumptions
 
 - The `/search/multi` endpoint is stable and returns consistent `media_type` field values
-- MovieCard component already exists and can be reused for search results (from R-01a)
 - TrendingCarousel, PopularGrid, FilterBar, and ViewToggle components will be implemented as part of home screen browse mode (separate change or prerequisite) — may be stubbed for initial implementation
+- MovieCard and useSettings may need to be created as part of this change if not already implemented
 
 ## Acceptance Criteria
 
@@ -183,3 +187,6 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 - [ ] Browse sections (TrendingCarousel, PopularGrid, FilterBar, ViewToggle) display when query is empty (HS-09)
 - [ ] Browse sections hide and SearchResults display when query is non-empty (HS-10)
 - [ ] Clearing the query restores browse sections with no intermediate mixed state (HS-11)
+- [ ] SearchBar input has `type="search"` and `placeholder` attributes (HS-NFR-06)
+- [ ] Clear button has `aria-label="Clear search"` and is keyboard accessible (HS-NFR-07)
+- [ ] Tab and Escape keys remain functional during loading state (HS-NFR-08)
