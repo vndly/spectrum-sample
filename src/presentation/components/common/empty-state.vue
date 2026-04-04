@@ -34,5 +34,6 @@ withDefaults(
     >
       {{ ctaLabel }}
     </button>
+    <slot />
   </div>
 </template>

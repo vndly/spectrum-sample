@@ -11,6 +11,33 @@ const EXPECTED_KEYS = [
   'common.error.description',
   'common.error.reload',
   'common.error.title',
+  'details.actions.favorite',
+  'details.actions.imdb',
+  'details.actions.removeStatus',
+  'details.actions.share',
+  'details.actions.unfavorite',
+  'details.actions.watched',
+  'details.actions.watchlist',
+  'details.boxOffice.budget',
+  'details.boxOffice.revenue',
+  'details.boxOffice.title',
+  'details.cast.title',
+  'details.error.retry',
+  'details.error.title',
+  'details.loading',
+  'details.metadata.director',
+  'details.metadata.directors',
+  'details.metadata.episodes',
+  'details.metadata.seasons',
+  'details.metadata.writer',
+  'details.metadata.writers',
+  'details.notFound.home',
+  'details.notFound.message',
+  'details.notFound.title',
+  'details.share.copied',
+  'details.streaming.notAvailable',
+  'details.trailer.play',
+  'details.trailer.title',
   'home.search.clear',
   'home.search.empty.subtitle',
   'home.search.empty.title',
@@ -82,7 +109,7 @@ describe('locale key parity', () => {
     }
   })
 
-  it('contains exactly the expected 30 keys', () => {
+  it('contains exactly the expected keys', () => {
     // Arrange
     const enKeys = Object.keys(locales['en.json']).sort()
 

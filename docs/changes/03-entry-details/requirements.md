@@ -4,7 +4,7 @@
 
 id: 03-entry-details
 title: Entry Details
-status: approved
+status: in_development
 importance: high
 type: functional
 tags: [details, movie, show, api, library]

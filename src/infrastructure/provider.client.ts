@@ -1,6 +1,10 @@
 import { MAX_RETRY_ATTEMPTS, RETRY_BASE_DELAY_MS } from '@/domain/constants'
+import type { MovieDetail } from '@/domain/movie.schema'
+import { MovieDetailSchema } from '@/domain/movie.schema'
 import type { SearchResponse } from '@/domain/search.schema'
 import { SearchResponseSchema } from '@/domain/search.schema'
+import type { ShowDetail } from '@/domain/show.schema'
+import { ShowDetailSchema } from '@/domain/show.schema'
 
 /** Base URL for the TMDB API. */
 export const API_BASE_URL = 'https://api.themoviedb.org/3'
@@ -69,4 +73,44 @@ export async function searchMulti(query: string, language: string): Promise<Sear
   const data = await response.json()
 
   return SearchResponseSchema.parse(data)
+}
+
+/**
+ * Fetches detailed information about a movie including credits, videos, and streaming providers.
+ * @param id - TMDB movie ID
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated movie detail response with appended relations
+ * @throws Error if the API request fails
+ */
+export async function getMovieDetail(id: number, language: string): Promise<MovieDetail> {
+  const params = new URLSearchParams({
+    language,
+    append_to_response: 'credits,videos,watch/providers,release_dates',
+  })
+
+  const url = `${API_BASE_URL}/movie/${id}?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return MovieDetailSchema.parse(data)
+}
+
+/**
+ * Fetches detailed information about a TV show including credits, videos, and streaming providers.
+ * @param id - TMDB TV show ID
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated TV show detail response with appended relations
+ * @throws Error if the API request fails
+ */
+export async function getShowDetail(id: number, language: string): Promise<ShowDetail> {
+  const params = new URLSearchParams({
+    language,
+    append_to_response: 'credits,videos,watch/providers,content_ratings',
+  })
+
+  const url = `${API_BASE_URL}/tv/${id}?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return ShowDetailSchema.parse(data)
 }
