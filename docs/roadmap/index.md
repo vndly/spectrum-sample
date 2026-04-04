@@ -2,7 +2,7 @@
 
 ## Contents
 
-1. **[Menu Scaffold and Navigation](./01-menu-scaffold-and-navigation.md)**: Set up the app shell, routing, and bottom navigation. `In Progress`
+1. **[Menu Scaffold and Navigation](../product/01%20-%20scaffolding/index.md)**: Set up the app shell, routing, and bottom navigation. `Done`
 2. **[Home Screen: Search](./02-home-search.md)**: Add movie search functionality to the home screen. `Not Started`
 3. **[Entry Details](./03-entry-details.md)**: Display movie details, metadata, and poster images. `Not Started`
 4. **[Home Screen: Trending and Popular Sections](./04-home-trending-and-popular.md)**: Surface trending and popular movies on the home screen. `Not Started`

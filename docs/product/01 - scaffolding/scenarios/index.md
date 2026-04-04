@@ -36,7 +36,15 @@
 32. **[SC-09](./SC-09.feature)**: Route-transition fade behavior and reduced-motion fallback.
 33. **[SC-10](./SC-10.feature)**: Root shell assembly, current nav composition, and overlay stacking.
 34. **[SC-25](./SC-25.feature)**: Component-test coverage for sidebar, bottom nav, and page header.
-35. **[SC-20](./SC-20.feature)**: Placeholder view rendering for the 4 scaffolded routes.
+35. **[SC-20](./SC-20.feature)**: Placeholder view rendering for all scaffolded routes.
 36. **[SC-26](./SC-26.feature)**: Placeholder view component-test coverage.
+37. **[R-01b-01](./R-01b-01.feature)**: Recommendations route definitions, lazy loading, and direct URL rendering.
+38. **[R-01b-02](./R-01b-02.feature)**: Recommendations nav order, translations, active state, and touch targets.
+39. **[R-01b-03](./R-01b-03.feature)**: Stats placeholder routing and locale-key coverage.
+40. **[R-01b-04](./R-01b-04.feature)**: Movie and show placeholder detail routes for numeric IDs.
+41. **[R-01b-05](./R-01b-05.feature)**: Non-numeric detail-route guard redirects.
+42. **[R-01b-06](./R-01b-06.feature)**: Shared EmptyState rendering and translation-key bindings for new views.
+43. **[R-01b-07](./R-01b-07.feature)**: App-shell behavior, fade transitions, and zero side effects on new routes.
+44. **[R-01b-08](./R-01b-08.feature)**: Router, layout, view, locale, and project-level verification coverage.
 
 > **i18n note:** Theme, transitions, and constants deliver CSS definitions and a numeric constant with no user-facing text. i18n coverage is not applicable for those scenarios.
