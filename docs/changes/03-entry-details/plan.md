@@ -5,13 +5,21 @@
 ### 0.1 Create Detail Schemas
 
 - [ ] Create `MovieDetailSchema` in `src/domain/movie.schema.ts`
-  - Fields: `id`, `title`, `overview`, `tagline`, `release_date`, `runtime`, `poster_path`, `backdrop_path`, `vote_average`, `imdb_id`, `budget`, `revenue`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `belongs_to_collection`, `credits`, `videos`, `watch/providers`, `release_dates`
+  - Fields: `id`, `title`, `overview`, `tagline`, `release_date`, `runtime`, `poster_path`, `backdrop_path`, `vote_average`, `imdb_id`, `budget`, `revenue`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `belongs_to_collection`, `credits`, `videos`, `'watch/providers'` (quoted key for Zod), `release_dates`
   - Export inferred type: `MovieDetail`
 - [ ] Create `ShowDetailSchema` in `src/domain/show.schema.ts`
-  - Fields: `id`, `name`, `overview`, `tagline`, `first_air_date`, `last_air_date`, `number_of_seasons`, `number_of_episodes`, `episode_run_time`, `poster_path`, `backdrop_path`, `vote_average`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `origin_country`, `networks`, `created_by`, `credits`, `videos`, `watch/providers`, `content_ratings`, `next_episode_to_air`
+  - Fields: `id`, `name`, `overview`, `tagline`, `first_air_date`, `last_air_date`, `number_of_seasons`, `number_of_episodes`, `episode_run_time`, `poster_path`, `backdrop_path`, `vote_average`, `status`, `homepage`, `genres`, `spoken_languages`, `production_companies`, `production_countries`, `origin_country`, `networks`, `created_by`, `credits`, `videos`, `'watch/providers'` (quoted key for Zod), `content_ratings`, `next_episode_to_air`
+  - Note: TV shows do not have `imdb_id` in the main response; IMDB link may not be available for TV shows
   - Export inferred type: `ShowDetail`
 
-### 0.2 Create Shared Sub-schemas
+### 0.2 Create LibraryEntry Schema
+
+- [ ] Create `src/domain/library.schema.ts` with `LibraryEntrySchema`:
+  - Fields per `docs/technical/data-model.md`: `id`, `mediaType`, `title`, `posterPath`, `rating` (0-5), `favorite` (boolean), `status` (`'watchlist' | 'watched' | 'none'`), `lists`, `tags`, `notes`, `watchDates`, `addedAt`
+  - Export inferred type: `LibraryEntry`
+  - Note: `rating: 0` means unrated, `1-5` are valid ratings
+
+### 0.3 Create Shared Sub-schemas
 
 - [ ] Create `src/domain/shared.schema.ts` with the following schemas:
   - `GenreSchema`: `{ id: number, name: string }`
@@ -23,7 +31,7 @@
   - `SpokenLanguageSchema`: `{ iso_639_1: string, name: string, english_name: string }`
   - Export inferred types for all schemas
 
-### 0.3 Create Storage Service
+### 0.4 Create Storage Service
 
 - [ ] Create `src/infrastructure/storage.service.ts` with:
   - `STORAGE_KEY = 'plot-twisted-library'`
@@ -33,7 +41,7 @@
   - Validate with `LibraryEntrySchema` on read per `docs/technical/data-model.md`
   - Rollback: file can be removed without affecting other infrastructure
 
-### 0.4 Update Settings Composable
+### 0.5 Update Settings Composable
 
 - [ ] Update `src/application/use-settings.ts` to add `preferredRegion`:
   - Add `preferredRegion: ref('US')` to the returned object
@@ -176,12 +184,13 @@
 
 ### 4.1 Write HeroBackdrop Component Tests
 
-- [ ] Create `tests/presentation/components/details/hero-backdrop.test.ts` (covering: ED-01; scenario IDs: ED-01-01 through ED-01-05)
+- [ ] Create `tests/presentation/components/details/hero-backdrop.test.ts` (covering: ED-01, ED-14; scenario IDs: ED-01-01 through ED-01-03, ED-14-01 through ED-14-03)
   - Test renders backdrop image when `backdrop_path` provided
   - Test renders gradient overlay
   - Test renders title text
-  - Test renders tagline when provided (ED-14)
-  - Test renders solid gradient when `backdrop_path` is null
+  - Test renders tagline when provided (ED-14-01)
+  - Test renders solid gradient when `backdrop_path` is null (ED-01-03)
+  - Test tagline not rendered when empty or null (ED-14-02, ED-14-03)
   - Run tests: expect failure (component not yet implemented)
 
 ### 4.2 Create HeroBackdrop Component
@@ -391,7 +400,7 @@
 
 ### 4.23 Write MovieScreen View Tests
 
-- [ ] Update `tests/presentation/views/movie-screen.test.ts` (covering: ED-01 through ED-16; scenario IDs: all ED scenarios for movie context)
+- [ ] Create `tests/presentation/views/movie-screen.test.ts` (covering: ED-01 through ED-16; scenario IDs: all ED scenarios for movie context)
   - Test renders skeleton while loading
   - Test renders all detail components when data loaded (including ProviderRatingBadge, Synopsis)
   - Test renders error state on API failure
@@ -415,7 +424,7 @@
 
 ### 4.25 Write ShowScreen View Tests
 
-- [ ] Update `tests/presentation/views/show-screen.test.ts` (covering: ED-01 through ED-15; scenario IDs: all ED scenarios for TV context)
+- [ ] Create `tests/presentation/views/show-screen.test.ts` (covering: ED-01 through ED-15; scenario IDs: all ED scenarios for TV context)
   - Same tests as MovieScreen but for TV show context
   - Test TV-specific metadata (seasons, episodes, created_by)
   - Run tests: expect failure (view not yet implemented beyond stub)
@@ -469,7 +478,8 @@
 - [ ] Run `npm run lint` - no ESLint errors
 - [ ] Run `npm run build` - production build succeeds
 - [ ] Run `npm run test` - all tests pass
-- [ ] Verify touch targets: all interactive elements are at least 44x44px on mobile viewports (ED-NFR-06)
+- [ ] Verify touch targets: in Chrome DevTools mobile emulation at 375px width, verify all buttons measure at least 44x44px (ED-NFR-06)
+- [ ] Verify accessibility: run axe-core audit on detail pages, verify screen reader announces rating changes (ED-NFR-07)
 - [ ] Manual verification:
   - Navigate to `/movie/550` (Fight Club), verify all components render
   - Navigate to `/show/1396` (Breaking Bad), verify TV-specific metadata

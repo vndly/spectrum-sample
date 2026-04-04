@@ -39,6 +39,7 @@ Users can search for movies and TV shows from the home screen, but cannot view d
 
 ### Dependencies
 
+- **R-01a (Scaffolding)**: Provides SkeletonLoader, EmptyState, useToast, useModal, and ErrorBoundary used by this feature.
 - **R-02 (Home Search)**: Provides navigation to detail routes via MovieCard clicks.
 - **Architecture**: Uses `append_to_response` API pattern per `docs/technical/api.md`.
 - **Data Model**: Uses `LibraryEntry` schema for persisting user data per `docs/technical/data-model.md`.
@@ -90,7 +91,7 @@ Users can search for movies and TV shows from the home screen, but cannot view d
 | ED-03 | Cast Carousel    | The `CastCarousel` component SHALL render a horizontally scrollable list of cast members from `credits.cast`, sorted by `order` (billing order). Each cast item SHALL display: profile headshot (or placeholder icon if `profile_path` is null), actor name, and character name. The carousel SHALL display up to 20 cast members.                                                                                                                                                              | P0       |
 | ED-04 | Trailer Embed    | The `TrailerEmbed` component SHALL display a play button over a thumbnail. When clicked, it SHALL embed the official YouTube trailer using the first video from `videos.results` where `type === "Trailer"` and `site === "YouTube"`. If no trailer is available, the component SHALL NOT be rendered. The embed SHALL use privacy-enhanced mode (`youtube-nocookie.com`).                                                                                                                      | P0       |
 | ED-05 | Streaming Badges | The `StreamingBadges` component SHALL display available streaming providers from `watch/providers.results[region].flatrate`, where `region` matches `Settings.preferredRegion`. Each badge SHALL display the provider logo. If no streaming providers are available for the region, the component SHALL display "Not available for streaming" text.                                                                                                                                             | P0       |
-| ED-06 | Rating Stars     | The `RatingStars` component SHALL allow the user to set a 1-5 star personal rating. The rating SHALL be persisted in localStorage via `LibraryEntry.rating`. Hovering over stars SHALL preview the selection. Clicking a star SHALL confirm the rating. Clicking the same star again SHALL clear the rating (set to 0).                                                                                                                                                                         | P0       |
+| ED-06 | Rating Stars     | The `RatingStars` component SHALL allow the user to set a 0-5 star personal rating (0 means unrated). The rating SHALL be persisted in localStorage via `LibraryEntry.rating`. Hovering over stars SHALL preview the selection. Clicking a star SHALL confirm the rating. Clicking the same star again SHALL clear the rating (set to 0).                                                                                                                                                       | P0       |
 | ED-07 | Favorite Toggle  | A favorite button SHALL toggle the `LibraryEntry.favorite` boolean in localStorage. The button SHALL display a filled heart icon when favorited and an outline heart icon when not favorited.                                                                                                                                                                                                                                                                                                   | P0       |
 | ED-08 | Watch Status     | A watch status control SHALL allow the user to set `LibraryEntry.status` to one of: `watchlist`, `watched`, or `none`. The control SHALL provide separate buttons for each state (not a cycling control). Clicking a button sets that status; clicking the active status button clears it to `none`.                                                                                                                                                                                            | P0       |
 | ED-09 | IMDB Link        | If `imdb_id` is present, an IMDB button/link SHALL open `https://www.imdb.com/title/{imdb_id}` in a new tab. If `imdb_id` is null, the IMDB link SHALL NOT be rendered.                                                                                                                                                                                                                                                                                                                         | P0       |
@@ -106,11 +107,11 @@ Users can search for movies and TV shows from the home screen, but cannot view d
 
 ### Performance
 
-| ID        | Requirement        | Threshold                                                                                                |
-| --------- | ------------------ | -------------------------------------------------------------------------------------------------------- |
-| ED-NFR-01 | API Response Time  | Detail API call SHALL complete and render initial content within 1500 ms on a stable network connection. |
-| ED-NFR-02 | Trailer Load       | Trailer iframe SHALL only load after user interaction (click), not on initial page load.                 |
-| ED-NFR-03 | Image Lazy Loading | Cast headshots and secondary images SHALL use `loading="lazy"`. Hero backdrop SHALL load eagerly.        |
+| ID        | Requirement        | Threshold                                                                                         |
+| --------- | ------------------ | ------------------------------------------------------------------------------------------------- |
+| ED-NFR-01 | API Response Time  | Detail API call SHALL complete and render initial content within 1500 ms.                         |
+| ED-NFR-02 | Trailer Load       | Trailer iframe SHALL only load after user interaction (click), not on initial page load.          |
+| ED-NFR-03 | Image Lazy Loading | Cast headshots and secondary images SHALL use `loading="lazy"`. Hero backdrop SHALL load eagerly. |
 
 ### Responsive Design
 
@@ -221,8 +222,8 @@ Users can search for movies and TV shows from the home screen, but cannot view d
 ### Assumptions
 
 - `append_to_response` parameter reliably returns all requested relations in a single API call.
-- `Settings.preferredRegion` will be implemented as part of the Settings feature (roadmap item 11); until then, streaming badges may use a default region or show no data.
-- `storage.service.ts` is implemented and functional for persisting `LibraryEntry` data.
+- `Settings.preferredRegion` will be implemented as part of the Settings feature (roadmap item 11); until then, streaming badges will use a default region of 'US'.
+- `storage.service.ts` will be created as part of this feature (Phase 0.3 of the plan) to persist `LibraryEntry` data.
 
 ## Acceptance Criteria
 
@@ -236,7 +237,8 @@ Users can search for movies and TV shows from the home screen, but cannot view d
 - [ ] `TrailerEmbed` is not rendered when no trailer is available (ED-04)
 - [ ] `StreamingBadges` displays provider logos for user's region (ED-05)
 - [ ] `StreamingBadges` displays "Not available" when no providers exist for region (ED-05)
-- [ ] `RatingStars` allows setting 1-5 star rating persisted in localStorage (ED-06)
+- [ ] `RatingStars` allows setting 0-5 star rating persisted in localStorage (ED-06)
+- [ ] `RatingStars` supports keyboard navigation using arrow keys (ED-06, ED-NFR-07)
 - [ ] `RatingStars` clears rating when clicking the same star again (ED-06)
 - [ ] Favorite toggle persists state in localStorage (ED-07)
 - [ ] Watch status toggle (watchlist/watched/none) persists in localStorage (ED-08)

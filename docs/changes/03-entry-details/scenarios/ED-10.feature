@@ -24,3 +24,10 @@ Feature: Share Button
   Scenario: ED-10-03 - Share button has accessibility label
     When the detail page loads
     Then the share button has aria-label="Share"
+
+  Scenario: ED-10-04 - Clipboard fallback toast in non-default language
+    Given the browser does not support the Web Share API
+    And the app language is set to "es"
+    When the user clicks the share button
+    Then the URL is copied to the clipboard
+    And a success toast with localized text is displayed

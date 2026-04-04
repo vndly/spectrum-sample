@@ -9,7 +9,7 @@ Feature: Error Handling
   Scenario: ED-12-01 - Network error displays error message
     Given the network is unavailable
     When the user navigates to a detail page
-    Then an inline error message is displayed
+    Then an inline error message "Something went wrong" is displayed
     And a "Retry" button is visible
 
   Scenario: ED-12-02 - Retry button re-attempts API call
@@ -21,8 +21,8 @@ Feature: Error Handling
   Scenario: ED-12-03 - 404 displays not found message
     Given the entry ID does not exist
     When the user navigates to that detail page
-    Then a "Not found" message is displayed
-    And a link to Home is provided
+    Then a "Not found" message with text "This title doesn't exist or has been removed." is displayed
+    And a "Back to Home" link is provided
 
   Scenario: ED-12-04 - Server error displays retry option
     Given the API returns a 500 error

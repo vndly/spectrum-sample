@@ -5,7 +5,7 @@ Feature: Hero Backdrop
 
   Background:
     Given the app is running
-    And the user navigates to a detail page
+    And the user is on a detail page
 
   Scenario: ED-01-01 - Backdrop image displays with gradient overlay
     Given the entry has a backdrop image
@@ -19,18 +19,7 @@ Feature: Hero Backdrop
     Then the title is displayed over the gradient area
     And the title has sufficient contrast for readability
 
-  Scenario: ED-01-03 - Tagline displays below title
-    Given the entry has a non-empty tagline
-    When the detail page loads
-    Then the tagline is displayed below the title
-    And the tagline uses muted text styling
-
-  Scenario: ED-01-04 - Tagline omitted when empty
-    Given the entry has an empty tagline
-    When the detail page loads
-    Then no tagline element is rendered
-
-  Scenario: ED-01-05 - Fallback gradient when no backdrop
+  Scenario: ED-01-03 - Fallback gradient when no backdrop
     Given the entry has no backdrop image (backdrop_path is null)
     When the detail page loads
     Then a solid dark gradient matching the app background is displayed
