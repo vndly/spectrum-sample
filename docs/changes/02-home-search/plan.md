@@ -255,8 +255,8 @@
 - [x] Run `npm run lint` — no ESLint errors
 - [x] Run `npm run build` — production build succeeds
 - [x] Run `npm run test` — all tests pass (254 tests)
-- [ ] Verify touch targets: SearchBar clear button and MovieCard components are at least 44x44px on mobile viewports (HS-NFR-05)
-- [ ] Manual verification:
+- [x] Verify touch targets: SearchBar clear button and MovieCard components are at least 44x44px on mobile viewports (HS-NFR-05)
+- [x] Manual verification:
   - Type in SearchBar, observe 300 ms debounce before results appear
   - Verify only movie/TV results shown (no person cards)
   - Verify each card shows poster, title, year, vote average
