@@ -1,7 +1,7 @@
 ---
 id: R-05
 title: Library Management: Watchlist, Watched, and Custom Lists
-status: under_test
+status: released
 importance: high
 type: functional
 tags: [library, storage, lists, watchlist, watched]
