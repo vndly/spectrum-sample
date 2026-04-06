@@ -14,6 +14,9 @@ vi.mock('lucide-vue-next', () => ({
   AlertCircle: { template: '<svg data-icon="alert-circle" />' },
   Film: { template: '<svg data-icon="film" />' },
   Star: { template: '<svg data-icon="star" />' },
+  ChevronDown: { template: '<svg data-icon="chevron-down" />' },
+  LayoutGrid: { template: '<svg data-icon="layout-grid" />' },
+  List: { template: '<svg data-icon="list" />' },
 }))
 
 vi.mock('@/presentation/components/error/error-boundary.vue', () => ({

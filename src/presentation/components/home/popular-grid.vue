@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import type { MediaResult } from '@/application/use-browse'
+import type { LayoutMode } from '@/application/use-settings'
 import MovieCard from '@/presentation/components/common/movie-card.vue'
 import MovieCardSkeleton from '@/presentation/components/common/movie-card-skeleton.vue'
 
@@ -8,6 +8,7 @@ defineProps<{
   title: string
   items: MediaResult[]
   loading: boolean
+  variant?: LayoutMode
 }>()
 
 const router = useRouter()
@@ -37,16 +38,21 @@ function handleCardClick(item: MediaResult) {
       <MovieCardSkeleton v-for="n in SKELETON_COUNT" :key="n" />
     </div>
 
-    <!-- Results grid -->
+    <!-- Results grid/list -->
     <div
       v-else
       data-testid="popular-grid"
-      class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+      :class="[
+        variant === 'list'
+          ? 'flex flex-col gap-2'
+          : 'grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+      ]"
     >
       <MovieCard
         v-for="item in items"
         :key="`${item.media_type}-${item.id}`"
         :item="item"
+        :variant="variant"
         @click="handleCardClick(item)"
       />
     </div>

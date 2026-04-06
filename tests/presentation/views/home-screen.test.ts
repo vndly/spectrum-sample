@@ -6,19 +6,23 @@ import { nextTick } from 'vue'
 import HomeScreen from '@/presentation/views/home-screen.vue'
 import * as providerClient from '@/infrastructure/provider.client'
 
+import { ref } from 'vue'
+
 vi.mock('@/infrastructure/provider.client', () => ({
   searchMulti: vi.fn(),
   getTrending: vi.fn(),
   getPopularMovies: vi.fn(),
   getPopularShows: vi.fn(),
+  getMovieGenres: vi.fn(() => Promise.resolve({ genres: [] })),
+  getTvGenres: vi.fn(() => Promise.resolve({ genres: [] })),
 }))
 
 vi.mock('@/application/use-browse', () => ({
   useBrowse: vi.fn(() => ({
-    trending: [],
-    popularMovies: [],
-    popularShows: [],
-    loading: false,
+    trending: ref([]),
+    popularMovies: ref([]),
+    popularShows: ref([]),
+    loading: true,
     error: null,
     retry: vi.fn(),
   })),
@@ -27,6 +31,7 @@ vi.mock('@/application/use-browse', () => ({
 vi.mock('@/application/use-settings', () => ({
   useSettings: () => ({
     language: { value: 'en' },
+    layoutMode: ref('grid'),
   }),
 }))
 
@@ -51,6 +56,15 @@ const i18n = createI18n({
       'home.browse.popularShows': 'Popular TV Shows',
       'home.browse.error.message': 'Failed to load browse content',
       'home.browse.error.retry': 'Retry',
+      'home.filters.genre': 'Genre',
+      'home.filters.mediaType.all': 'All',
+      'home.filters.mediaType.movie': 'Movies',
+      'home.filters.mediaType.tv': 'TV Shows',
+      'home.filters.yearFrom': 'From Year',
+      'home.filters.yearTo': 'To Year',
+      'home.filters.clear': 'Clear All',
+      'home.filters.grid': 'Grid View',
+      'home.filters.list': 'List View',
     },
   },
 })

@@ -5,12 +5,22 @@ import type { SearchResponse } from '@/domain/search.schema'
 import { SearchResponseSchema } from '@/domain/search.schema'
 import type { ShowDetail } from '@/domain/show.schema'
 import { ShowDetailSchema } from '@/domain/show.schema'
+import { GenreSchema } from '@/domain/shared.schema'
+import { z } from 'zod'
 
 /** Base URL for the TMDB API. */
 export const API_BASE_URL = 'https://api.themoviedb.org/3'
 
 /** TMDB API access token from environment variables. */
 const ACCESS_TOKEN = import.meta.env.VITE_MEDIA_PROVIDER_TOKEN as string
+
+/** Schema for the genre list response from TMDB. */
+const GenreListResponseSchema = z.object({
+  genres: z.array(GenreSchema),
+})
+
+/** Inferred type for the genre list response. */
+type GenreListResponse = z.infer<typeof GenreListResponseSchema>
 
 /**
  * Delays execution for the specified duration.
@@ -46,6 +56,36 @@ export async function fetchWithRetry(url: string, attempt = 1): Promise<Response
   }
 
   return response
+}
+
+/**
+ * Fetches the list of movie genres from TMDB.
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated list of movie genres
+ * @throws Error if the API request fails
+ */
+export async function getMovieGenres(language: string): Promise<GenreListResponse> {
+  const params = new URLSearchParams({ language })
+  const url = `${API_BASE_URL}/genre/movie/list?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return GenreListResponseSchema.parse(data)
+}
+
+/**
+ * Fetches the list of TV genres from TMDB.
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated list of TV genres
+ * @throws Error if the API request fails
+ */
+export async function getTvGenres(language: string): Promise<GenreListResponse> {
+  const params = new URLSearchParams({ language })
+  const url = `${API_BASE_URL}/genre/tv/list?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return GenreListResponseSchema.parse(data)
 }
 
 /**

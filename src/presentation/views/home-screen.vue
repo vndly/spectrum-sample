@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AlertCircle } from 'lucide-vue-next'
 import { useSearch } from '@/application/use-search'
 import { useBrowse } from '@/application/use-browse'
+import { useFilters } from '@/application/use-filters'
+import { useSettings } from '@/application/use-settings'
+import { filterResults } from '@/domain/filter.logic'
 import SearchBar from '@/presentation/components/home/search-bar.vue'
+import FilterBar from '@/presentation/components/home/filter-bar.vue'
+import ViewToggle from '@/presentation/components/home/view-toggle.vue'
 import SearchResults from '@/presentation/components/home/search-results.vue'
 import TrendingCarousel from '@/presentation/components/home/trending-carousel.vue'
 import PopularGrid from '@/presentation/components/home/popular-grid.vue'
@@ -26,6 +32,25 @@ const {
   retry: retryBrowse,
 } = useBrowse()
 
+const { filters, clearAll } = useFilters()
+const { layoutMode } = useSettings()
+
+/** Filtered trending results. */
+const filteredTrending = computed(() => filterResults(trending.value, filters))
+
+/** Filtered popular movies. */
+const filteredPopularMovies = computed(() => filterResults(popularMovies.value, filters))
+
+/** Filtered popular shows. */
+const filteredPopularShows = computed(() => filterResults(popularShows.value, filters))
+
+/** Reset filters when entering search mode. */
+watch(query, (newQuery) => {
+  if (newQuery.trim().length > 0) {
+    clearAll()
+  }
+})
+
 /**
  * Handles retry event from SearchResults.
  */
@@ -43,8 +68,15 @@ function handleBrowseRetry() {
 
 <template>
   <div class="space-y-8">
-    <!-- Search Bar -->
-    <SearchBar v-model="query" />
+    <!-- Search and Filters Section -->
+    <div class="sticky top-0 z-40 space-y-4 bg-background pb-2">
+      <SearchBar v-model="query" />
+      
+      <div v-if="!isSearchMode" class="flex flex-col gap-2 md:flex-row md:items-center">
+        <FilterBar class="flex-1" />
+        <ViewToggle class="self-end md:self-auto" />
+      </div>
+    </div>
 
     <!-- Search Mode: Show results -->
     <SearchResults
@@ -76,21 +108,44 @@ function handleBrowseRetry() {
 
       <template v-else>
         <!-- Trending Section -->
-        <TrendingCarousel :items="trending" :loading="browseLoading" />
+        <TrendingCarousel
+          v-if="browseLoading || filteredTrending.length > 0"
+          :items="filteredTrending"
+          :loading="browseLoading"
+        />
 
         <!-- Popular Movies -->
         <PopularGrid
+          v-if="browseLoading || filteredPopularMovies.length > 0"
           :title="t('home.browse.popularMovies')"
-          :items="popularMovies"
+          :items="filteredPopularMovies"
           :loading="browseLoading"
+          :variant="layoutMode"
         />
 
         <!-- Popular Shows -->
         <PopularGrid
+          v-if="browseLoading || filteredPopularShows.length > 0"
           :title="t('home.browse.popularShows')"
-          :items="popularShows"
+          :items="filteredPopularShows"
           :loading="browseLoading"
+          :variant="layoutMode"
         />
+
+        <!-- Empty state when filters return nothing -->
+        <div
+          v-if="!browseLoading && filteredTrending.length === 0 && filteredPopularMovies.length === 0 && filteredPopularShows.length === 0"
+          class="flex flex-col items-center gap-2 py-20 text-slate-400"
+        >
+          <p class="text-lg font-medium text-white">{{ t('home.search.empty.title') }}</p>
+          <p>{{ t('home.search.empty.subtitle') }}</p>
+          <button
+            class="mt-4 text-accent hover:underline font-medium"
+            @click="clearAll"
+          >
+            {{ t('home.filters.clear') }}
+          </button>
+        </div>
       </template>
     </div>
   </div>

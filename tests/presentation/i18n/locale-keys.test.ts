@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { describe, it, expect } from 'vitest'
 
 const LOCALES_DIR = resolve(process.cwd(), 'src/presentation/i18n/locales')
 const LOCALE_FILES = ['en.json', 'es.json', 'fr.json'] as const
@@ -39,6 +40,20 @@ const EXPECTED_KEYS = [
   'details.streaming.notAvailable',
   'details.trailer.play',
   'details.trailer.title',
+  'home.browse.error.message',
+  'home.browse.error.retry',
+  'home.browse.popularMovies',
+  'home.browse.popularShows',
+  'home.browse.trending',
+  'home.filters.clear',
+  'home.filters.genre',
+  'home.filters.grid',
+  'home.filters.list',
+  'home.filters.mediaType.all',
+  'home.filters.mediaType.movie',
+  'home.filters.mediaType.tv',
+  'home.filters.yearFrom',
+  'home.filters.yearTo',
   'home.search.clear',
   'home.search.empty.subtitle',
   'home.search.empty.title',
@@ -77,7 +92,7 @@ const EXPECTED_KEYS = [
   'toast.dismiss',
   'toast.error',
   'toast.retry',
-]
+].sort()
 
 const CAMEL_CASE_SEGMENT = /^[a-z][a-zA-Z0-9]*$/
 
@@ -90,9 +105,6 @@ describe('locale key parity', () => {
   const locales = Object.fromEntries(LOCALE_FILES.map((file) => [file, readLocale(file)]))
 
   it('all three locale files exist and parse as valid JSON', () => {
-    // Arrange — files are read in the describe block above
-
-    // Act & Assert
     for (const file of LOCALE_FILES) {
       expect(locales[file]).toBeDefined()
       expect(typeof locales[file]).toBe('object')
@@ -100,20 +112,16 @@ describe('locale key parity', () => {
   })
 
   it('all three files contain identical key paths', () => {
-    // Arrange
     const enKeys = Object.keys(locales['en.json']).sort()
     const esKeys = Object.keys(locales['es.json']).sort()
     const frKeys = Object.keys(locales['fr.json']).sort()
 
-    // Act & Assert
     expect(esKeys).toEqual(enKeys)
     expect(frKeys).toEqual(enKeys)
   })
 
   it('all translation values are non-empty strings', () => {
-    // Arrange
     for (const [file, locale] of Object.entries(locales)) {
-      // Act & Assert
       for (const [key, value] of Object.entries(locale)) {
         expect(value, `${file} key "${key}" must be a non-empty string`).toBeTypeOf('string')
         expect(
@@ -125,26 +133,18 @@ describe('locale key parity', () => {
   })
 
   it('contains exactly the expected keys', () => {
-    // Arrange
     const enKeys = Object.keys(locales['en.json']).sort()
-
-    // Act & Assert
     expect(enKeys).toEqual(EXPECTED_KEYS)
   })
 
   it('preserves app.title with its original value', () => {
-    // Arrange & Act
     for (const [file, locale] of Object.entries(locales)) {
-      // Assert
       expect(locale['app.title'], `${file} must preserve app.title`).toBe('Plot Twisted')
     }
   })
 
   it('every key segment matches camelCase pattern', () => {
-    // Arrange
     const keys = Object.keys(locales['en.json'])
-
-    // Act & Assert
     for (const key of keys) {
       for (const segment of key.split('.')) {
         expect(segment, `segment "${segment}" in key "${key}"`).toMatch(CAMEL_CASE_SEGMENT)
