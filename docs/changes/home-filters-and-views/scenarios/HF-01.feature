@@ -8,7 +8,7 @@ Feature: HF-01 — Home Screen Filtering
 
   Scenario: HF-01-01 — Filter by genre
     When I select the "Action" genre from the FilterBar
-    Then only items with the "Action" genre are displayed
+    Then only currently visible items with the "Action" genre are displayed
     And items without the "Action" genre are hidden
 
   Scenario: HF-01-02 — Filter by media type
@@ -25,7 +25,13 @@ Feature: HF-01 — Home Screen Filtering
     And I select "Movies" media type
     Then only action movies are displayed
 
-  Scenario: HF-01-05 — Clear filters
+  Scenario: HF-01-05 — Clear filters manually
     Given filters are active
     When I click "Clear All"
     Then all trending and popular results are displayed again
+
+  Scenario: HF-01-06 — Reset filters on search
+    Given filters are active
+    When I type "Inception" into the search bar
+    Then active filters are cleared
+    And search results for "Inception" are displayed

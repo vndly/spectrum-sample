@@ -31,14 +31,17 @@ While browse mode provides trending and popular content, users need ways to narr
 - **home-browse**: Provides the base data (trending and popular) to filter.
 - **MovieCard component**: Already implemented; needs to support a list variant.
 - **provider.client.ts**: For fetching genres.
+- **useSettings**: For persisting user preferences like layout mode.
 
 ## Decisions
 
 | Decision | Choice | Rationale |
 | :--- | :--- | :--- |
 | Filtering Strategy | Client-side | Trending/popular data sets are small enough (20-50 items) to filter in-memory without re-fetching, providing an instantaneous UI. |
-| Genre Resolution | API-driven (TMDB) | Genre names are resolved via `/genre/movie/list` and `/genre/tv/list` to ensure accuracy and support localization, rather than being hardcoded. |
+| Dataset Scope | Currently Visible | Filtering applies only to the currently fetched dataset (e.g., the first page of trending/popular results). |
+| Genre Resolution | API-driven (TMDB) | Genre names are resolved via `/genre/movie/list` and `/genre/tv/list` to ensure accuracy and support localization. |
 | URL Persistence | Query Parameters | Using the URL query string allows users to share specific filtered views and maintains state on page refreshes. |
+| Mode Interaction | Search Resets Filter | When entering Search mode (typing in the search bar), active filters are cleared to avoid confusing "no results" states. |
 
 ## Scope
 
@@ -46,9 +49,9 @@ While browse mode provides trending and popular content, users need ways to narr
 
 - `FilterBar` component with genre multi-select, media type toggle, and year range inputs.
 - `ViewToggle` component for switching between grid and list layouts.
-- Client-side filtering logic (AND-composition).
+- Domain-level filtering logic (AND-composition) in `filter.schema.ts`.
 - URL query string synchronization for filters.
-- `localStorage` persistence for view mode preference.
+- Layout preference persistence via `useSettings`.
 - `MovieCard` list variant.
 
 ### Out of Scope
@@ -66,9 +69,9 @@ While browse mode provides trending and popular content, users need ways to narr
 | HF-04 | Composite Filtering   | Filters SHALL apply using AND logic: only results matching all active filters SHALL be displayed.                                                                                                                                   | P0       |
 | HF-05 | Client-Side Filtering | Filters SHALL apply to already-fetched data (trending and popular results) without re-fetching from the server.                                                                                                                     | P0       |
 | HF-06 | Layout Toggle         | The `ViewToggle` SHALL switch the content layout between "Grid" (poster-focused cards) and "List" (compact rows with title and key metadata).                                                                                       | P0       |
-| HF-07 | Preference Persistence | The layout preference (grid or list) SHALL be persisted in `localStorage`.                                                                                                                                                          | P0       |
-| HF-08 | URL Sync              | Active filter values (genres, media type, year range) SHALL be reflected in the URL query string. Changing filters SHALL update the URL without a full page reload. Loading a URL with query parameters SHALL apply those filters. | P1       |
-| HF-09 | Clear All Filters     | A "Clear All" action SHALL be provided to reset all filters to their default state.                                                                                                                                                 | P0       |
+| HF-07 | Preference Persistence | The layout preference (grid or list) SHALL be persisted in the user's settings.                                                                                                                                                     | P0       |
+| HF-08 | URL Sync              | Active filter values (genres, media type, year range) SHALL be reflected in the URL query string. Changing filters SHALL update the URL without a full page reload.                                                                 | P1       |
+| HF-09 | Clear All Filters     | A "Clear All" action SHALL be provided to reset all filters. Filters SHALL also clear automatically when a new search is initiated.                                                                                                 | P0       |
 
 ## Non-Functional Requirements
 
@@ -85,9 +88,8 @@ While browse mode provides trending and popular content, users need ways to narr
 ## Acceptance Criteria
 
 - [ ] `FilterBar` allows selecting genres, media type, and year range.
-- [ ] Genre list is dynamically fetched from the API.
-- [ ] Filtering results updates the view in real-time.
+- [ ] Filtering results updates the view in real-time for the currently visible items.
 - [ ] `ViewToggle` switches between grid and list layouts.
-- [ ] Layout preference persists across page reloads.
+- [ ] Layout preference persists across page reloads via `useSettings`.
 - [ ] Filters are reflected in and restored from the URL.
-- [ ] Clearing all filters restores the original unfiltered results.
+- [ ] Entering a search query resets the browse filters.
