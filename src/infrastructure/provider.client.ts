@@ -76,6 +76,57 @@ export async function searchMulti(query: string, language: string): Promise<Sear
 }
 
 /**
+ * Fetches trending movies and TV shows for the day.
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated search response with trending items
+ * @throws Error if the API request fails
+ */
+export async function getTrending(language: string): Promise<SearchResponse> {
+  const params = new URLSearchParams({ language })
+  const url = `${API_BASE_URL}/trending/all/day?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return SearchResponseSchema.parse(data)
+}
+
+/**
+ * Fetches popular movies.
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated search response with popular movies
+ * @throws Error if the API request fails
+ */
+export async function getPopularMovies(language: string): Promise<SearchResponse> {
+  const params = new URLSearchParams({ language, page: '1' })
+  const url = `${API_BASE_URL}/movie/popular?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  // Inject media_type for consistency with SearchResponse
+  data.results = data.results.map((item: any) => ({ ...item, media_type: 'movie' }))
+
+  return SearchResponseSchema.parse(data)
+}
+
+/**
+ * Fetches popular TV shows.
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated search response with popular TV shows
+ * @throws Error if the API request fails
+ */
+export async function getPopularShows(language: string): Promise<SearchResponse> {
+  const params = new URLSearchParams({ language, page: '1' })
+  const url = `${API_BASE_URL}/tv/popular?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  // Inject media_type for consistency with SearchResponse
+  data.results = data.results.map((item: any) => ({ ...item, media_type: 'tv' }))
+
+  return SearchResponseSchema.parse(data)
+}
+
+/**
  * Fetches detailed information about a movie including credits, videos, and streaming providers.
  * @param id - TMDB movie ID
  * @param language - ISO 639-1 language code (e.g., 'en')

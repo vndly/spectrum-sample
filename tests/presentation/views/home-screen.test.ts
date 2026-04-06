@@ -8,6 +8,20 @@ import * as providerClient from '@/infrastructure/provider.client'
 
 vi.mock('@/infrastructure/provider.client', () => ({
   searchMulti: vi.fn(),
+  getTrending: vi.fn(),
+  getPopularMovies: vi.fn(),
+  getPopularShows: vi.fn(),
+}))
+
+vi.mock('@/application/use-browse', () => ({
+  useBrowse: vi.fn(() => ({
+    trending: [],
+    popularMovies: [],
+    popularShows: [],
+    loading: false,
+    error: null,
+    retry: vi.fn(),
+  })),
 }))
 
 vi.mock('@/application/use-settings', () => ({
@@ -32,6 +46,11 @@ const i18n = createI18n({
       'home.search.empty.subtitle': 'Try different keywords or check your spelling',
       'home.search.error.message': 'Failed to load search results',
       'home.search.error.retry': 'Retry',
+      'home.browse.trending': 'Trending Today',
+      'home.browse.popularMovies': 'Popular Movies',
+      'home.browse.popularShows': 'Popular TV Shows',
+      'home.browse.error.message': 'Failed to load browse content',
+      'home.browse.error.retry': 'Retry',
     },
   },
 })
@@ -88,6 +107,8 @@ describe('HomeScreen', () => {
 
       // Assert
       expect(wrapper.find('[data-testid="browse-sections"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'TrendingCarousel' }).exists()).toBe(true)
+      expect(wrapper.findAllComponents({ name: 'PopularGrid' })).toHaveLength(2)
     })
 
     it('shows SearchBar in browse mode (HS-09-02)', () => {
