@@ -278,12 +278,12 @@
 1.  [x] **Update Provider Client**
     - Add `getTrending`, `getPopularMovies`, and `getPopularShows` to `src/infrastructure/provider.client.ts`.
     - Unit test for `provider.client.ts` to verify API calls.
-    - *Covering: HB-01, HB-02, HB-03*
+    - _Covering: HB-01, HB-02, HB-03_
 
 2.  [x] **Application Logic: useBrowse**
     - Create `src/application/use-browse.ts` to handle parallel data fetching and state management.
     - Unit test for `useBrowse` to verify successful data loading and error handling.
-    - *Covering: HB-01, HB-02, HB-03, HB-08, HB-09*
+    - _Covering: HB-01, HB-02, HB-03, HB-08, HB-09_
 
 ## Phase B2: Browse Components
 
@@ -291,23 +291,23 @@
     - Create `src/presentation/components/home/trending-carousel.vue`.
     - Display backdrop or poster and title for top items.
     - Handle horizontal scrolling.
-    - *Covering: HB-04*
+    - _Covering: HB-04_
 
 2.  [x] **Implement PopularGrid Component**
     - Create `src/presentation/components/home/popular-grid.vue`.
     - Display popular movies and shows in a responsive grid.
-    - *Covering: HB-05*
+    - _Covering: HB-05_
 
 3.  [x] **Testing: Browse Components**
     - Write unit/integration tests for `TrendingCarousel` and `PopularGrid` verifying data rendering and navigation.
-    - *Covering: HB-04, HB-05, HB-07 (scenarios HB-01 to HB-05)*
+    - _Covering: HB-04, HB-05, HB-07 (scenarios HB-01 to HB-05)_
 
 ## Phase B3: Home Screen Integration
 
 1.  [x] **Integrate Browse Sections**
     - Update `src/presentation/views/home-screen.vue` to include browse sections when in browse mode.
     - Ensure correct state management between search and browse modes.
-    - *Covering: HB-06*
+    - _Covering: HB-06_
 
 ## Phase B4: Verification
 

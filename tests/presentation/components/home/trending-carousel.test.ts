@@ -27,7 +27,7 @@ describe('TrendingCarousel', () => {
       original_language: 'en',
       video: false,
       popularity: 100,
-      vote_count: 100
+      vote_count: 100,
     },
     {
       id: 2,
@@ -44,7 +44,7 @@ describe('TrendingCarousel', () => {
       original_language: 'en',
       origin_country: ['US'],
       popularity: 100,
-      vote_count: 100
+      vote_count: 100,
     },
   ]
 

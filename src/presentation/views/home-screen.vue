@@ -9,7 +9,14 @@ import TrendingCarousel from '@/presentation/components/home/trending-carousel.v
 import PopularGrid from '@/presentation/components/home/popular-grid.vue'
 
 const { t } = useI18n()
-const { query, results, loading: searchLoading, error: searchError, isSearchMode, retry: retrySearch } = useSearch()
+const {
+  query,
+  results,
+  loading: searchLoading,
+  error: searchError,
+  isSearchMode,
+  retry: retrySearch,
+} = useSearch()
 const {
   trending,
   popularMovies,

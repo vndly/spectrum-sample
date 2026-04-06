@@ -27,15 +27,13 @@ describe('PopularGrid', () => {
       original_language: 'en',
       video: false,
       popularity: 100,
-      vote_count: 100
+      vote_count: 100,
     },
   ]
 
   const router = createRouter({
     history: createWebHistory(),
-    routes: [
-      { path: '/movie/:id', name: 'movie-detail', component: {} },
-    ],
+    routes: [{ path: '/movie/:id', name: 'movie-detail', component: {} }],
   })
 
   it('renders loading state', () => {

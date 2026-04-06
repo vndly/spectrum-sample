@@ -37,9 +37,11 @@ export function useBrowse() {
       ])
 
       // Filter and map trending to only include movies/tv
-      trending.value = trendingRes.results.filter(
-        (item): item is MediaResult => item.media_type === 'movie' || item.media_type === 'tv',
-      ).slice(0, 10) // Limit to 10 as per HB-04
+      trending.value = trendingRes.results
+        .filter(
+          (item): item is MediaResult => item.media_type === 'movie' || item.media_type === 'tv',
+        )
+        .slice(0, 10) // Limit to 10 as per HB-04
 
       // Popular movies and shows are already filtered by media_type in provider client mapping
       popularMovies.value = (moviesRes.results as MediaResult[]).slice(0, 20) // Limit to 20 as per HB-05

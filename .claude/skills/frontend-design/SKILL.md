@@ -13,10 +13,10 @@ Before coding, ensure the implementation aligns with the "Movie Theater" vision:
 
 - **Purpose**: Facilitate immersive media browsing and library management.
 - **Tone**: Cinematic, dark, and refined. Avoid "spreadsheet" density.
-- **Constraints**: 
-    - **Styling**: Tailwind utility classes ONLY. No separate CSS files or inline styles (except for flash prevention).
-    - **Typography**: System font stack or Inter ONLY. No decorative fonts.
-    - **Motion**: Subtle and cinematic. 200-300ms durations. No bounce, spring, or parallax.
+- **Constraints**:
+  - **Styling**: Tailwind utility classes ONLY. No separate CSS files or inline styles (except for flash prevention).
+  - **Typography**: System font stack or Inter ONLY. No decorative fonts.
+  - **Motion**: Subtle and cinematic. 200-300ms durations. No bounce, spring, or parallax.
 - **Differentiation**: Leverage the "Image-forward" approach. The UI is a frame for the media.
 
 ## Frontend Aesthetics Guidelines (Project-Specific)
@@ -30,6 +30,7 @@ Focus on:
 - **Visual Details**: Create depth using surface colors (`slate-800`) and subtle shadows rather than borders. Use the `shimmer` effect for all loading states (skeleton loaders) to maintain the cinematic flow.
 
 NEVER use:
+
 - Generic "Dashboard" patterns that feel like business software.
 - Bright or varied color palettes (stay within the navy/teal theme).
 - Bouncy, elastic, or overly aggressive animations.

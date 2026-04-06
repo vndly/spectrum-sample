@@ -30,8 +30,40 @@ describe('useBrowse', () => {
   const mockTrending = {
     page: 1,
     results: [
-      { id: 1, title: 'Trending Movie', media_type: 'movie', backdrop_path: '/backdrop1.jpg', poster_path: '/poster1.jpg', vote_average: 8.5, release_date: '2024-01-01', original_title: 'Trending Movie', overview: 'Overview', genre_ids: [1], adult: false, original_language: 'en', video: false, popularity: 100, vote_count: 100 },
-      { id: 2, name: 'Trending Show', media_type: 'tv', backdrop_path: '/backdrop2.jpg', poster_path: '/poster2.jpg', vote_average: 7.5, first_air_date: '2024-01-01', original_name: 'Trending Show', overview: 'Overview', genre_ids: [2], adult: false, original_language: 'en', origin_country: ['US'], popularity: 100, vote_count: 100 },
+      {
+        id: 1,
+        title: 'Trending Movie',
+        media_type: 'movie',
+        backdrop_path: '/backdrop1.jpg',
+        poster_path: '/poster1.jpg',
+        vote_average: 8.5,
+        release_date: '2024-01-01',
+        original_title: 'Trending Movie',
+        overview: 'Overview',
+        genre_ids: [1],
+        adult: false,
+        original_language: 'en',
+        video: false,
+        popularity: 100,
+        vote_count: 100,
+      },
+      {
+        id: 2,
+        name: 'Trending Show',
+        media_type: 'tv',
+        backdrop_path: '/backdrop2.jpg',
+        poster_path: '/poster2.jpg',
+        vote_average: 7.5,
+        first_air_date: '2024-01-01',
+        original_name: 'Trending Show',
+        overview: 'Overview',
+        genre_ids: [2],
+        adult: false,
+        original_language: 'en',
+        origin_country: ['US'],
+        popularity: 100,
+        vote_count: 100,
+      },
       { id: 3, name: 'Person', media_type: 'person' }, // Should be filtered out
     ],
     total_pages: 1,
@@ -55,7 +87,7 @@ describe('useBrowse', () => {
       original_language: 'en',
       video: false,
       popularity: 100,
-      vote_count: 100
+      vote_count: 100,
     })),
     total_pages: 1,
     total_results: 25,
@@ -78,7 +110,7 @@ describe('useBrowse', () => {
       original_language: 'en',
       origin_country: ['US'],
       popularity: 100,
-      vote_count: 100
+      vote_count: 100,
     })),
     total_pages: 1,
     total_results: 25,
@@ -130,7 +162,9 @@ describe('useBrowse', () => {
   })
 
   it('retries fetching data', async () => {
-    vi.mocked(providerClient.getTrending).mockRejectedValueOnce(new Error('Fail')).mockResolvedValueOnce(mockTrending as any)
+    vi.mocked(providerClient.getTrending)
+      .mockRejectedValueOnce(new Error('Fail'))
+      .mockResolvedValueOnce(mockTrending as any)
 
     const wrapper = mount(TestComponent)
     const vm = wrapper.vm as any

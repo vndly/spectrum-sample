@@ -1,7 +1,7 @@
 ---
 id: home-filters-and-views
 title: Home Screen Filters and View Toggle
-status: draft
+status: review
 importance: high
 type: functional
 tags: [home, filter, view, grid, list]
@@ -28,20 +28,20 @@ While browse mode provides trending and popular content, users need ways to narr
 
 ### Dependencies
 
-- **home-browse**: Provides the base data (trending and popular) to filter.
+- **02-home**: Provides the base data (trending and popular) to filter.
 - **MovieCard component**: Already implemented; needs to support a list variant.
 - **provider.client.ts**: For fetching genres.
 - **useSettings**: For persisting user preferences like layout mode.
 
 ## Decisions
 
-| Decision | Choice | Rationale |
-| :--- | :--- | :--- |
-| Filtering Strategy | Client-side | Trending/popular data sets are small enough (20-50 items) to filter in-memory without re-fetching, providing an instantaneous UI. |
-| Dataset Scope | Currently Visible | Filtering applies only to the currently fetched dataset (e.g., the first page of trending/popular results). |
-| Genre Resolution | API-driven (TMDB) | Genre names are resolved via `/genre/movie/list` and `/genre/tv/list` to ensure accuracy and support localization. |
-| URL Persistence | Query Parameters | Using the URL query string allows users to share specific filtered views and maintains state on page refreshes. |
-| Mode Interaction | Search Resets Filter | When entering Search mode (typing in the search bar), active filters are cleared to avoid confusing "no results" states. |
+| Decision           | Choice               | Rationale                                                                                                                         |
+| :----------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| Filtering Strategy | Client-side          | Trending/popular data sets are small enough (20-50 items) to filter in-memory without re-fetching, providing an instantaneous UI. |
+| Dataset Scope      | Currently Visible    | Filtering applies only to the currently fetched dataset (e.g., the first page of trending/popular results).                       |
+| Genre Resolution   | API-driven (TMDB)    | Genre names are resolved via `/genre/movie/list` and `/genre/tv/list` to ensure accuracy and support localization.                |
+| URL Persistence    | Query Parameters     | Using the URL query string allows users to share specific filtered views and maintains state on page refreshes.                   |
+| Mode Interaction   | Search Resets Filter | When entering Search mode (typing in the search bar), active filters are cleared to avoid confusing "no results" states.          |
 
 ## Scope
 
@@ -61,18 +61,18 @@ While browse mode provides trending and popular content, users need ways to narr
 
 ## Functional Requirements
 
-| ID    | Requirement           | Description                                                                                                                                                                                                                         | Priority |
-| ----- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| HF-01 | Genre Multi-Select    | The `FilterBar` SHALL provide a way to select multiple genres. The list of genres SHALL be fetched from TMDB and cached for the session.                                                                                             | P0       |
-| HF-02 | Media Type Toggle     | The `FilterBar` SHALL provide a toggle for media type (Movies, TV Shows, or All).                                                                                                                                                    | P0       |
-| HF-03 | Year Range Inputs     | The `FilterBar` SHALL provide two numeric inputs for "From Year" and "To Year" to filter results within that range.                                                                                 | P1       |
+| ID    | Requirement        | Description                                                                                                                              | Priority |
+| ----- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| HF-01 | Genre Multi-Select | The `FilterBar` SHALL provide a way to select multiple genres. The list of genres SHALL be fetched from TMDB and cached for the session. | P0       |
+| HF-02 | Media Type Toggle  | The `FilterBar` SHALL provide a toggle for media type (Movies, TV Shows, or All).                                                        | P0       |
+| HF-03 | Year Range Inputs  | The `FilterBar` SHALL provide two numeric inputs for "From Year" and "To Year" to filter results within that range.                      | P1       |
 
-| HF-04 | Composite Filtering   | Filters SHALL apply using AND logic: only results matching all active filters SHALL be displayed.                                                                                                                                   | P0       |
-| HF-05 | Client-Side Filtering | Filters SHALL apply to already-fetched data (trending and popular results) without re-fetching from the server.                                                                                                                     | P0       |
-| HF-06 | Layout Toggle         | The `ViewToggle` SHALL switch the content layout between "Grid" (poster-focused cards) and "List" (compact rows with title and key metadata).                                                                                       | P0       |
-| HF-07 | Preference Persistence | The layout preference (grid or list) SHALL be persisted in the user's settings.                                                                                                                                                     | P0       |
-| HF-08 | URL Sync              | Active filter values (genres, media type, year range) SHALL be reflected in the URL query string. Changing filters SHALL update the URL without a full page reload.                                                                 | P1       |
-| HF-09 | Clear All Filters     | A "Clear All" action SHALL be provided to reset all filters. Filters SHALL also clear automatically when a new search is initiated.                                                                                                 | P0       |
+| HF-04 | Composite Filtering | Filters SHALL apply using AND logic: only results matching all active filters SHALL be displayed. | P0 |
+| HF-05 | Client-Side Filtering | Filters SHALL apply to already-fetched data (trending and popular results) without re-fetching from the server. | P0 |
+| HF-06 | Layout Toggle | The `ViewToggle` SHALL switch the content layout between "Grid" (poster-focused cards) and "List" (compact rows with title and key metadata). | P0 |
+| HF-07 | Preference Persistence | The layout preference (grid or list) SHALL be persisted in the user's settings. | P0 |
+| HF-08 | URL Sync | Active filter values (genres, media type, year range) SHALL be reflected in the URL query string. Changing filters SHALL update the URL without a full page reload. | P1 |
+| HF-09 | Clear All Filters | A "Clear All" action SHALL be provided to reset all filters. Filters SHALL also clear automatically when a new search is initiated. | P0 |
 
 ## Non-Functional Requirements
 
@@ -90,10 +90,12 @@ While browse mode provides trending and popular content, users need ways to narr
 ## Risks & Assumptions
 
 ### Risks
-- **TMDB Genre Mismatch**: Movie and TV genre IDs overlap but have different names (e.g., ID 28 is Action for movies, but TV has "Action & Adventure" ID 10759). *Mitigation*: The domain filtering logic must handle both lists and merge them correctly in the UI.
-- **Large Datasets**: Although we only fetch 20 items, if pagination is added later, client-side filtering might become a bottleneck. *Mitigation*: Keeping the scope to "currently visible" items for now.
+
+- **TMDB Genre Mismatch**: Movie and TV genre IDs overlap but have different names (e.g., ID 28 is Action for movies, but TV has "Action & Adventure" ID 10759). _Mitigation_: The domain filtering logic must handle both lists and merge them correctly in the UI.
+- **Large Datasets**: Although we only fetch 20 items, if pagination is added later, client-side filtering might become a bottleneck. _Mitigation_: Keeping the scope to "currently visible" items for now.
 
 ### Assumptions
+
 - Users want to filter the browse results (trending/popular) rather than just searching.
 - A year range filter is more useful than a single year picker for discovery.
 
