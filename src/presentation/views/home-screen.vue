@@ -71,7 +71,7 @@ function handleBrowseRetry() {
     <!-- Search and Filters Section -->
     <div class="sticky top-0 z-40 space-y-4 bg-background pb-2">
       <SearchBar v-model="query" />
-      
+
       <div v-if="!isSearchMode" class="flex flex-col gap-2 md:flex-row md:items-center">
         <FilterBar class="flex-1" />
         <ViewToggle class="self-end md:self-auto" />
@@ -134,15 +134,17 @@ function handleBrowseRetry() {
 
         <!-- Empty state when filters return nothing -->
         <div
-          v-if="!browseLoading && filteredTrending.length === 0 && filteredPopularMovies.length === 0 && filteredPopularShows.length === 0"
+          v-if="
+            !browseLoading &&
+            filteredTrending.length === 0 &&
+            filteredPopularMovies.length === 0 &&
+            filteredPopularShows.length === 0
+          "
           class="flex flex-col items-center gap-2 py-20 text-slate-400"
         >
           <p class="text-lg font-medium text-white">{{ t('home.search.empty.title') }}</p>
           <p>{{ t('home.search.empty.subtitle') }}</p>
-          <button
-            class="mt-4 text-accent hover:underline font-medium"
-            @click="clearAll"
-          >
+          <button class="mt-4 text-accent hover:underline font-medium" @click="clearAll">
             {{ t('home.filters.clear') }}
           </button>
         </div>

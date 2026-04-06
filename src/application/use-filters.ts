@@ -42,7 +42,7 @@ export function useFilters() {
 
       const merged = [...movieGenresRes.genres, ...tvGenresRes.genres]
       const unique = Array.from(new Map(merged.map((g) => [g.id, g])).values())
-      
+
       genresCache.value = unique.sort((a, b) => a.name.localeCompare(b.name))
     } catch (error) {
       console.error('Failed to fetch genres:', error)
@@ -128,9 +128,13 @@ export function useFilters() {
   }
 
   // Watch for filter changes and update URL
-  watch(filters, () => {
-    syncToUrl()
-  }, { deep: true })
+  watch(
+    filters,
+    () => {
+      syncToUrl()
+    },
+    { deep: true },
+  )
 
   // Initialize only once
   onMounted(() => {

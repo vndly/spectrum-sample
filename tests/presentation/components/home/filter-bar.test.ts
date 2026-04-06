@@ -78,7 +78,7 @@ describe('FilterBar', () => {
     const wrapper = mount(FilterBar, {
       global: { plugins: [i18n, router] },
     })
-    const movieButton = wrapper.findAll('button').find(b => b.text() === 'Movies')
+    const movieButton = wrapper.findAll('button').find((b) => b.text() === 'Movies')
     await movieButton?.trigger('click')
     expect(mockFilters.mediaType).toBe('movie')
   })
@@ -96,7 +96,7 @@ describe('FilterBar', () => {
     const wrapper = mount(FilterBar, {
       global: { plugins: [i18n, router] },
     })
-    const clearButton = wrapper.findAll('button').find(b => b.text() === 'Clear All')
+    const clearButton = wrapper.findAll('button').find((b) => b.text() === 'Clear All')
     await clearButton?.trigger('click')
     expect(mockClearAll).toHaveBeenCalled()
   })

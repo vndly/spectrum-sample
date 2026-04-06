@@ -13,7 +13,14 @@ vi.mock('vue-router', () => ({
 // Mock provider client
 vi.mock('@/infrastructure/provider.client', () => ({
   getMovieGenres: vi.fn(() => Promise.resolve({ genres: [{ id: 1, name: 'Action' }] })),
-  getTvGenres: vi.fn(() => Promise.resolve({ genres: [{ id: 1, name: 'Action' }, { id: 2, name: 'Comedy' }] })),
+  getTvGenres: vi.fn(() =>
+    Promise.resolve({
+      genres: [
+        { id: 1, name: 'Action' },
+        { id: 2, name: 'Comedy' },
+      ],
+    }),
+  ),
 }))
 
 // Mock useSettings
@@ -68,7 +75,7 @@ describe('useFilters', () => {
       template: '<div></div>',
     })
     const wrapper = mount(TestComponent)
-    
+
     // Wait for onMounted
     await nextTick()
 
@@ -110,9 +117,9 @@ describe('useFilters', () => {
 
     wrapper.vm.filters.mediaType = 'movie'
     wrapper.vm.filters.genres = [1]
-    
+
     wrapper.vm.clearAll()
-    
+
     expect(wrapper.vm.filters.mediaType).toBe('all')
     expect(wrapper.vm.filters.genres).toEqual([])
   })

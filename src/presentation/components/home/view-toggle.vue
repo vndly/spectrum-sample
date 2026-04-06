@@ -16,7 +16,7 @@ const { t } = useI18n()
       :class="[
         layoutMode === 'grid'
           ? 'bg-accent text-white'
-          : 'text-slate-400 hover:text-white hover:bg-surface-hover'
+          : 'text-slate-400 hover:text-white hover:bg-surface-hover',
       ]"
       @click="layoutMode = 'grid'"
     >
@@ -29,7 +29,7 @@ const { t } = useI18n()
       :class="[
         layoutMode === 'list'
           ? 'bg-accent text-white'
-          : 'text-slate-400 hover:text-white hover:bg-surface-hover'
+          : 'text-slate-400 hover:text-white hover:bg-surface-hover',
       ]"
       @click="layoutMode = 'list'"
     >

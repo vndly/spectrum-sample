@@ -50,7 +50,10 @@ onUnmounted(() => {
         @click="isGenreOpen = !isGenreOpen"
       >
         <span>{{ t('home.filters.genre') }}</span>
-        <span v-if="filters.genres.length > 0" class="flex size-5 items-center justify-center rounded-full bg-accent text-[10px]">
+        <span
+          v-if="filters.genres.length > 0"
+          class="flex size-5 items-center justify-center rounded-full bg-accent text-[10px]"
+        >
           {{ filters.genres.length }}
         </span>
         <ChevronDown class="size-4 text-slate-400" />
@@ -97,7 +100,7 @@ onUnmounted(() => {
         :class="[
           filters.mediaType === type
             ? 'bg-accent text-white'
-            : 'text-slate-400 hover:text-white hover:bg-surface-hover'
+            : 'text-slate-400 hover:text-white hover:bg-surface-hover',
         ]"
         @click="filters.mediaType = type"
       >
@@ -128,7 +131,12 @@ onUnmounted(() => {
 
     <!-- Clear All -->
     <button
-      v-if="filters.genres.length > 0 || filters.mediaType !== 'all' || filters.yearFrom || filters.yearTo"
+      v-if="
+        filters.genres.length > 0 ||
+        filters.mediaType !== 'all' ||
+        filters.yearFrom ||
+        filters.yearTo
+      "
       type="button"
       class="ml-auto flex items-center gap-1 text-sm text-slate-400 transition-colors hover:text-accent"
       @click="clearAll"

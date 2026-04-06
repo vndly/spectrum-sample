@@ -13,7 +13,7 @@ const props = withDefaults(
   }>(),
   {
     variant: 'grid',
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -82,9 +82,7 @@ function handleKeydown(event: KeyboardEvent) {
 <template>
   <article
     class="group cursor-pointer transition-all duration-200"
-    :class="[
-      variant === 'grid' ? 'hover:scale-105' : 'hover:bg-surface-hover rounded-lg p-2'
-    ]"
+    :class="[variant === 'grid' ? 'hover:scale-105' : 'hover:bg-surface-hover rounded-lg p-2']"
     role="button"
     tabindex="0"
     :aria-label="displayTitle"
@@ -138,7 +136,10 @@ function handleKeydown(event: KeyboardEvent) {
           <div class="flex items-center gap-2 text-xs text-slate-400">
             <span>{{ mediaTypeLabel }}</span>
             <span v-if="displayYear">• {{ displayYear }}</span>
-            <span v-if="item.vote_average > 0" class="flex items-center gap-0.5 text-accent font-bold">
+            <span
+              v-if="item.vote_average > 0"
+              class="flex items-center gap-0.5 text-accent font-bold"
+            >
               <Star class="size-3 fill-current" />
               {{ displayRating }}
             </span>

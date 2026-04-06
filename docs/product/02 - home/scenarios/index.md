@@ -1,41 +1,49 @@
-# Scenarios
+# Scenarios: Home Screen
 
 ## Contents
 
-### Home Browse
+### Search & Browse Base
 
-1. **[HB-01](./HB-01.feature)**: Surface trending and popular content when not searching.
+- **[HS-01: Debounced Search Input](./HS-01.feature)**: Debounce user input by 300 ms.
+- **[HS-02: Multi-Search API Call](./HS-02.feature)**: Call /search/multi with query and language.
+- **[HS-03: Person Result Filtering](./HS-03.feature)**: Filter out person results from search.
+- **[HS-04: Search Results Display](./HS-04.feature)**: Display results in a responsive grid.
+- **[HS-05: Result Navigation](./HS-05.feature)**: Navigate to details on card click.
+- **[HS-06: Empty State](./HS-06.feature)**: Show message when no results found.
+- **[HS-07: Loading Skeleton](./HS-07.feature)**: Show skeletons during API call.
+- **[HS-08: Error Handling](./HS-08.feature)**: Show inline error with retry on failure.
+- **[HS-09: Browse Mode](./HS-09.feature)**: Display browse sections when query empty.
+- **[HS-10: Search Mode](./HS-10.feature)**: Display search results when query non-empty.
+- **[HS-11: Mode Transition](./HS-11.feature)**: Smooth transition between modes.
+- **[HB-01: Trending Data Fetch](./HB-01.feature)**: Fetch and display trending items.
 
-### Home Search
+### Filtering & View Toggle
 
-1. **[HS-01](./HS-01.feature)**: Debounced search input with 300ms delay before API request.
-   ...
-2. **[HS-02](./HS-02.feature)**: Multi-search API call with query and language parameters.
-3. **[HS-03](./HS-03.feature)**: Person result filtering from search responses.
-4. **[HS-04](./HS-04.feature)**: Search results display as MovieCard grid with poster, title, year, and rating.
-5. **[HS-05](./HS-05.feature)**: Result navigation to movie or show detail pages.
-6. **[HS-06](./HS-06.feature)**: Empty state display when no results found, including i18n verification.
-7. **[HS-07](./HS-07.feature)**: Loading skeleton display during API requests with keyboard accessibility.
-8. **[HS-08](./HS-08.feature)**: Error handling with inline messages, retry button, and exponential backoff.
-9. **[HS-09](./HS-09.feature)**: Browse mode with trending and popular sections.
-10. **[HS-10](./HS-10.feature)**: Search mode replacing browse sections with results.
-11. **[HS-11](./HS-11.feature)**: Mode transition between browse and search states.
+- **[HF-01: Genre Multi-Select](./HF-01.feature)**: Filter browse results by multiple genres.
+- **[HF-02: Media Type Toggle](./HF-02.feature)**: Filter browse results by media type (Movies/TV).
+- **[HF-03: Year Range Inputs](./HF-03.feature)**: Filter browse results by a range of years.
+- **[HF-04: Composite Filtering](./HF-04.feature)**: Apply multiple filters using AND logic.
+- **[HF-05: Client-Side Filtering](./HF-05.feature)**: Ensure filtering happens without extra API calls.
+- **[HF-06: Layout Toggle](./HF-06.feature)**: Switch between grid and list layouts.
+- **[HF-07: Preference Persistence](./HF-07.feature)**: Ensure layout choice survives page reload.
+- **[HF-08: URL Sync](./HF-08.feature)**: Reflect and restore filter state via URL query parameters.
+- **[HF-09: Clear All Filters](./HF-09.feature)**: Reset filters manually or on search.
 
 ### Entry Details
 
-12. **[ED-01](./ED-01.feature)**: Hero backdrop display with gradient overlay and title.
-13. **[ED-02](./ED-02.feature)**: Metadata panel showing year, runtime, genres, and credits.
-14. **[ED-03](./ED-03.feature)**: Cast carousel with horizontally scrollable headshots.
-15. **[ED-04](./ED-04.feature)**: Trailer embed with privacy-enhanced YouTube player.
-16. **[ED-05](./ED-05.feature)**: Streaming badges for user's region.
-17. **[ED-06](./ED-06.feature)**: Rating stars for personal 1-5 rating.
-18. **[ED-07](./ED-07.feature)**: Favorite toggle persisted in localStorage.
-19. **[ED-08](./ED-08.feature)**: Watch status toggle for watchlist, watched, or none.
-20. **[ED-09](./ED-09.feature)**: IMDb link opening external page.
-21. **[ED-10](./ED-10.feature)**: Share button with Web Share API and clipboard fallback.
-22. **[ED-11](./ED-11.feature)**: Loading skeleton matching detail layout.
-23. **[ED-12](./ED-12.feature)**: Error handling with retry functionality.
-24. **[ED-13](./ED-13.feature)**: TMDB rating badge with vote average.
-25. **[ED-14](./ED-14.feature)**: Tagline display below title in hero area.
-26. **[ED-15](./ED-15.feature)**: Synopsis displaying full overview text.
-27. **[ED-16](./ED-16.feature)**: Box office data showing budget and revenue for movies.
+- **[ED-01: Hero Backdrop](./ED-01.feature)**: Display backdrop with gradient and title.
+- **[ED-02: Metadata Panel](./ED-02.feature)**: Display year, runtime, genres, etc.
+- **[ED-03: Cast Carousel](./ED-03.feature)**: Display horizontally scrollable cast list.
+- **[ED-04: Trailer Embed](./ED-04.feature)**: Play YouTube trailer inline.
+- **[ED-05: Streaming Badges](./ED-05.feature)**: Display streaming providers by region.
+- **[ED-06: Rating Stars](./ED-06.feature)**: Set and persist personal 0-5 star rating.
+- **[ED-07: Favorite Toggle](./ED-07.feature)**: Toggle and persist favorite status.
+- **[ED-08: Watch Status](./ED-08.feature)**: Set and persist watch status (watchlist/watched).
+- **[ED-09: IMDB Link](./ED-09.feature)**: Open external IMDB page.
+- **[ED-10: Share Button](./ED-10.feature)**: Share title via Web Share API or clipboard.
+- **[ED-11: Loading Skeleton](./ED-11.feature)**: Show skeleton matching detail layout.
+- **[ED-12: Error Handling](./ED-12.feature)**: Show inline error with retry.
+- **[ED-13: TMDB Rating](./ED-13.feature)**: Display vote average badge.
+- **[ED-14: Tagline](./ED-14.feature)**: Display tagline below title.
+- **[ED-15: Synopsis](./ED-15.feature)**: Display full overview text.
+- **[ED-16: Box Office Data](./ED-16.feature)**: Display budget and revenue for movies.

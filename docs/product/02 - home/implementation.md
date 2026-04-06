@@ -10,128 +10,87 @@ This implementation adds search functionality, entry detail views, and a content
 
 **Entry Details functionality**: Comprehensive movie and TV show detail views including metadata, cast, trailer, streaming availability, and personal tracking features (rating, favorite, watch status) persisted in localStorage.
 
+**Filtering & View Toggle functionality**: Enhance browse mode with client-side filtering by genre, media type, and year range. Introduce a layout toggle to switch between grid and list views for browse results, with persistence in user settings and URL query parameter synchronization.
+
 ## Files Changed
 
 ### Created
 
 **Domain Layer:**
 
-- `src/domain/movie.schema.ts` — Zod schemas for MovieListItem and MovieDetailSchema (with credits, videos, watch/providers, release_dates)
-- `src/domain/show.schema.ts` — Zod schemas for ShowListItem and ShowDetailSchema (with TV-specific fields)
-- `src/domain/search.schema.ts` — Zod schemas for SearchResultItem (discriminated union by media_type) and SearchResponse (paginated wrapper)
-- `src/domain/library.schema.ts` — LibraryEntry schema with rating (0-5), favorite, status (watchlist/watched/none)
-- `src/domain/shared.schema.ts` — Shared Zod schemas for Genre, CastMember, CrewMember, Video, StreamingProvider, WatchProviderRegion, SpokenLanguage
+- `src/domain/movie.schema.ts` — Zod schemas for MovieListItem and MovieDetailSchema.
+- `src/domain/show.schema.ts` — Zod schemas for ShowListItem and ShowDetailSchema.
+- `src/domain/search.schema.ts` — Zod schemas for SearchResultItem and SearchResponse.
+- `src/domain/library.schema.ts` — LibraryEntry schema.
+- `src/domain/shared.schema.ts` — Shared Zod schemas (Genre, CastMember, Video, etc.).
+- `src/domain/filter.schema.ts` — Zod schemas for `FilterState`.
+- `src/domain/filter.logic.ts` — Pure filtering logic (AND-composition).
 
 **Infrastructure Layer:**
 
-- `src/infrastructure/provider.client.ts` — TMDB API client with `searchMulti()`, `getTrending()`, `getPopularMovies()`, `getPopularShows()`, `getMovieDetail()`, and `getShowDetail()` methods.
-- `src/infrastructure/image.helper.ts` — `buildImageUrl()` helper for constructing full image URLs from TMDB relative paths
-- `src/infrastructure/storage.service.ts` — localStorage service for library entries with getLibraryEntry, saveLibraryEntry, getAllLibraryEntries, removeLibraryEntry
+- `src/infrastructure/storage.service.ts` — localStorage service for library entries.
 
 **Application Layer:**
 
-- `src/application/use-settings.ts` — Stub composable returning `language: ref('en')` and `preferredRegion: ref('US')` for API localization and streaming provider filtering
-- `src/application/use-search.ts` — Search composable with debounced query watching, loading/error state, results filtering, and mode detection
-- `src/application/use-browse.ts` — Browse composable for parallel fetching of trending and popular content with retry logic
-- `src/application/use-movie-detail.ts` — Composable returning { data, loading, error, refresh } for movie details
-- `src/application/use-show-detail.ts` — Composable returning { data, loading, error, refresh } for TV show details
-- `src/application/use-library-entry.ts` — Composable with setRating, toggleFavorite, setStatus methods for library management
+- `src/application/use-search.ts` — Search composable.
+- `src/application/use-browse.ts` — Browse composable.
+- `src/application/use-movie-detail.ts` — Movie details composable.
+- `src/application/use-show-detail.ts` — Show details composable.
+- `src/application/use-library-entry.ts` — Library management composable.
+- `src/application/use-filters.ts` — Manages filter state, URL sync, and genre fetching.
 
 **Presentation Layer:**
 
-- `src/presentation/components/home/search-bar.vue` — Search input with clear button, v-model binding, and accessibility attributes
-- `src/presentation/components/home/search-results.vue` — Results display with loading skeleton, error state, empty state, and MovieCard grid
-- `src/presentation/components/home/trending-carousel.vue` — Horizontal carousel for top 10 trending items using native snap-scrolling
-- `src/presentation/components/home/popular-grid.vue` — Responsive grid for popular movies and TV shows
-- `src/presentation/components/common/movie-card.vue` — Card component displaying poster, title, year, and vote average for movies/shows
-- `src/presentation/components/common/movie-card-skeleton.vue` — Loading placeholder matching MovieCard's 2:3 aspect ratio
-- `src/presentation/components/details/hero-backdrop.vue` — Full-width backdrop image with gradient overlay and title/tagline
-- `src/presentation/components/details/metadata-panel.vue` — Year, runtime, genres, directors, writers, spoken languages
-- `src/presentation/components/details/cast-carousel.vue` — Horizontally scrollable cast list with profile images
-- `src/presentation/components/details/trailer-embed.vue` — YouTube trailer with click-to-play using privacy-enhanced mode
-- `src/presentation/components/details/streaming-badges.vue` — Provider logos for streaming availability by region
-- `src/presentation/components/details/box-office.vue` — Budget and revenue display for movies
-- `src/presentation/components/details/provider-rating-badge.vue` — TMDB rating badge with star icon
-- `src/presentation/components/details/synopsis.vue` — Full overview text display
-- `src/presentation/components/details/rating-stars.vue` — Interactive 5-star rating with keyboard navigation
-- `src/presentation/components/details/action-buttons.vue` — Favorite, watchlist, watched, share, IMDB buttons
-- `src/presentation/components/details/detail-skeleton.vue` — Loading skeleton matching detail layout
-
-**Presentation Layer - Views:**
-
-- `src/presentation/views/home-screen.vue` — Main screen with SearchBar and conditional display of browse sections or search results
-- `src/presentation/views/movie-screen.vue` — Full movie detail view composing all detail components
-- `src/presentation/views/show-screen.vue` — Full TV show detail view (no BoxOffice, no IMDB link)
+- `src/presentation/components/home/search-bar.vue` — Search input component.
+- `src/presentation/components/home/search-results.vue` — Results display component.
+- `src/presentation/components/home/trending-carousel.vue` — Horizontal carousel.
+- `src/presentation/components/home/popular-grid.vue` — Responsive grid component.
+- `src/presentation/components/home/filter-bar.vue` — UI for filtering.
+- `src/presentation/components/home/view-toggle.vue` — UI for switching layouts.
+- `src/presentation/components/common/movie-card-skeleton.vue` — Skeleton placeholder.
+- `src/presentation/components/details/*.vue` — Detail view components (HeroBackdrop, MetadataPanel, etc.).
 
 **Test Files:**
 
-- `tests/domain/search.schema.test.ts` — Schema parsing tests for movie, TV, and person results
-- `tests/domain/movie-detail.schema.test.ts` — MovieDetailSchema validation tests
-- `tests/domain/show-detail.schema.test.ts` — ShowDetailSchema validation tests
-- `tests/domain/library-entry.schema.test.ts` — LibraryEntrySchema validation tests
-- `tests/infrastructure/provider.client.browse.test.ts` — API client tests for trending and popular endpoints
-- `tests/infrastructure/provider.client.search.test.ts` — API client tests for URL construction, error handling, and retry logic
-- `tests/infrastructure/provider.client.movie-detail.test.ts` — getMovieDetail API tests
-- `tests/infrastructure/provider.client.show-detail.test.ts` — getShowDetail API tests
-- `tests/infrastructure/storage.service.test.ts` — Storage service tests
-- `tests/application/use-browse.test.ts` — Composable tests for parallel fetching, state management, and error handling
-- `tests/application/use-search.test.ts` — Composable tests for debounce, filtering, loading states, error handling, and mode transitions
-- `tests/application/use-movie-detail.test.ts` — Movie detail composable tests
-- `tests/application/use-show-detail.test.ts` — Show detail composable tests
-- `tests/application/use-library-entry.test.ts` — Library entry composable tests
-- `tests/presentation/components/home/trending-carousel.test.ts` — TrendingCarousel component tests
-- `tests/presentation/components/home/popular-grid.test.ts` — PopularGrid component tests
-- `tests/presentation/components/home/search-bar.test.ts` — Component tests for v-model binding and clear functionality
-- `tests/presentation/components/home/search-results.test.ts` — Component tests for all display states and navigation
-- `tests/presentation/components/common/movie-card-skeleton.test.ts` — Skeleton component tests
-- `tests/presentation/components/details/*.test.ts` — Tests for all detail components
-- `tests/presentation/views/home-screen.test.ts` — Updated tests for search and browse mode transitions
-- `tests/presentation/views/movie-screen.test.ts` — MovieScreen view tests
-- `tests/presentation/views/show-screen.test.ts` — ShowScreen view tests
+- `tests/domain/filter.logic.test.ts` — Verified filtering logic.
+- `tests/application/use-filters.test.ts` — Verified filter state and URL sync.
+- `tests/presentation/components/home/filter-bar.test.ts` — Verified FilterBar UI interaction.
+- (All search, browse, and detail test files listed in original product doc)
 
 ### Modified
 
-- `src/domain/constants.ts` — Added `SEARCH_DEBOUNCE_MS`, `MIN_SEARCH_QUERY_LENGTH`, `MAX_RETRY_ATTEMPTS`, `RETRY_BASE_DELAY_MS`, `IMAGE_BASE_URL`, `IMAGE_SIZES`
-- `src/infrastructure/provider.client.ts` — Added trending, popular, and detail methods.
-- `src/application/use-settings.ts` — Added preferredRegion ref (defaults to 'US')
-- `src/presentation/views/home-screen.vue` — Integrated `useBrowse` and browse components.
-- `src/presentation/i18n/locales/*.json` — Added keys for browse, search, and detail UI.
+**Infrastructure Layer:**
+
+- `src/infrastructure/provider.client.ts` — Added search, browse, detail, and genre methods.
+
+**Application Layer:**
+
+- `src/application/use-settings.ts` — Added preferredRegion and layoutMode with persistence.
+
+**Presentation Layer:**
+
+- `src/presentation/components/common/movie-card.vue` — Added `variant="list"` support.
+- `src/presentation/views/home-screen.vue` — Integrated Search, Browse, FilterBar, and ViewToggle.
 
 ## Key Decisions
 
-- **Media Type Injection**: TMDB's popular and trending endpoints sometimes omit the `media_type` field in the result objects. We inject it in the `provider.client.ts` (e.g., adding `media_type: 'movie'` to popular movie results) to maintain compatibility with the `SearchResponseSchema` and the `MovieCard` component's navigation logic.
-
-- **Parallel Fetching in useBrowse**: All browse sections (Trending, Popular Movies, Popular Shows) are fetched in parallel using `Promise.all` to minimize the time the user spends looking at skeleton loaders.
-
-- **Native Snap Scrolling**: Used CSS scroll-snap properties for the `TrendingCarousel` to achieve a "mobile app" feel for horizontal scrolling with zero JavaScript overhead and perfect performance.
-
-- **Discriminated union for search results**: Used Zod's `z.discriminatedUnion` with `media_type` as the discriminator.
-
-- **Single API call with append_to_response**: Movie and show details use TMDB's `append_to_response` parameter to fetch credits, videos, watch/providers, and release_dates in a single request.
-
-- **localStorage for library data**: User ratings, favorites, and watch status are stored locally using `LibraryEntry` schema.
+- **Media Type Injection**: TMDB results are normalized to include `media_type` in the provider client.
+- **Parallel Fetching**: Browse sections are fetched in parallel for performance.
+- **Native Snap Scrolling**: Used for the TrendingCarousel to provide a mobile-native feel.
+- **Single API call with append_to_response**: Used for movie and show details.
+- **Client-Side Filtering**: Trending/popular data is filtered in-memory for instantaneous UI response.
+- **URL Persistence for Filters**: Filter state is reflected in query parameters for shareability and state restoration on reload.
 
 ## Testing
 
-**Total tests: ~450 across 55+ test files**
+- **Automated Tests**: Over 480 tests across 60+ test files covering domain logic, API integration, composables, and components.
+- **Manual Verification**:
+  - Search, Browse, and Details functionality verified across desktop/mobile.
+  - HF-01 to HF-09 (Filtering and Layout Toggle) verified, including persistence and URL sync.
 
-- **Browse Tests**: Verified parallel fetching, data mapping (including injected media_type), carousel navigation, and responsive grid rendering.
-- **Search Tests**: Verified debounce timing, client-side filtering of person results, and empty/error states.
-- **Detail Tests**: Verified all metadata extraction, YouTube trailer embedding, streaming provider filtering by region, and library persistence.
-- **Integration Tests**: Verified seamless mode switching between browse and search on the Home Screen based on query input.
+## Dependencies
 
-## Security Considerations
-
-- **Privacy-enhanced YouTube embeds**: Trailers use `youtube-nocookie.com` domain to reduce tracking.
-- **Input validation**: Search queries are trimmed and validated before being sent to the API.
-
-## Error UX
-
-- **Granular Retries**: Each browse section and the search results grid provide a "Retry" button on failure, allowing the user to recover from transient network errors without refreshing the entire page.
-
-## Known Limitations
-
-- **Pagination**: Browse sections only display the first page of results (20 items).
-- **Filter Bar & View Toggle**: While planned in requirements, the advanced filtering and layout toggling for the home screen are slated for a subsequent roadmap item.
-- **Season/episode browser**: TV show details don't include episode-level navigation.
-- **Streaming region**: Defaults to 'US' until the full Settings feature is implemented.
+- **TMDB API**: Primary data source.
+- **vue-router**: For navigation and URL query sync.
+- **localStorage**: For library entries and user settings persistence.
+- **lucide-vue-next**: For iconography.
