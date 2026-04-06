@@ -1,10 +1,14 @@
 # Scenarios
 
 ## Contents
+### Home Browse
+
+1. **[HB-01](./HB-01.feature)**: Surface trending and popular content when not searching.
 
 ### Home Search
 
 1. **[HS-01](./HS-01.feature)**: Debounced search input with 300ms delay before API request.
+...
 2. **[HS-02](./HS-02.feature)**: Multi-search API call with query and language parameters.
 3. **[HS-03](./HS-03.feature)**: Person result filtering from search responses.
 4. **[HS-04](./HS-04.feature)**: Search results display as MovieCard grid with poster, title, year, and rating.

@@ -21,8 +21,10 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 
 - As a user, I want to search for movies and TV shows by title so that I can find specific content to add to my watchlist.
 - As a user, I want to see search results as I type so that I can quickly find what I'm looking for without waiting.
+- As a user, I want to see trending movies and shows so that I can keep up with what's popular today.
+- As a user, I want to see popular movies and TV shows so that I can find highly-rated and well-known content.
 - As a user, I want to easily return to browsing trending/popular content after searching so that I can discover new titles.
-- As a user, I want to retry a failed search so that temporary network issues don't prevent me from finding content.
+- As a user, I want to retry a failed search or browse section so that temporary network issues don't prevent me from finding content.
 - As a user, I want to see complete information about a movie or TV show so that I can decide whether to watch it.
 - As a user, I want to see where a title is available for streaming so that I can watch it on my preferred service.
 - As a user, I want to rate movies and shows I've watched so that I can remember my opinions.
@@ -33,17 +35,14 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 
 ### Personas
 
-- **Casual viewer**: Searches for specific movies they've heard about; wants quick access to streaming availability and trailers before deciding what to watch.
-- **TV enthusiast**: Searches for TV shows by name to track episodes.
+- **Casual viewer**: Searches for specific movies they've heard about; wants quick access to streaming availability and trailers before deciding what to watch. Also browses trending content when unsure what to watch.
+- **TV enthusiast**: Searches for TV shows by name to track episodes and keeps up with popular series.
 - **Collector**: Rates and organizes watched content, uses favorites and watchlist extensively.
 - **Social viewer**: Shares recommendations with friends via the share feature.
 
 ### Dependencies
 
-- **R-01a (Scaffolding)**: Provides routing, SkeletonLoader, EmptyState, useToast, useModal, and ErrorBoundary composables
-- **Browse mode components** (TrendingCarousel, PopularGrid, FilterBar, ViewToggle): Required for HS-09. These components are planned for a future home-browse feature; stub implementations will be used during initial development and replaced when the browse feature is implemented.
-- **MovieCard component**: Required for HS-04 — created as part of this change if not already implemented
-- **useSettings composable**: Required for HS-02 to access `Settings.language` — created as part of this change if not already implemented
+- **R-01a (Scaffolding)**: Provides routing, SkeletonLoader, EmptyState, useToast, useModal, and ErrorBoundary composables.
 - **Architecture**: Uses `append_to_response` API pattern per `docs/technical/api.md`.
 - **Data Model**: Uses `LibraryEntry` schema for persisting user data per `docs/technical/data-model.md`.
 
@@ -60,49 +59,54 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 | Trailer embed           | YouTube iframe with privacy-enhanced mode       | Uses `youtube-nocookie.com` domain to reduce tracking. Only loads when user clicks play.                                                   |
 | Rating storage          | localStorage via `LibraryEntry.rating`          | Consistent with local-first architecture. No backend required.                                                                             |
 | Streaming region        | User's `Settings.preferredRegion`               | Uses ISO 3166-1 region code from settings to filter streaming providers.                                                                   |
+| Media Type Injection    | Client-side during fetch                        | Popular/Trending endpoints in TMDB may lack consistent `media_type`. We inject it in the provider client for schema compatibility.         |
+| Browse Layout           | Native CSS Snap-Scrolling                       | Used for the TrendingCarousel to provide a high-performance, native mobile feel without external libraries.                                 |
 
 ## Scope
 
 ### In Scope
 
-- SearchBar component with debounced input
-- API integration with `/search/multi` endpoint
-- Search results display as MovieCard grid (note: MovieCard renders both movies and TV shows)
-- MovieCard component (if not already implemented) — reusable card displaying poster, title, year, and vote average for movies and TV shows
-- useSettings composable (if not already implemented) — provides `Settings.language` for API localization
-- Client-side filtering to exclude person results
-- Loading skeleton during API requests (8 placeholders)
-- Empty state when no results found
-- Inline error message for API failures
-- Mode switching between browse and search states
-- Movie and TV show detail views at `/movie/:id` and `/show/:id`
-- Hero backdrop with gradient overlay and title
-- Metadata panel: year, runtime/seasons, genres, directors, writers, languages
-- Cast carousel with horizontally scrollable headshots and character names
-- Trailer embed playing official YouTube trailer inline
-- Streaming badges showing available providers for user's region
-- Rating stars (1-5 scale) persisted in localStorage
-- Favorite toggle persisted in localStorage
-- Watch status toggle (watchlist/watched/none) persisted in localStorage
-- IMDB link opening external IMDB page
-- Share button with Web Share API and clipboard fallback
-- Loading skeleton matching detail layout
-- Error handling with inline retry action
-- Box office data (budget and revenue) for movies
+- SearchBar component with debounced input.
+- API integration with `/search/multi`, `/trending/all/day`, `/movie/popular`, and `/tv/popular` endpoints.
+- `TrendingCarousel` component displaying top 10 trending items with horizontal snap-scrolling.
+- `PopularGrid` component for movies and TV shows.
+- `useBrowse` application logic (composable) for fetching trending and popular data in parallel.
+- Search results display as MovieCard grid.
+- MovieCard component — reusable card displaying poster, title, year, and vote average for movies and TV shows.
+- useSettings composable — provides `Settings.language` for API localization.
+- Client-side filtering to exclude person results.
+- Loading skeleton during API requests and for browse sections.
+- Empty state when no results found.
+- Inline error message for API failures.
+- Mode switching between browse and search states.
+- Movie and TV show detail views at `/movie/:id` and `/show/:id`.
+- Hero backdrop with gradient overlay and title.
+- Metadata panel: year, runtime/seasons, genres, directors, writers, languages.
+- Cast carousel with horizontally scrollable headshots and character names.
+- Trailer embed playing official YouTube trailer inline.
+- Streaming badges showing available providers for user's region.
+- Rating stars (1-5 scale) persisted in localStorage.
+- Favorite toggle persisted in localStorage.
+- Watch status toggle (watchlist/watched/none) persisted in localStorage.
+- IMDB link opening external IMDB page.
+- Share button with Web Share API and clipboard fallback.
+- Loading skeleton matching detail layout.
+- Error handling with inline retry action.
+- Box office data (budget and revenue) for movies.
 
 ### Out of Scope
 
-- Infinite scroll / pagination (first page only per [API pagination strategy](../../technical/api.md#pagination-strategy))
-- Search history / recent searches
-- Voice search
-- Advanced filters within search (genre, year)
-- Typeahead suggestions / autocomplete dropdown
-- Season/episode browser for TV shows (future feature)
-- Full image gallery/lightbox
-- User reviews or comments
-- Social features (following, sharing activity)
-- Collection/franchise navigation
-- Similar/recommended titles section (separate feature in roadmap)
+- Infinite scroll / pagination for browse sections (first page only per [API pagination strategy](../../technical/api.md#pagination-strategy)).
+- Search history / recent searches.
+- Voice search.
+- Advanced filters within search (genre, year).
+- Typeahead suggestions / autocomplete dropdown.
+- Season/episode browser for TV shows.
+- Full image gallery/lightbox.
+- User reviews or comments.
+- Social features (following, sharing activity).
+- Collection/franchise navigation.
+- Similar/recommended titles section (separate feature in roadmap).
 
 ## Functional Requirements
 
@@ -119,6 +123,15 @@ Users need a way to find specific movies and TV shows by name. The home screen c
 | HS-09 | Browse Mode             | When the search query is empty, the home screen SHALL display the TrendingCarousel, PopularGrid, FilterBar, and ViewToggle sections (browse mode).                                                                                                                                                                                                                                                                                                                                              | P0       |
 | HS-10 | Search Mode             | When the user types a non-empty query into the SearchBar, the home screen SHALL hide the browse sections and display only the SearchResults grid below the SearchBar (search mode).                                                                                                                                                                                                                                                                                                             | P0       |
 | HS-11 | Mode Transition         | Clearing the search query (backspace to empty or clear button) SHALL restore the browse sections. There SHALL NOT be an intermediate state where both search results and browse sections are visible simultaneously.                                                                                                                                                                                                                                                                            | P0       |
+| HB-01 | Trending Data Fetch  | The app SHALL fetch trending items (movies and TV shows) for the day from the TMDB `/trending/all/day` endpoint.                                                      | P0       |
+| HB-02 | Popular Movies Fetch | The app SHALL fetch popular movies from the TMDB `/movie/popular` endpoint.                                                                                           | P0       |
+| HB-03 | Popular Shows Fetch  | The app SHALL fetch popular TV shows from the TMDB `/tv/popular` endpoint.                                                                                            | P0       |
+| HB-04 | Trending Carousel    | The `TrendingCarousel` SHALL display up to 10 trending items in a horizontally scrollable carousel. Each item SHALL display its backdrop or poster and title.         | P0       |
+| HB-05 | Popular Grid         | The `PopularGrid` SHALL display popular movies and shows in a responsive grid. By default, it SHALL show the first 20 items of each.                                  | P0       |
+| HB-06 | Browse Mode Display  | When `query` is empty in `home-screen.vue`, the browse sections (Trending and Popular) SHALL be visible.                                                              | P0       |
+| HB-07 | Item Navigation      | Tapping any item in browse mode SHALL navigate to its detail screen (`/movie/:id` or `/show/:id`).                                                                    | P0       |
+| HB-08 | Loading States       | Browse sections SHALL show appropriate skeleton loaders while data is being fetched.                                                                                  | P0       |
+| HB-09 | Error Handling       | If browse data fails to load, a retry option SHALL be provided for each section or the entire browse view.                                                            | P1       |
 | ED-01 | Hero Backdrop           | The `HeroBackdrop` component SHALL display the backdrop image (`backdrop_path`) with a gradient overlay from transparent to the page background color. The movie/show title SHALL be overlaid on the image with sufficient contrast for readability. If no backdrop is available, a solid dark gradient matching the app background SHALL be displayed.                                                                                                                                         | P0       |
 | ED-02 | Metadata Panel          | The `MetadataPanel` component SHALL display: (a) release year extracted from `release_date` or `first_air_date`, (b) runtime in hours and minutes for movies or season/episode count for TV shows, (c) genres as comma-separated list, (d) directors extracted from `credits.crew` where `job === "Director"`, (e) writers extracted from `credits.crew` where `department === "Writing"`, (f) spoken languages as comma-separated list. Missing data SHALL be omitted, not displayed as empty. | P0       |
 | ED-03 | Cast Carousel           | The `CastCarousel` component SHALL render a horizontally scrollable list of cast members from `credits.cast`, sorted by `order` (billing order). Each cast item SHALL display: profile headshot (or placeholder icon if `profile_path` is null), actor name, and character name. The carousel SHALL display up to 20 cast members.                                                                                                                                                              | P0       |
