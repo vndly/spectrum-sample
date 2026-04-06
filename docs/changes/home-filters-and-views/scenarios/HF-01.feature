@@ -1,6 +1,4 @@
-Feature: HF-01 — Home Screen Filtering
-
-  Filter browse results by genre, media type, and year range.
+Feature: HF-01 — Genre Multi-Select
 
   Background:
     Given the home screen is in browse mode
@@ -10,28 +8,3 @@ Feature: HF-01 — Home Screen Filtering
     When I select the "Action" genre from the FilterBar
     Then only currently visible items with the "Action" genre are displayed
     And items without the "Action" genre are hidden
-
-  Scenario: HF-01-02 — Filter by media type
-    When I select "Movies" from the media type toggle
-    Then only movie items are displayed
-    And TV show items are hidden
-
-  Scenario: HF-01-03 — Filter by year range
-    When I set the year range from 2020 to 2025
-    Then only items released between 2020 and 2025 are displayed
-
-  Scenario: HF-01-04 — Composite filtering (AND)
-    When I select "Action" genre
-    And I select "Movies" media type
-    Then only action movies are displayed
-
-  Scenario: HF-01-05 — Clear filters manually
-    Given filters are active
-    When I click "Clear All"
-    Then all trending and popular results are displayed again
-
-  Scenario: HF-01-06 — Reset filters on search
-    Given filters are active
-    When I type "Inception" into the search bar
-    Then active filters are cleared
-    And search results for "Inception" are displayed

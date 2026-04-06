@@ -65,7 +65,8 @@ While browse mode provides trending and popular content, users need ways to narr
 | ----- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | HF-01 | Genre Multi-Select    | The `FilterBar` SHALL provide a way to select multiple genres. The list of genres SHALL be fetched from TMDB and cached for the session.                                                                                             | P0       |
 | HF-02 | Media Type Toggle     | The `FilterBar` SHALL provide a toggle for media type (Movies, TV Shows, or All).                                                                                                                                                    | P0       |
-| HF-03 | Year Range Inputs     | The `FilterBar` SHALL provide inputs for a minimum and maximum year range.                                                                                                                                                          | P1       |
+| HF-03 | Year Range Inputs     | The `FilterBar` SHALL provide two numeric inputs for "From Year" and "To Year" to filter results within that range.                                                                                 | P1       |
+
 | HF-04 | Composite Filtering   | Filters SHALL apply using AND logic: only results matching all active filters SHALL be displayed.                                                                                                                                   | P0       |
 | HF-05 | Client-Side Filtering | Filters SHALL apply to already-fetched data (trending and popular results) without re-fetching from the server.                                                                                                                     | P0       |
 | HF-06 | Layout Toggle         | The `ViewToggle` SHALL switch the content layout between "Grid" (poster-focused cards) and "List" (compact rows with title and key metadata).                                                                                       | P0       |
@@ -82,8 +83,19 @@ While browse mode provides trending and popular content, users need ways to narr
 
 ### UI/UX Specs
 
-- `FilterBar` should be compact and potentially sticky below the SearchBar.
-- `ViewToggle` should be easily accessible, possibly next to the FilterBar.
+- `FilterBar` SHALL be compact and sticky below the `SearchBar` when scrolling on desktop.
+- `ViewToggle` SHALL be positioned to the right of the `FilterBar`.
+- Transitions between Grid and List views SHALL be smooth (CSS transitions).
+
+## Risks & Assumptions
+
+### Risks
+- **TMDB Genre Mismatch**: Movie and TV genre IDs overlap but have different names (e.g., ID 28 is Action for movies, but TV has "Action & Adventure" ID 10759). *Mitigation*: The domain filtering logic must handle both lists and merge them correctly in the UI.
+- **Large Datasets**: Although we only fetch 20 items, if pagination is added later, client-side filtering might become a bottleneck. *Mitigation*: Keeping the scope to "currently visible" items for now.
+
+### Assumptions
+- Users want to filter the browse results (trending/popular) rather than just searching.
+- A year range filter is more useful than a single year picker for discovery.
 
 ## Acceptance Criteria
 

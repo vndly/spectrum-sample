@@ -1,7 +1,5 @@
 Feature: HF-06 — Layout Toggle
 
-  Switch between grid and list layouts for browse results.
-
   Background:
     Given the home screen is in browse mode
     And trending and popular results are loaded
@@ -16,8 +14,3 @@ Feature: HF-06 — Layout Toggle
     Given the current layout is "List"
     When I click the "Grid" layout toggle
     Then browse results are displayed as a responsive grid of poster cards
-
-  Scenario: HF-06-03 — Persistence in localStorage
-    When I switch to "List" layout
-    And I reload the page
-    Then the "List" layout is still active
