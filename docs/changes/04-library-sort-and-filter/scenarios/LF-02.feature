@@ -1,15 +1,15 @@
 Feature: LF-02 — Filter by Media Type
 
   Background:
-    Given my library contains both movies and TV shows
+    Given my library contains "Movie A" and "Show B"
     And I am on the Library screen
 
-  Scenario: LF-02-01 — Filter by Movie
-    When I select "Movie" in the media type filter
-    Then only movies are displayed
-    And TV shows are hidden
+  Scenario Outline: LF-02-01 — Filter by media type
+    When I select "<Type>" in the media type filter
+    Then "<Visible>" is displayed
+    And "<Hidden>" is hidden
 
-  Scenario: LF-02-02 — Filter by TV Show
-    When I select "TV Show" in the media type filter
-    Then only TV shows are displayed
-    And movies are hidden
+    Examples:
+      | Type     | Visible   | Hidden    |
+      | Movie    | "Movie A" | "Show B"  |
+      | TV Show  | "Show B"  | "Movie A" |

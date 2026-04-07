@@ -1,7 +1,7 @@
 ---
 id: R-06
 title: 'Library: Sort and Filter'
-status: draft
+status: approved
 importance: medium
 type: functional
 tags: [library, sort, filter]
@@ -27,18 +27,18 @@ As users add more content to their library (Watchlist, Watched, and Custom Lists
 
 ### Dependencies
 
-- `R-05`: Library Management (provides the library entries and custom lists to filter/sort)
-- `R-06` (Home Filters): Reuse of the `FilterBar` component and `useFilters` logic.
+- `R-05`: Library Management (provides the library entries and custom lists to filter/sort).
+- `R-02`: Home screen (provides the base `FilterBar` component and `useFilters` logic to be refactored).
 
 ## Decisions
 
-| Decision             | Choice                           | Rationale                                                                                                                                                                 |
-| :------------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Component Reuse      | Refactor `FilterBar`             | The `FilterBar` from the home screen already handles genre, media type, and year. It should be refactored to support props for additional filters (rating, status, lists). |
-| Sorting Logic        | Client-side in `useSort`         | Library data is fully local; client-side sorting is instantaneous and avoids API calls.                                                                                   |
-| Filter Composition   | AND logic                        | Consistent with the home screen filtering behavior; results must match all active filters.                                                                                |
-| Sort Persistence     | `localStorage` via `useSettings` | Users likely have a preferred way to view their library (e.g., "Recently Added" first) and would expect it to persist.                                                    |
-| Pagination           | None                             | As per roadmap, all entries are rendered; virtualization is deferred.                                                                                                     |
+| Decision           | Choice                           | Rationale                                                                                                                                               |
+| :----------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Component Reuse    | Refactor `FilterBar`             | The `FilterBar` from `R-02` (Home Screen) already handles genre, media type, and year. It should be refactored to support props for additional filters. |
+| Sorting Logic      | Client-side in `useSort`         | Library data is fully local; client-side sorting is instantaneous and avoids API calls.                                                                 |
+| Filter Composition | AND logic                        | Consistent with the home screen filtering behavior; results must match all active filters.                                                              |
+| Sort Persistence   | `localStorage` via `useSettings` | Users likely have a preferred way to view their library (e.g., "Recently Added" first) and would expect it to persist.                                  |
+| Pagination         | None                             | As per roadmap, all entries are rendered; virtualization is deferred.                                                                                   |
 
 ## Scope
 
@@ -63,47 +63,47 @@ As users add more content to their library (Watchlist, Watched, and Custom Lists
 
 ### Sorting
 
-| ID    | Requirement              | Description                                                                                             | Priority |
-| :---- | :----------------------- | :------------------------------------------------------------------------------------------------------ | :------- |
-| LS-01 | Sort by Date Added       | Users can sort library entries by the date they were added (Newest First, Oldest First).                | P0       |
-| LS-02 | Sort by Title            | Users can sort library entries alphabetically by title (A-Z, Z-A).                                      | P0       |
-| LS-03 | Sort by Release Year     | Users can sort library entries by their release year (Newest to Oldest, Oldest to Newest).              | P1       |
-| LS-04 | Sort by User Rating      | Users can sort library entries by the rating they assigned (Highest to Lowest, Lowest to Highest).      | P1       |
-| LS-05 | Default Sort             | The default sort order for all library views SHALL be "Date Added (Newest First)".                      | P0       |
-| LS-06 | Persistence              | The selected sort criteria and direction SHALL be persisted in the user's settings via `useSettings`.   | P1       |
+| ID    | Requirement          | Description                                                                                           | Priority |
+| :---- | :------------------- | :---------------------------------------------------------------------------------------------------- | :------- |
+| LS-01 | Sort by Date Added   | Users can sort library entries by the date they were added (Newest First, Oldest First).              | P0       |
+| LS-02 | Sort by Title        | Users can sort library entries alphabetically by title (A-Z, Z-A).                                    | P0       |
+| LS-03 | Sort by Release Year | Users can sort library entries by their release year (Newest to Oldest, Oldest to Newest).            | P1       |
+| LS-04 | Sort by User Rating  | Users can sort library entries by the rating they assigned (Highest to Lowest, Lowest to Highest).    | P1       |
+| LS-05 | Default Sort         | The default sort order for all library views SHALL be "Date Added (Newest First)".                    | P0       |
+| LS-06 | Persistence          | The selected sort criteria and direction SHALL be persisted in the user's settings via `useSettings`. | P1       |
 
 ### Filtering
 
-| ID    | Requirement              | Description                                                                                             | Priority |
-| :---- | :----------------------- | :------------------------------------------------------------------------------------------------------ | :------- |
-| LF-01 | Filter by Genre          | Users can filter entries by one or more genres using the multi-select dropdown.                         | P0       |
-| LF-02 | Filter by Media Type     | Users can filter entries by media type (Movie, TV Show, or All).                                        | P0       |
-| LF-03 | Filter by Rating Range   | Users can filter entries by a range of user ratings (e.g., 3 to 5 stars) using a slider or range picker. | P1       |
-| LF-04 | Filter by Watch Status   | Users can filter entries by their watch status (Watchlist, Watched, or All).                            | P1       |
-| LF-05 | Filter by Custom List    | Users can filter entries by their membership in specific custom lists.                                  | P1       |
-| LF-06 | Filter Badge             | The FilterBar SHALL display a badge with the count of active filters.                                   | P1       |
-| LF-07 | Clear Filters            | A "Clear All" action SHALL reset all active filters to their default states.                            | P0       |
+| ID    | Requirement            | Description                                                                                                                                       | Priority |
+| :---- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------- |
+| LF-01 | Filter by Genre        | Users can filter entries by one or more genres using the multi-select dropdown.                                                                   | P0       |
+| LF-02 | Filter by Media Type   | Users can filter entries by media type (Movie, TV Show, or All).                                                                                  | P0       |
+| LF-03 | Filter by Rating Range | Users can filter entries by a range of user ratings (0.0 to 5.0 stars) using numeric inputs or a selection widget. Matches `LibraryEntry.rating`. | P1       |
+| LF-04 | Filter by Watch Status | Users can filter entries by their watch status (Watchlist, Watched, or All).                                                                      | P1       |
+| LF-05 | Filter by Custom List  | Users can filter entries by their membership in specific custom lists.                                                                            | P1       |
+| LF-07 | Clear Filters          | A "Clear All" action SHALL reset all active filters to their default states.                                                                      | P0       |
 
-### UI/UX
+### UI/UX Specs
 
-| ID    | Requirement              | Description                                                                                             | Priority |
-| :---- | :----------------------- | :------------------------------------------------------------------------------------------------------ | :------- |
-| LU-01 | SortDropdown Component   | A dropdown component for choosing sort field and direction.                                             | P0       |
-| LU-02 | FilterBar Integration    | The `FilterBar` SHALL be integrated into the `LibraryScreen` below the header/tabs.                     | P0       |
-| LU-03 | FilterBar Customization  | The `FilterBar` SHALL allow enabling/disabling specific filters via props (to adapt to different views). | P1       |
-| LU-04 | Empty State              | When filters result in zero entries, a "No items match your filters" message SHALL be displayed.        | P0       |
+| ID    | Requirement             | Description                                                                                                                                  | Priority |
+| :---- | :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| LU-01 | SortDropdown Component  | A dropdown component for choosing sort field and direction.                                                                                  | P0       |
+| LU-02 | FilterBar Integration   | The `FilterBar` SHALL be integrated into the `LibraryScreen` below the header/tabs.                                                          | P0       |
+| LU-03 | FilterBar Customization | The `FilterBar` SHALL allow enabling/disabling specific filters via props (to adapt to different views).                                     | P1       |
+| LU-04 | Empty State             | When filters result in zero entries, a "No items match your filters" message SHALL be displayed.                                             | P0       |
+| LU-05 | Filter Badge            | The `FilterBar` SHALL display a badge showing the count of active filters (e.g., "3"). The badge updates dynamically as filters are toggled. | P1       |
 
 ## Non-Functional Requirements
 
 ### Performance
 
-- **Filtering Speed**: Applying filters to a collection of up to 500 entries SHALL take less than 50ms (instantaneous feel).
-- **Sorting Speed**: Sorting a collection of up to 500 entries SHALL take less than 50ms.
+- **Filtering Speed**: Applying filters to a collection of up to 500 entries SHALL complete in < 50ms.
+- **Sorting Speed**: Sorting a collection of up to 500 entries SHALL complete in < 50ms.
 
-### UI/UX
+### UI/UX Consistency
 
-- **Consistency**: The `FilterBar` in the library SHALL look and behave identically to the one on the home screen.
-- **Responsiveness**: Sorting and filtering controls SHALL be responsive and work well on mobile devices.
+- **Visual Parity**: The `FilterBar` in the library SHALL use the same Tailwind theme tokens and layout patterns as the home screen implementation (`R-02`).
+- **Responsive Layout**: Filtering controls SHALL adapt to screen sizes per `docs/technical/ui-ux.md`, maintaining 44x44px touch targets for all interactive elements.
 
 ## Acceptance Criteria
 
