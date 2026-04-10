@@ -43,7 +43,7 @@ onUnmounted(() => {
 <template>
   <div class="flex flex-wrap items-center gap-4 py-2">
     <!-- Genre Multi-Select -->
-    <div class="relative" ref="genreDropdownRef">
+    <div ref="genreDropdownRef" class="relative">
       <button
         type="button"
         class="flex items-center gap-2 rounded-lg bg-surface px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-surface-hover"
@@ -111,8 +111,8 @@ onUnmounted(() => {
     <!-- Year Range -->
     <div class="flex items-center gap-2">
       <input
-        type="number"
         v-model.number="filters.yearFrom"
+        type="number"
         :placeholder="t('home.filters.yearFrom')"
         class="w-24 rounded-lg bg-surface px-3 py-2 text-sm text-white placeholder-slate-500 outline-none ring-accent focus:ring-2"
         min="1900"
@@ -120,8 +120,8 @@ onUnmounted(() => {
       />
       <span class="text-slate-500">-</span>
       <input
-        type="number"
         v-model.number="filters.yearTo"
+        type="number"
         :placeholder="t('home.filters.yearTo')"
         class="w-24 rounded-lg bg-surface px-3 py-2 text-sm text-white placeholder-slate-500 outline-none ring-accent focus:ring-2"
         min="1900"
