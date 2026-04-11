@@ -27,4 +27,4 @@ export const LibraryEntrySchema = z.object({
 ## Migration Strategy
 
 - **New Entries**: Captured automatically during the "Add to Library" flow or when visiting details.
-- **Existing Entries**: Best-effort backfill. If an entry is visited, its `runtime` is updated. Entries without `runtime` contribute `0` to the total watch time until updated.
+- **Existing Entries**: Best-effort backfill. If an entry is visited, its `runtime` is updated. Entries without `runtime` contribute `0` (zero) minutes to the total watch time until updated, as per the calculation logic.

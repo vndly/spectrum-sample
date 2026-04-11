@@ -102,11 +102,10 @@ Users who track their media consumption often want to see high-level metrics, su
 
 ### UI/UX Consistency
 
-| ID    | Requirement   | Description                                                                                               |
-| :---- | :------------ | :-------------------------------------------------------------------------------------------------------- |
-| SN-03 | Visual Style  | Components SHALL use existing Tailwind theme tokens and Lucide icons consistent with the rest of the app. |
-| SN-04 | Accessibility    | Charts SHALL include `aria-label` descriptions and be navigable or described for screen readers to meet WCAG 2.1 AA standards. |
-
+| ID    | Requirement   | Description                                                                                                                    |
+| :---- | :------------ | :----------------------------------------------------------------------------------------------------------------------------- |
+| SN-03 | Visual Style  | Components SHALL use existing Tailwind theme tokens and Lucide icons consistent with the rest of the app.                      |
+| SN-04 | Accessibility | Charts SHALL include `aria-label` descriptions and be navigable or described for screen readers to meet WCAG 2.1 AA standards. |
 
 ### Internationalization
 
@@ -147,13 +146,16 @@ Users who track their media consumption often want to see high-level metrics, su
 - [ ] Genre and Monthly charts resize correctly without data loss or layout breakage on mobile. (`SN-02`)
 - [ ] All stat components use Tailwind theme tokens for colors and spacing. (`SN-03`)
 - [ ] All charts include ARIA labels or descriptions for screen readers. (`SN-04`)
-and spacing. (`SN-03`)
+      and spacing. (`SN-03`)
 - [ ] All charts include ARIA labels or descriptions for screen readers. (`SN-04`)
-ith no watched items displays the "No watched items" empty state.
+      ith no watched items displays the "No watched items" empty state.
 - [ ] Stats update immediately if an item's rating or status is changed in another tab (via storage events or shared state).
 - [ ] `LibraryEntry` schema is updated to include `runtime`, and new entries capture this value.
 - [ ] All charts and labels are fully localized in English and at least one other language.
 - [ ] Stats computation for 1,000 entries completes in under 100ms. (`SN-01`)
 - [ ] Genre and Monthly charts resize correctly without data loss or layout breakage on mobile. (`SN-02`)
+- [ ] All stat components use Tailwind theme tokens for colors and spacing. (`SN-03`)
+- [ ] All charts include ARIA labels or descriptions for screen readers. (`SN-04`)
+      age on mobile. (`SN-02`)
 - [ ] All stat components use Tailwind theme tokens for colors and spacing. (`SN-03`)
 - [ ] All charts include ARIA labels or descriptions for screen readers. (`SN-04`)
