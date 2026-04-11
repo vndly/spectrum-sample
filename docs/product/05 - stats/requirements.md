@@ -1,7 +1,7 @@
 ---
 id: R-07
 title: 'Stats: Insights and Overview'
-status: under_test
+status: released
 importance: medium
 type: functional
 tags: [stats, library, charts]

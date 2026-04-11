@@ -6,4 +6,5 @@
 2. **[Plan](./plan.md)**: Step-by-step implementation plan and scenario-to-test mapping.
 3. **[Implementation](./implementation.md)**: Architectural overview and component hierarchy for the stats dashboard.
 4. **[Data Model](./data-model.md)**: Schema updates for library entry metadata.
-5. **[Scenarios](./scenarios/)**: Behavioral scenarios covering the statistics calculation and display requirements.
+5. **[API Reference](./api.md)**: Composable interface and logic contracts for the stats system.
+6. **[Scenarios](./scenarios/)**: Behavioral scenarios covering the statistics calculation and display requirements.

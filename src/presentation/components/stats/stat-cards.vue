@@ -20,9 +20,7 @@ const { t } = useI18n()
     >
       <div class="flex items-center gap-2 text-slate-400">
         <Eye class="size-4" />
-        <span class="text-xs font-medium tracking-wider">{{
-          t('stats.metrics.watched')
-        }}</span>
+        <span class="text-xs font-medium tracking-wider">{{ t('stats.metrics.watched') }}</span>
       </div>
       <div class="text-2xl font-bold text-white">{{ metrics.totalWatched }}</div>
     </div>
@@ -33,9 +31,7 @@ const { t } = useI18n()
     >
       <div class="flex items-center gap-2 text-slate-400">
         <Bookmark class="size-4" />
-        <span class="text-xs font-medium tracking-wider">{{
-          t('stats.metrics.watchlist')
-        }}</span>
+        <span class="text-xs font-medium tracking-wider">{{ t('stats.metrics.watchlist') }}</span>
       </div>
       <div class="text-2xl font-bold text-white">{{ metrics.totalWatchlist }}</div>
     </div>
@@ -46,9 +42,7 @@ const { t } = useI18n()
     >
       <div class="flex items-center gap-2 text-slate-400">
         <Star class="size-4" />
-        <span class="text-xs font-medium tracking-wider">{{
-          t('stats.metrics.avgRating')
-        }}</span>
+        <span class="text-xs font-medium tracking-wider">{{ t('stats.metrics.avgRating') }}</span>
       </div>
       <div class="text-2xl font-bold text-white">{{ metrics.averageRating.toFixed(1) }}</div>
     </div>
@@ -59,9 +53,7 @@ const { t } = useI18n()
     >
       <div class="flex items-center gap-2 text-slate-400">
         <Clock class="size-4" />
-        <span class="text-xs font-medium tracking-wider">{{
-          t('stats.metrics.totalTime')
-        }}</span>
+        <span class="text-xs font-medium tracking-wider">{{ t('stats.metrics.totalTime') }}</span>
       </div>
       <div class="text-2xl font-bold text-white">
         {{ formatWatchTime(metrics.totalWatchTimeMinutes) }}
