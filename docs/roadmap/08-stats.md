@@ -17,4 +17,4 @@ Users can see their library distribution by genre, their watch activity over the
 
 ## Related Documentation
 
-- [Product Specification](../product/05 - stats/index.md)
+- [Product Specification](../product/04 - stats/index.md)
