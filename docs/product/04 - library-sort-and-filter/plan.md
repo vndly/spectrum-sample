@@ -87,11 +87,11 @@ Implement advanced sorting and filtering for the Library screen by reusing the H
 ## Phase 6: Final Verification
 
 1. [x] **Automated Verification**: Run `npm run test`, `npm run type-check`, `npm run lint`, and `npm run build` (or `npm run check`) to ensure no regressions.
-2. [ ] **Benchmark and responsive verification**:
+2. [x] **Benchmark and responsive verification**:
    - Verify filtering on a 500-entry fixture completes in under 50 ms in the documented benchmark environment. (covering: `LN-01`)
    - Verify sorting on a 500-entry fixture completes in under 50 ms in the documented benchmark environment. (covering: `LN-02`)
    - Verify mobile breakpoint layout and 44x44 touch targets for Library controls. (covering: `LU-02-02`, `LN-04`)
-3. [ ] **Manual Verification**:
+3. [x] **Manual Verification**:
    - Verify Watchlist scope + genre multi-select stays on the Watchlist tab and `Clear All` restores Watchlist results. (covering: `LF-01-01`, `LF-01-02`, `LF-07-01`)
    - Verify Lists scope + watch-status filtering supports Watchlist, Watched, Untracked, and All while preserving the selected list. (covering: `LF-04-01`)
    - Verify Watched scope + custom-list filtering and Lists hidden-state rules behave correctly. (covering: `LF-05-01`, `LF-05-02`, `LF-04-02`)

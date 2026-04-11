@@ -57,7 +57,6 @@ Users need a way to track what they want to watch and what they have already see
 - Cloud sync or multi-device support.
 - Sharing lists with other users.
 - Automated list suggestions or smart lists.
-- Filtering or sorting within the lists (covered by a future roadmap item).
 
 ## Functional Requirements
 
