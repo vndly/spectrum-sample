@@ -211,3 +211,53 @@ export async function getShowDetail(id: number, language: string): Promise<ShowD
 
   return ShowDetailSchema.parse(data)
 }
+
+/**
+ * Fetches recommended movies based on a seed movie ID.
+ * @param id - TMDB movie ID
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated search response with recommended movies
+ * @throws Error if the API request fails
+ */
+export async function getMovieRecommendations(
+  id: number,
+  language: string,
+): Promise<SearchResponse> {
+  const params = new URLSearchParams({ language, page: '1' })
+  const url = `${API_BASE_URL}/movie/${id}/recommendations?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  // Inject media_type for consistency with SearchResponse
+  data.results = data.results.map((item: Record<string, unknown>) => ({
+    ...item,
+    media_type: 'movie',
+  }))
+
+  return SearchResponseSchema.parse(data)
+}
+
+/**
+ * Fetches recommended TV shows based on a seed TV show ID.
+ * @param id - TMDB TV show ID
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated search response with recommended TV shows
+ * @throws Error if the API request fails
+ */
+export async function getShowRecommendations(
+  id: number,
+  language: string,
+): Promise<SearchResponse> {
+  const params = new URLSearchParams({ language, page: '1' })
+  const url = `${API_BASE_URL}/tv/${id}/recommendations?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  // Inject media_type for consistency with SearchResponse
+  data.results = data.results.map((item: Record<string, unknown>) => ({
+    ...item,
+    media_type: 'tv',
+  }))
+
+  return SearchResponseSchema.parse(data)
+}

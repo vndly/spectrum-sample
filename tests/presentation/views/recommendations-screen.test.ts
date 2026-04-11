@@ -1,15 +1,46 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { mount } from '@vue/test-utils'
-import { Compass } from 'lucide-vue-next'
 import { createI18n } from 'vue-i18n'
-import { describe, expect, it } from 'vitest'
-import EmptyState from '@/presentation/components/common/empty-state.vue'
+import { describe, expect, it, vi } from 'vitest'
 import RecommendationsScreen from '@/presentation/views/recommendations-screen.vue'
+import RecommendationCarousel from '@/presentation/components/recommendations/RecommendationCarousel.vue'
 
-type Locale = 'en' | 'fr'
+// Mock the composables
+vi.mock('@/application/use-recommendations', () => ({
+  useRecommendations: vi.fn(() => ({
+    sections: [
+      {
+        titleKey: 'recommendations.trending.title',
+        results: [],
+        loading: false,
+        error: null,
+        fetched: false,
+      },
+    ],
+    loading: false,
+    fetchSection: vi.fn(),
+  })),
+}))
 
-function createTestI18n(locale: Locale) {
+vi.mock('@/application/use-library-entries', () => ({
+  useLibraryEntries: vi.fn(() => ({
+    allEntries: { value: [] },
+  })),
+}))
+
+vi.mock('@/application/use-settings', () => ({
+  useSettings: vi.fn(() => ({
+    settings: { value: { language: 'en' } },
+  })),
+}))
+
+// Mock router
+vi.mock('vue-router', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}))
+
+function createTestI18n(locale: 'en' | 'fr') {
   return createI18n({
     legacy: false,
     locale,
@@ -17,66 +48,41 @@ function createTestI18n(locale: Locale) {
     flatJson: true,
     messages: {
       en: {
-        'common.empty.title': 'Nothing here yet',
-        'common.empty.description': 'This page is under construction.',
+        'recommendations.title': 'Recommended for You',
+        'recommendations.trending.title': 'Trending Today',
       },
       fr: {
-        'common.empty.title': 'Rien ici pour le moment',
-        'common.empty.description': 'Cette page est en construction.',
+        'recommendations.title': 'Recommandé pour vous',
+        'recommendations.trending.title': 'Tendances du jour',
       },
     },
   })
 }
 
-function renderRecommendationsScreen(locale: Locale) {
+function renderRecommendationsScreen(locale: 'en' | 'fr') {
   return mount(RecommendationsScreen, {
     global: {
       plugins: [createTestI18n(locale)],
+      stubs: {
+        RecommendationCarousel: true,
+      },
     },
   })
 }
 
 describe('RecommendationsScreen', () => {
-  // R-01b-06-01
-  it('renders the documented placeholder content in English', () => {
-    // Arrange
+  it('renders the recommendations title in English', () => {
     const wrapper = renderRecommendationsScreen('en')
-
-    // Assert
-    expect(wrapper.findComponent(EmptyState).exists()).toBe(true)
-    expect(wrapper.findComponent(Compass).exists()).toBe(true)
-    expect(wrapper.get('h2').text()).toBe('Nothing here yet')
-    expect(wrapper.get('[data-testid="empty-state-description"]').text()).toBe(
-      'This page is under construction.',
-    )
+    expect(wrapper.get('h2').text()).toBe('Recommended for You')
   })
 
-  // R-01b-06-01
-  it('renders the documented placeholder content in French', () => {
-    // Arrange
+  it('renders the recommendations title in French', () => {
     const wrapper = renderRecommendationsScreen('fr')
-
-    // Assert
-    expect(wrapper.findComponent(EmptyState).exists()).toBe(true)
-    expect(wrapper.findComponent(Compass).exists()).toBe(true)
-    expect(wrapper.get('h2').text()).toBe('Rien ici pour le moment')
-    expect(wrapper.get('[data-testid="empty-state-description"]').text()).toBe(
-      'Cette page est en construction.',
-    )
+    expect(wrapper.get('h2').text()).toBe('Recommandé pour vous')
   })
 
-  // R-01b-06-02
-  it('uses shared translation bindings and contains no hardcoded placeholder copy', () => {
-    // Arrange
-    const sourceFile = readFileSync(
-      resolve(process.cwd(), 'src/presentation/views/recommendations-screen.vue'),
-      'utf8',
-    )
-
-    // Assert
-    expect(sourceFile).toContain('common.empty.title')
-    expect(sourceFile).toContain('common.empty.description')
-    expect(sourceFile).not.toContain('Nothing here yet')
-    expect(sourceFile).not.toContain('This page is under construction')
+  it('renders recommendation carousels', () => {
+    const wrapper = renderRecommendationsScreen('en')
+    expect(wrapper.findComponent(RecommendationCarousel).exists()).toBe(true)
   })
 })

@@ -1,7 +1,7 @@
 ---
 id: R-08
 title: Recommendations
-status: review
+status: under_test
 importance: high
 type: functional
 tags: [recommendations, api, navigation, discovery, library]
@@ -40,12 +40,12 @@ Users who have built a library of movies and TV shows often look for similar con
 
 ## Decisions
 
-| Decision          | Choice                                | Rationale                                                                                                                                            |
-| :---------------- | :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Seed selection    | Top 5 highest-rated, then most recent | Highly rated entries are better taste signals than recency alone. If ratings are tied or missing, recency serves as a secondary signal.              |
-| Deduplication     | Client-side across all sections       | API may return the same movie for different seeds or trending content. Deduplicating ensures a clean UI without repeating titles.                     |
-| Library exclusion | Client-side filtering                 | Users should not be recommended titles they already have in their library (watchlist, watched, or favorited).                                        |
-| Placement         | Dedicated Page (`/recommendations`)   | Allows for a focused discovery experience with multiple recommendation lanes without competing with search or trending on the Home screen.          |
+| Decision          | Choice                                | Rationale                                                                                                                                  |
+| :---------------- | :------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| Seed selection    | Top 5 highest-rated, then most recent | Highly rated entries are better taste signals than recency alone. If ratings are tied or missing, recency serves as a secondary signal.    |
+| Deduplication     | Client-side across all sections       | API may return the same movie for different seeds or trending content. Deduplicating ensures a clean UI without repeating titles.          |
+| Library exclusion | Client-side filtering                 | Users should not be recommended titles they already have in their library (watchlist, watched, or favorited).                              |
+| Placement         | Dedicated Page (`/recommendations`)   | Allows for a focused discovery experience with multiple recommendation lanes without competing with search or trending on the Home screen. |
 
 ## Scope
 
@@ -69,19 +69,19 @@ Users who have built a library of movies and TV shows often look for similar con
 
 ## Functional Requirements
 
-| ID    | Requirement          | Description                                                                                                                                                                                                                                                                                                                          | Priority |
-| :---- | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
-| RE-01 | Seed Selection Logic | The app SHALL select up to 5 seed entries from the library. Prioritize highest `rating` first. For ties or unrated items, prioritize the latest date among `addedAt` and all entries in `watchDates`. If library has < 5 entries, use all available as seeds.                                                                         | P0       |
-| RE-02 | Recommendations API  | For each seed entry, the app SHALL call `GET /movie/{id}/recommendations` or `GET /tv/{id}/recommendations` based on the seed's `mediaType`, using the current `Settings.language`. The app SHALL only fetch the first page of results (20 items).                                                                                | P0       |
-| RE-03 | Deduplication        | The app SHALL deduplicate recommendations across all seed results AND Trending/Popular sections using the provider `id`. A title SHALL NOT appear twice across any recommendation or browse section on the screen.                                                                                                                  | P0       |
-| RE-04 | Library Exclusion    | The app SHALL filter out any recommendation that exists in the user's library (matching by provider `id`).                                                                                                                                                                                                                           | P0       |
-| RE-05 | Labeled Sections     | Each recommendation group SHALL be displayed in a carousel labeled "Because you liked {title}" if the seed rating is ≥ 3, or "Because you watched {title}" if the rating is < 3 or unrated. These sections SHALL be grouped under a "Recommended for You" heading.                                                                   | P0       |
-| RE-06 | Dedicated View       | Recommendations SHALL be displayed on a dedicated page at the `/recommendations` route, accessible via the "Recommendations" navigation item in the sidebar/bottom nav.                                                                                                                                                            | P0       |
-| RE-07 | Fallback Behavior    | If the library is empty or no seeds can be determined, the app SHALL display the standard "Trending" and "Popular" sections on the Recommendations screen without the "Recommended for You" heading.                                                                                                                               | P0       |
-| RE-08 | Independent States   | Each recommendation carousel SHALL handle its own loading and error states. A failure to fetch recommendations for one seed SHALL NOT prevent others from displaying.                                                                                                                                                              | P1       |
-| RE-09 | Empty Result Handling | If a seed entry returns no recommendations from the API, that specific section SHALL NOT be rendered.                                                                                                                                                                                                                               | P1       |
-| RE-10 | Lazy Loading         | Recommendation carousels SHALL lazy-load their data only when they enter or approach the viewport to optimize performance and API usage.                                                                                                                                                                                           | P1       |
-| RE-11 | Rate Limit Handling  | The app SHALL handle TMDB API rate limits (429) using the existing `provider.client` retry logic. If all retries fail for a specific carousel, it SHALL display an error state with a \"Retry\" action and dispatch an error toast if multiple carousels fail simultaneously.                                                    | P1       |
+| ID    | Requirement           | Description                                                                                                                                                                                                                                                                   | Priority |
+| :---- | :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| RE-01 | Seed Selection Logic  | The app SHALL select up to 5 seed entries from the library. Prioritize highest `rating` first. For ties or unrated items, prioritize the latest date among `addedAt` and all entries in `watchDates`. If library has < 5 entries, use all available as seeds.                 | P0       |
+| RE-02 | Recommendations API   | For each seed entry, the app SHALL call `GET /movie/{id}/recommendations` or `GET /tv/{id}/recommendations` based on the seed's `mediaType`, using the current `Settings.language`. The app SHALL only fetch the first page of results (20 items).                            | P0       |
+| RE-03 | Deduplication         | The app SHALL deduplicate recommendations across all seed results AND Trending/Popular sections using the provider `id`. A title SHALL NOT appear twice across any recommendation or browse section on the screen.                                                            | P0       |
+| RE-04 | Library Exclusion     | The app SHALL filter out any recommendation that exists in the user's library (matching by provider `id`).                                                                                                                                                                    | P0       |
+| RE-05 | Labeled Sections      | Each recommendation group SHALL be displayed in a carousel labeled "Because you liked {title}" if the seed rating is ≥ 3, or "Because you watched {title}" if the rating is < 3 or unrated. These sections SHALL be grouped under a "Recommended for You" heading.            | P0       |
+| RE-06 | Dedicated View        | Recommendations SHALL be displayed on a dedicated page at the `/recommendations` route, accessible via the "Recommendations" navigation item in the sidebar/bottom nav.                                                                                                       | P0       |
+| RE-07 | Fallback Behavior     | If the library is empty or no seeds can be determined, the app SHALL display the standard "Trending" and "Popular" sections on the Recommendations screen without the "Recommended for You" heading.                                                                          | P0       |
+| RE-08 | Independent States    | Each recommendation carousel SHALL handle its own loading and error states. A failure to fetch recommendations for one seed SHALL NOT prevent others from displaying.                                                                                                         | P1       |
+| RE-09 | Empty Result Handling | If a seed entry returns no recommendations from the API, that specific section SHALL NOT be rendered.                                                                                                                                                                         | P1       |
+| RE-10 | Lazy Loading          | Recommendation carousels SHALL lazy-load their data only when they enter or approach the viewport to optimize performance and API usage.                                                                                                                                      | P1       |
+| RE-11 | Rate Limit Handling   | The app SHALL handle TMDB API rate limits (429) using the existing `provider.client` retry logic. If all retries fail for a specific carousel, it SHALL display an error state with a \"Retry\" action and dispatch an error toast if multiple carousels fail simultaneously. | P1       |
 
 ## Non-Functional Requirements
 
@@ -129,4 +129,3 @@ Users who have built a library of movies and TV shows often look for similar con
 - [ ] Seed selection processing completes in < 50ms.
 - [ ] Carousel content fades in with a 200-300ms transition.
 - [ ] Recommendation sections that return zero results from the API are not rendered.
-
