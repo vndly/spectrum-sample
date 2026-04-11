@@ -1,7 +1,7 @@
 ---
 id: R-08
 title: Recommendations
-status: under_test
+status: released
 importance: high
 type: functional
 tags: [recommendations, api, navigation, discovery, library]
@@ -117,15 +117,15 @@ Users who have built a library of movies and TV shows often look for similar con
 
 ## Acceptance Criteria
 
-- [ ] Up to 5 seed entries are selected from the library (highest rated first, then most recently watched/added).
-- [ ] Recommendation carousels are labeled "Because you liked {title}" (rating ≥ 3) or "Because you watched {title}" (rating < 3 or unrated).
-- [ ] Results are deduplicated across all seeds and Trending/Popular sections.
-- [ ] Library entries are excluded from recommendations.
-- [ ] Recommendations are accessible via a dedicated route at `/recommendations`.
-- [ ] If the library is empty, only trending/popular content is shown.
-- [ ] Individual carousels show loading skeletons and handle errors gracefully (inline error message with 'Retry' button).
-- [ ] API rate limits (429) are handled with existing retry logic and surface a toast if all retries fail.
-- [ ] Recommendation carousels lazy-load data as they enter the viewport.
-- [ ] Seed selection processing completes in < 50ms.
-- [ ] Carousel content fades in with a 200-300ms transition.
-- [ ] Recommendation sections that return zero results from the API are not rendered.
+- [x] Up to 5 seed entries are selected from the library (highest rated first, then most recently watched/added).
+- [x] Recommendation carousels are labeled "Because you liked {title}" (rating ≥ 3) or "Because you watched {title}" (rating < 3 or unrated).
+- [x] Results are deduplicated across all seeds and Trending/Popular sections.
+- [x] Library entries are excluded from recommendations.
+- [x] Recommendations are accessible via a dedicated route at `/recommendations`.
+- [x] If the library is empty, only trending/popular content is shown.
+- [x] Individual carousels show loading skeletons and handle errors gracefully (inline error message with 'Retry' button).
+- [x] API rate limits (429) are handled with existing retry logic and surface a toast if all retries fail.
+- [x] Recommendation carousels lazy-load data as they enter the viewport.
+- [x] Seed selection processing completes in < 50ms.
+- [x] Carousel content fades in with a 200-300ms transition.
+- [x] Recommendation sections that return zero results from the API are not rendered.

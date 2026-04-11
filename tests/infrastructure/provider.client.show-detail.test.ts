@@ -139,11 +139,8 @@ describe('getShowDetail', () => {
     })
 
     // Act & Assert
-    await expect(getShowDetail(999999, 'en')).rejects.toThrow(
-      'API request failed: 404 Not Found',
-    )
-    })
-
+    await expect(getShowDetail(999999, 'en')).rejects.toThrow('API request failed: 404 Not Found')
+  })
 
   it('throws error on network failure (ED-12-04)', async () => {
     // Arrange

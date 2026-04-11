@@ -152,8 +152,7 @@ describe('searchMulti', () => {
     await expect(searchMulti('test', 'en')).rejects.toThrow(
       'API request failed: 500 Internal Server Error',
     )
-    })
-
+  })
 
   it('throws error on network failure', async () => {
     // Arrange
