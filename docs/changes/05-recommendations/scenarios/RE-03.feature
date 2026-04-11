@@ -1,11 +1,9 @@
-Feature: RE-03 — Deduplication and Library Exclusion
+Feature: RE-03 — Deduplication
 
   Scenario: SC-RE-03-01 — Deduplicating results across multiple seeds
     Given recommendation seeds "Movie A" and "Movie B"
     And "Movie A" returns "Movie C" as a recommendation
     And "Movie B" returns "Movie C" as a recommendation
-    And "Movie D" is already in the user's library
-    When recommendations are processed for display
-    Then "Movie C" appears only once in the recommendations sections
-    And "Movie D" does not appear in any recommendation section
-    And "Movie A" and "Movie B" do not appear as recommendations
+    When recommendations are processed for display on the Recommendations screen
+    Then "Movie C" SHALL appear only once across all recommendation sections
+    And "Movie A" and "Movie B" SHALL NOT appear as recommendations (if they were already in the seed list)
