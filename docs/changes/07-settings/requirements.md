@@ -2,7 +2,7 @@
 
 - **ID**: FEAT-07
 - **Title**: User Settings & Data Management
-- **Status**: draft
+- **Status**: review
 - **Importance**: high
 - **Type**: functional
 - **Tags**: [settings, preferences, data, i18n]
@@ -24,12 +24,27 @@ Users have different preferences for UI appearance and content language. They al
 - As a user, I want to set my region for accurate release dates and streaming info.
 - As a power user, I want to export my library to a file and import it on another device.
 
+### Dependencies
+
+- **FEAT-01: App Scaffolding**: Provides the sidebar/navigation and global layouts.
+- **FEAT-02: Home Screen**: Uses the 'Home Section' and 'Layout Mode' settings.
+- **FEAT-03: Library Management**: Provides the data (library entries, lists, tags) for import/export.
+- **FEAT-06: Release Calendar**: Uses the 'Region' setting for filtering.
+
+## Decisions
+
+| Decision         | Choice          | Rationale                                                                      |
+| ---------------- | --------------- | ------------------------------------------------------------------------------ |
+| Data Portability | JSON Format     | Human-readable, native to JS, and easy to validate with Zod.                   |
+| Storage Strategy | localStorage    | Simple, client-side only, and fits the current project's offline-first nature. |
+| Import Strategy  | Merge/Overwrite | Gives users control over how they want to handle existing data.                |
+
 ## Scope
 
 ### In Scope
 
 - Settings screen with sections for:
-  - Appearance (Theme toggle).
+  - Appearance (Theme toggle, Layout Mode: grid vs list).
   - Content & UI (Language select, Preferred Region).
   - Default View (Home section select).
   - Data Management (Import/Export buttons).
@@ -91,18 +106,35 @@ The export produces a single JSON file containing the full user data set:
 
 ### Security
 
-- Validate all imported data with Zod schemas before applying to localStorage.
+- **NFR-07-01 (Data Integrity)**: Validate all imported data with Zod schemas before applying to localStorage.
+- **NFR-07-02 (Malicious Payloads)**: Sanitize any user-provided names or tags to prevent XSS.
 
 ### UI/UX
 
-- Settings should be easily accessible from the sidebar.
-- Confirmation dialog for destructive actions (Overwrite import).
+- **NFR-07-03 (Navigation)**: Settings should be easily accessible from the sidebar.
+- **NFR-07-04 (Destruction Safety)**: Confirmation dialog for destructive actions (Overwrite import).
+
+## Risks & Assumptions
+
+### Risks
+
+- **Data Loss (High)**: Users might accidentally overwrite their library during import. _Mitigation_: Forced backup export before overwrite.
+- **Schema Drift (Medium)**: Export files from old versions might be incompatible. _Mitigation_: Version-based migration logic in import.
+
+### Assumptions
+
+- Users understand that "Overwrite" is permanent.
+- Browser storage limits (5MB) are sufficient for library exports.
 
 ## Acceptance Criteria
 
 - [ ] Theme toggle updates the app's visual style instantly.
+- [ ] Layout Mode (grid vs list) updates library and search views immediately.
 - [ ] Language select updates UI translations and re-fetches API data if needed.
 - [ ] Region select is used as a parameter in relevant API calls (e.g., calendar).
-- [ ] Export produces a valid JSON file as specified in the roadmap.
+- [ ] Export produces a valid JSON file as specified.
 - [ ] Import correctly handles "Merge" and "Overwrite" strategies.
 - [ ] Import rejects malformed or invalid JSON.
+- [ ] Import validation fails if version is unsupported or schema is invalid (NFR-07-01).
+- [ ] Settings icon is visible and functional in the sidebar (NFR-07-03).
+- [ ] Overwrite import requires a secondary confirmation (NFR-07-04).

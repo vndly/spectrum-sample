@@ -4,7 +4,7 @@ Feature: FR-07-05 — Export Data
     Given the app is running
     And I am on the "/settings" page
 
-  Scenario: SC-07-05-01 — Exporting library data
+  Scenario: FR-07-05-01 — Exporting library data
     Given I have "5" movies in my library
     When I click the "Export Data" button
     Then a file named "plot-twisted-backup.json" should be downloaded
