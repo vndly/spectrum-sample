@@ -9,14 +9,14 @@ import {
   getPopularShows,
 } from '@/infrastructure/provider.client'
 import type { LibraryEntry } from '@/domain/library.schema'
-import type { SearchResult } from '@/domain/search.schema'
+import type { SearchResultItem } from '@/domain/search.schema'
 import { useSettings } from '@/application/use-settings'
 
 export interface RecommendationSection {
   seed?: LibraryEntry
   titleKey?: string
   titleParams?: Record<string, string>
-  results: SearchResult[]
+  results: SearchResultItem[]
   loading: boolean
   error: Error | null
   fetched: boolean
@@ -96,7 +96,7 @@ export function useRecommendations() {
     section.error = null
 
     try {
-      let results: SearchResult[] = []
+      let results: SearchResultItem[] = []
 
       if (section.seed) {
         const response =

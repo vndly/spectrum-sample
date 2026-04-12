@@ -67,7 +67,7 @@ function getBackdropUrl(item: MediaResult) {
         @keydown.space.prevent="handleItemClick(item)"
       >
         <img
-          :src="getBackdropUrl(item)"
+          :src="getBackdropUrl(item) || ''"
           :alt="getTitle(item)"
           class="size-full object-cover"
           loading="lazy"

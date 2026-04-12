@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach } from 'vitest'
 import {
   getAllLists,
@@ -138,7 +139,7 @@ describe('storage.service (lists)', () => {
       updateEntryLists(550, 'movie', ['new-list-1', 'new-list-2'])
 
       // Assert
-      const updated = getAllLibraryEntries().find((e) => e.id === 550)
+      const updated = getAllLibraryEntries().find((e: any) => e.id === 550)
       expect(updated?.lists).toEqual(['new-list-1', 'new-list-2'])
     })
   })
@@ -156,8 +157,8 @@ describe('storage.service (lists)', () => {
 
       // Assert
       const entries = getAllLibraryEntries()
-      const updated1 = entries.find((e) => e.id === 1)
-      const updated2 = entries.find((e) => e.id === 2)
+      const updated1 = entries.find((e: any) => e.id === 1)
+      const updated2 = entries.find((e: any) => e.id === 2)
 
       expect(updated1?.lists).toEqual(['list-2'])
       expect(updated2?.lists).toEqual([])

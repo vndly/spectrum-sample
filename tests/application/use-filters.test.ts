@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useFilters, _resetFilters } from '@/application/use-filters'
 import { useRouter, useRoute, type Router, type RouteLocationNormalizedLoaded } from 'vue-router'

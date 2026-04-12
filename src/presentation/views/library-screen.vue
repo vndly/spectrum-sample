@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { Bookmark, Eye, List as ListIcon, Plus } from 'lucide-vue-next'
+import { Bookmark, Eye, List as ListIcon, Plus, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useLibraryEntries } from '@/application/use-library-entries'
 import { useLists } from '@/application/use-lists'
@@ -154,7 +154,7 @@ function handleCreateList() {
     <!-- Main Content -->
     <main>
       <div v-if="filteredEntries.length > 0">
-        <EntryGrid :entries="filteredEntries" />
+        <EntryGrid :entries="filteredEntries as any[]" />
       </div>
 
       <!-- Empty States -->

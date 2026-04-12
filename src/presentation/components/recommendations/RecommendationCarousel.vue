@@ -5,12 +5,13 @@ import { useI18n } from 'vue-i18n'
 import { useIntersectionObserver } from '@/presentation/composables/use-intersection-observer'
 import { buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
-import type { SearchResult } from '@/domain/search.schema'
+import type { SearchResultItem } from '@/domain/search.schema'
 
 defineProps<{
   titleKey: string
-  titleParams?: Record<string, string>
-  items: SearchResult[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  titleParams?: Record<string, any>
+  items: SearchResultItem[]
   loading: boolean
   error: Error | null
   fetched: boolean
@@ -36,24 +37,27 @@ watch(isIntersecting, (val) => {
   }
 })
 
-function handleItemClick(item: SearchResult) {
+function handleItemClick(item: SearchResultItem) {
   const path = item.media_type === 'movie' ? `/movie/${item.id}` : `/show/${item.id}`
   router.push(path)
 }
 
-function getTitle(item: SearchResult) {
-  return 'title' in item ? item.title : item.name
+function getTitle(item: SearchResultItem) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return 'title' in item ? (item as any).title : (item as any).name
 }
 
-function getPosterUrl(item: SearchResult) {
-  return buildImageUrl(item.poster_path, IMAGE_SIZES.poster.medium)
+function getPosterUrl(item: SearchResultItem) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return buildImageUrl((item as any).poster_path, IMAGE_SIZES.poster.medium)
 }
 </script>
 
 <template>
   <section ref="carouselRef" class="space-y-4">
     <h3 class="text-lg font-bold text-white">
-      {{ t(titleKey, titleParams) }}
+      <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
+      {{ t(titleKey, titleParams as any) }}
     </h3>
 
     <!-- Error state -->
@@ -85,7 +89,7 @@ function getPosterUrl(item: SearchResult) {
     <!-- Scrollable carousel -->
     <div v-else class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
       <div
-        v-for="item in items"
+        v-for="item in items as any[]"
         :key="`${item.media_type}-${item.id}`"
         class="relative aspect-[2/3] w-32 md:w-40 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg bg-surface transition-transform hover:scale-105 snap-start group"
         role="button"
@@ -96,7 +100,7 @@ function getPosterUrl(item: SearchResult) {
       >
         <img
           v-if="item.poster_path"
-          :src="getPosterUrl(item)"
+          :src="getPosterUrl(item) || ''"
           :alt="getTitle(item)"
           class="size-full object-cover"
           loading="lazy"

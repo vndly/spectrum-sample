@@ -20,7 +20,7 @@ const showClear = computed(() => props.modelValue.length > 0)
  * Handles input changes and emits the new value.
  */
 function handleInput(event: Event) {
-  const input = event.target as { value: string }
+  const input = event.target as HTMLInputElement
   emit('update:modelValue', input.value)
 }
 

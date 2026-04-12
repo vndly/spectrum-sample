@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest'
 import { SearchResultItemSchema, SearchResponseSchema } from '@/domain/search.schema'
 
@@ -29,8 +30,8 @@ describe('SearchResultItemSchema', () => {
     expect(result.media_type).toBe('movie')
     expect(result.id).toBe(550)
     if (result.media_type === 'movie') {
-      expect(result.title).toBe('Fight Club')
-      expect(result.release_date).toBe('1999-10-15')
+      expect((result as any).title).toBe('Fight Club')
+      expect((result as any).release_date).toBe('1999-10-15')
     }
   })
 
@@ -61,8 +62,8 @@ describe('SearchResultItemSchema', () => {
     expect(result.media_type).toBe('tv')
     expect(result.id).toBe(1396)
     if (result.media_type === 'tv') {
-      expect(result.name).toBe('Breaking Bad')
-      expect(result.first_air_date).toBe('2008-01-20')
+      expect((result as any).name).toBe('Breaking Bad')
+      expect((result as any).first_air_date).toBe('2008-01-20')
     }
   })
 
@@ -81,7 +82,7 @@ describe('SearchResultItemSchema', () => {
     expect(result.media_type).toBe('person')
     expect(result.id).toBe(287)
     if (result.media_type === 'person') {
-      expect(result.name).toBe('Brad Pitt')
+      expect((result as any).name).toBe('Brad Pitt')
     }
   })
 

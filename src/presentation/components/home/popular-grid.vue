@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import type { LayoutMode } from '@/application/use-settings'
+import type { LayoutMode } from '@/domain/settings.schema'
 import type { MediaResult } from '@/application/use-browse'
 import MovieCard from '@/presentation/components/common/movie-card.vue'
 import MovieCardSkeleton from '@/presentation/components/common/movie-card-skeleton.vue'

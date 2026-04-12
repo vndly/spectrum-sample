@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest'
 import { selectSeeds, deduplicateRecommendations } from '@/domain/recommendations.logic'
 import type { LibraryEntry } from '@/domain/library.schema'
-import type { SearchResult } from '@/domain/search.schema'
+import type { SearchResultItem } from '@/domain/search.schema'
 
 describe('Recommendations Logic', () => {
   describe('selectSeeds', () => {
     it('selects up to 5 seeds prioritized by rating then recency', () => {
-      const entries: LibraryEntry[] = [
+      const entries: any[] = [
         {
           id: 1,
           rating: 5,
@@ -87,18 +88,13 @@ describe('Recommendations Logic', () => {
         },
       ]
 
-      const seeds = selectSeeds(entries)
-
-      expect(seeds).toHaveLength(5)
-      expect(seeds[0].id).toBe(2) // Rating 5, newer
-      expect(seeds[1].id).toBe(1) // Rating 5, older
-      expect(seeds[2].id).toBe(3) // Rating 4
-      expect(seeds[3].id).toBe(6) // Rating 0, newest activity
-      expect(seeds[4].id).toBe(5) // Rating 0, second newest activity
+      const result = selectSeeds(entries as LibraryEntry[])
+      expect(result).toHaveLength(5)
+      expect(result.map((e) => e.id)).toEqual([2, 1, 3, 6, 5])
     })
 
     it('uses latest watch date for recency if available', () => {
-      const entries: LibraryEntry[] = [
+      const entries: any[] = [
         {
           id: 1,
           rating: 0,
@@ -127,13 +123,12 @@ describe('Recommendations Logic', () => {
         },
       ]
 
-      const seeds = selectSeeds(entries)
-
-      expect(seeds[0].id).toBe(1) // Watch date 10th > Added date 5th
+      const result = selectSeeds(entries as LibraryEntry[])
+      expect(result[0].id).toBe(1)
     })
 
     it('returns all entries if there are fewer than 5', () => {
-      const entries: LibraryEntry[] = [
+      const entries: any[] = [
         {
           id: 1,
           rating: 5,
@@ -149,31 +144,42 @@ describe('Recommendations Logic', () => {
         },
       ]
 
-      const seeds = selectSeeds(entries)
-
-      expect(seeds).toHaveLength(1)
+      const result = selectSeeds(entries as LibraryEntry[])
+      expect(result).toHaveLength(1)
     })
   })
 
   describe('deduplicateRecommendations', () => {
-    it('deduplicates across sections and filters out library entries', () => {
-      const libraryIds = new Set([100, 101])
-      const section1: SearchResult[] = [
-        { id: 100, media_type: 'movie', title: 'In Library' } as SearchResult,
-        { id: 200, media_type: 'movie', title: 'New Movie' } as SearchResult,
-        { id: 300, media_type: 'movie', title: 'Duplicate' } as SearchResult,
+    it('removes duplicates across sections and library', () => {
+      const sections: SearchResultItem[][] = [
+        [
+          { id: 1, media_type: 'movie', title: 'M1' } as any,
+          { id: 2, media_type: 'movie', title: 'M2' } as any,
+        ],
+        [
+          { id: 2, media_type: 'movie', title: 'M2' } as any,
+          { id: 3, media_type: 'movie', title: 'M3' } as any,
+        ],
       ]
-      const section2: SearchResult[] = [
-        { id: 300, media_type: 'movie', title: 'Duplicate' } as SearchResult,
-        { id: 400, media_type: 'movie', title: 'Another New Movie' } as SearchResult,
-      ]
+      const libraryIds = new Set([1])
 
-      const results = deduplicateRecommendations([section1, section2], libraryIds)
+      const result = deduplicateRecommendations(sections, libraryIds)
 
-      expect(results[0]).toHaveLength(2)
-      expect(results[0].map((r) => r.id)).toEqual([200, 300])
-      expect(results[1]).toHaveLength(1)
-      expect(results[1].map((r) => r.id)).toEqual([400])
+      expect(result[0]).toHaveLength(1)
+      expect(result[0][0].id).toBe(2)
+      expect(result[1]).toHaveLength(1)
+      expect(result[1][0].id).toBe(3)
+    })
+
+    it('limits each section to 20 items', () => {
+      const largeSection: SearchResultItem[] = Array.from({ length: 30 }, (_, i) => ({
+        id: i + 100,
+        media_type: 'movie',
+        title: `M${i}`,
+      })) as any
+
+      const result = deduplicateRecommendations([largeSection], new Set())
+      expect(result[0]).toHaveLength(20)
     })
   })
 })

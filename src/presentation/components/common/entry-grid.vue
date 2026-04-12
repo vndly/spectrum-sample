@@ -26,16 +26,18 @@ function navigateToDetail(entry: LibraryEntry) {
     <MovieCard
       v-for="entry in entries"
       :key="`${entry.mediaType}-${entry.id}`"
-      :item="{
-        id: entry.id,
-        media_type: entry.mediaType,
-        title: entry.title,
-        name: entry.title, // For TV shows
-        poster_path: entry.posterPath,
-        vote_average: entry.voteAverage ?? 0,
-        release_date: entry.releaseDate ?? '',
-        first_air_date: entry.releaseDate ?? '', // For TV shows
-      }"
+      :item="
+        {
+          id: entry.id,
+          media_type: entry.mediaType,
+          title: entry.title,
+          name: entry.title, // For TV shows
+          poster_path: entry.posterPath,
+          vote_average: entry.voteAverage ?? 0,
+          release_date: entry.releaseDate ?? '',
+          first_air_date: entry.releaseDate ?? '', // For TV shows
+        } as any
+      "
       @click="navigateToDetail(entry)"
     />
   </div>

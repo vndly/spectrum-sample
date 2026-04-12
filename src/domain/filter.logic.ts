@@ -149,14 +149,17 @@ export function matchesFilters(item: SearchResultItem, filters: FilterState): bo
 
   // Genre Filter (AND logic: matches all selected genres)
   if (filters.genres.length > 0) {
-    const hasAllGenres = filters.genres.every((id) => item.genre_ids.includes(id))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const genreIds = 'genre_ids' in item ? (item as any).genre_ids : []
+    const hasAllGenres = filters.genres.every((id) => genreIds.includes(id))
     if (!hasAllGenres) {
       return false
     }
   }
 
   // Year Range Filter
-  const releaseDate = item.media_type === 'movie' ? item.release_date : item.first_air_date
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const releaseDate = item.media_type === 'movie' ? (item as any).release_date : (item as any).first_air_date
   if (releaseDate) {
     const year = new Date(releaseDate).getFullYear()
 

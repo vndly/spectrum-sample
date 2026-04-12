@@ -120,6 +120,7 @@ export function useLibraryEntry(
 
   return {
     entry,
+    loadEntry,
     setRating,
     toggleFavorite,
     setStatus,

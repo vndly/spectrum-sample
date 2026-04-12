@@ -3,7 +3,7 @@ import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AlertCircle } from 'lucide-vue-next'
 import { useSearch } from '@/application/use-search'
-import { useBrowse } from '@/application/use-browse'
+import { useBrowse, type MediaResult } from '@/application/use-browse'
 import { useFilters } from '@/application/use-filters'
 import { useSettings } from '@/application/use-settings'
 import { filterResults } from '@/domain/filter.logic'
@@ -36,13 +36,19 @@ const { filters, clearAll } = useFilters()
 const { layoutMode } = useSettings()
 
 /** Filtered trending results. */
-const filteredTrending = computed(() => filterResults(trending.value, filters))
+const filteredTrending = computed(
+  () => filterResults(trending.value, filters.value) as MediaResult[],
+)
 
 /** Filtered popular movies. */
-const filteredPopularMovies = computed(() => filterResults(popularMovies.value, filters))
+const filteredPopularMovies = computed(
+  () => filterResults(popularMovies.value, filters.value) as MediaResult[],
+)
 
 /** Filtered popular shows. */
-const filteredPopularShows = computed(() => filterResults(popularShows.value, filters))
+const filteredPopularShows = computed(
+  () => filterResults(popularShows.value, filters.value) as MediaResult[],
+)
 
 /** Reset filters when entering search mode. */
 watch(query, (newQuery) => {

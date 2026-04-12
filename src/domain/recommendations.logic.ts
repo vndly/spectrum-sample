@@ -1,5 +1,5 @@
 import type { LibraryEntry } from '@/domain/library.schema'
-import type { SearchResult } from '@/domain/search.schema'
+import type { SearchResultItem } from '@/domain/search.schema'
 
 /**
  * Selects up to 5 seed entries from the library for recommendations.
@@ -36,15 +36,16 @@ export function selectSeeds(entries: LibraryEntry[]): LibraryEntry[] {
  * @returns Deduplicated and filtered sections
  */
 export function deduplicateRecommendations(
-  sections: SearchResult[][],
+  sections: SearchResultItem[][],
   libraryIds: Set<number>,
-): SearchResult[][] {
+): SearchResultItem[][] {
   const seenIds = new Set<number>(libraryIds)
-  const result: SearchResult[][] = []
+  const result: SearchResultItem[][] = []
 
   for (const section of sections) {
-    const deduplicatedSection: SearchResult[] = []
+    const deduplicatedSection: SearchResultItem[] = []
     for (const item of section) {
+      if (deduplicatedSection.length >= 20) break
       if (!seenIds.has(item.id)) {
         deduplicatedSection.push(item)
         seenIds.add(item.id)

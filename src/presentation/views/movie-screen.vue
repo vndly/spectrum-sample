@@ -46,7 +46,7 @@ watch(
         newMovie.poster_path,
         newMovie.vote_average,
         newMovie.release_date,
-        newMovie.runtime,
+        newMovie.runtime ?? undefined,
       )
     } else {
       libraryEntryRef.value = null
@@ -58,23 +58,19 @@ watch(
 // Computed properties for safe template access
 const userRating = computed(() => {
   const entry = libraryEntryRef.value?.entry
-  if (!entry) return 0
-  return entry.value?.rating ?? 0
+  return entry?.rating ?? 0
 })
 const isFavorite = computed(() => {
   const entry = libraryEntryRef.value?.entry
-  if (!entry) return false
-  return entry.value?.favorite ?? false
+  return entry?.favorite ?? false
 })
 const watchStatus = computed(() => {
   const entry = libraryEntryRef.value?.entry
-  if (!entry) return 'none'
-  return entry.value?.status ?? 'none'
+  return entry?.status ?? 'none'
 })
 const entryLists = computed(() => {
   const entry = libraryEntryRef.value?.entry
-  if (!entry) return []
-  return entry.value?.lists ?? []
+  return entry?.lists ?? []
 })
 
 /** Whether this is a 404 error. */

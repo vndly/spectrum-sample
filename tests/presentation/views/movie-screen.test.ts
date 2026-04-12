@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount, flushPromises } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
@@ -15,9 +16,9 @@ vi.mock('vue-router', () => ({
 }))
 
 // Mock composables
-const mockMovieData = ref(null)
+const mockMovieData = ref<any>(null)
 const mockLoading = ref(true)
-const mockError = ref(null)
+const mockError = ref<any>(null)
 const mockRefresh = vi.fn()
 
 vi.mock('@/application/use-movie-detail', () => ({

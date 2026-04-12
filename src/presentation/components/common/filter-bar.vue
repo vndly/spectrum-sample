@@ -65,7 +65,7 @@ function toggleGenre(id: number) {
  * Toggles a custom list ID in the filter state.
  */
 function toggleList(id: string) {
-  const listIds = [...props.modelValue.listIds]
+  const listIds = [...(props.modelValue.listIds || [])]
   const index = listIds.indexOf(id)
   if (index === -1) {
     listIds.push(id)
@@ -257,7 +257,7 @@ onUnmounted(() => {
         :key="list.id"
         class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
         :class="
-          modelValue.listIds.includes(list.id)
+          modelValue.listIds?.includes(list.id)
             ? 'bg-accent text-white'
             : 'bg-surface text-slate-400 hover:text-white'
         "

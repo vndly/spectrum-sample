@@ -13,7 +13,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "type-check": "vue-tsc --noEmit",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json && vue-tsc --noEmit -p tsconfig.vitest.json",
     "deploy": "firebase deploy --only hosting",
     "check": "npm run format && npm run lint:fix && npm run type-check && npm run test && npm run build"
   },

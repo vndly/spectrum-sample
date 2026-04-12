@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { searchMulti } from '@/infrastructure/provider.client'
 
@@ -214,7 +215,7 @@ describe('searchMulti', () => {
 
     // Assert
     expect(error).not.toBeNull()
-    expect(error?.message).toContain('API request failed: 429 Too Many Requests')
+    expect((error as any)?.message).toContain('API request failed: 429 Too Many Requests')
     expect(mockFetch).toHaveBeenCalledTimes(4) // Initial + 3 retries
 
     vi.useRealTimers()

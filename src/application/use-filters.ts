@@ -34,7 +34,7 @@ export function useFilters() {
     // Only sync if router and route are available (might not be in some contexts)
     if (!router || !route) return
 
-    const query: Record<string, string> = { ...route.query }
+    const query: Record<string, string> = { ...(route.query as Record<string, string>) }
 
     if (filters.value.genres.length > 0) {
       query.genres = filters.value.genres.join(',')
