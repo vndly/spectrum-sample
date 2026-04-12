@@ -1,7 +1,5 @@
 # Scenarios - Release Calendar Sync
 
-Test scenarios for the release calendar feature.
-
 ## Contents
 
 1. **[FR-06-01: Calendar Grid](./FR-06-01.feature)**: Monthly grid layout validation.

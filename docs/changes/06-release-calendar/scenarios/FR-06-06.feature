@@ -4,11 +4,11 @@ Feature: FR-06-06 — Empty State
     Given the app is running
     And I am on the "/calendar" page
 
-  Scenario: SC-06-06-01 — Empty month message
+  Scenario: FR-06-06-01 — Empty month message
     Given the API returns no movies for the current month
     Then I should see a "No upcoming releases" message
 
-  Scenario: SC-06-06-02 — Empty state i18n
+  Scenario: FR-06-06-02 — Empty state i18n
     Given the app language is "es"
     And the API returns no movies for the current month
     Then the "No upcoming releases" message should be in "es"

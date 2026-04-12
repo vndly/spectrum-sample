@@ -2,7 +2,7 @@
 
 - **ID**: FEAT-06
 - **Title**: Release Calendar Sync
-- **Status**: review
+- **Status**: approved
 - **Importance**: medium
 - **Type**: functional
 - **Tags**: [calendar, movies, upcoming]
@@ -28,11 +28,12 @@ Users currently have no way to see what's coming soon in a structured, temporal 
 
 ## Decisions
 
-| Decision         | Choice       | Rationale                                                                        |
-| ---------------- | ------------ | -------------------------------------------------------------------------------- |
-| View Type        | Monthly Grid | Standard calendar pattern for clarity of temporal distribution.                  |
-| Media Types      | Movies only  | TMDB API only supports `upcoming` for movies; TV shows lack a direct equivalent. |
-| Data Persistence | None         | Upcoming data is transient and should be fetched fresh.                          |
+| Decision           | Choice                    | Rationale                                                                                                                                                 |
+| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| View Type          | Monthly Grid              | Standard calendar pattern for clarity of temporal distribution.                                                                                           |
+| Media Types        | Movies only               | TMDB API only supports `upcoming` for movies; TV shows lack a direct equivalent.                                                                         |
+| Data Persistence   | Session only              | Upcoming data is transient and should be fetched fresh, but current month view should persist during the session (URL/session state).                     |
+| Pagination Strategy | Fetch all (multi-page) | To ensure a full month's data is visible, the application will fetch multiple pages from `/movie/upcoming` until the requested month's range is exhausted. |
 
 ## Scope
 
@@ -53,15 +54,16 @@ Users currently have no way to see what's coming soon in a structured, temporal 
 
 ## Functional Requirements
 
-| ID       | Requirement       | Description                                                                    | Priority |
-| -------- | ----------------- | ------------------------------------------------------------------------------ | -------- |
-| FR-06-01 | Calendar Grid     | Render a monthly grid where each cell represents a day of the month.           | P0       |
-| FR-06-02 | Release Display   | Display movies on their respective `release_date` within the calendar cells.   | P0       |
-| FR-06-03 | Month Navigation  | Allow users to navigate to the previous and next months.                       | P0       |
-| FR-06-04 | Data Fetching     | Fetch upcoming movies for the visible month from the media provider API.       | P0       |
-| FR-06-05 | Region Filtering  | Use the `preferredRegion` from settings to fetch region-specific release data. | P1       |
-| FR-06-06 | Empty State       | Show a "No upcoming releases" message for months with no data.                 | P2       |
-| FR-06-07 | Detail Navigation | Clicking a movie card in the calendar navigates to its detail page.            | P0       |
+| ID       | Requirement       | Description                                                                                                                                     | Priority |
+| -------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| FR-06-01 | Calendar Grid     | Render a monthly grid where each cell represents a day of the month.                                                                            | P0       |
+| FR-06-02 | Release Display   | Display movies on their respective `release_date` within the calendar cells.                                                                    | P0       |
+| FR-06-03 | Month Navigation  | Allow users to navigate to the previous and next months. Current month state must persist across page reloads.                                  | P0       |
+| FR-06-04 | Data Fetching     | Fetch upcoming movies for the visible month from the media provider API, handling multiple pages to ensure complete monthly data.                | P0       |
+| FR-06-05 | Region Filtering  | Use the `preferredRegion` from settings to fetch region-specific release data.                                                                  | P1       |
+| FR-06-06 | Empty State       | Show a "No upcoming releases" message for months with no data.                                                                                  | P2       |
+| FR-06-07 | Detail Navigation | Clicking a movie card in the calendar navigates to its detail page.                                                                             | P0       |
+| FR-06-08 | Error Handling    | Display a retryable error state (toast or inline) if the API request fails.                                                                     | P1       |
 
 ## Non-Functional Requirements
 
@@ -74,6 +76,17 @@ Users currently have no way to see what's coming soon in a structured, temporal 
 - Consistent with the "cinematic" dark theme.
 - Responsive grid: 7-column layout on desktop; single-column or list-view fallback for mobile viewports (**< 640px**).
 
+## Constraints
+
+- **API Rate Limits**: TMDB API has rate limits that must be respected; excessive month navigation should be mitigated with local caching.
+- **Data Completeness**: Upcoming release dates are subject to change by studios and may be incomplete for distant months.
+
+## Risks & Assumptions
+
+- **Risk: Pagination Overhead**: Fetching multiple pages to cover a month might impact performance. *Mitigation*: Stop fetching once dates exceed the visible month; use skeleton loaders.
+- **Risk: Regional Data Gaps**: Some regions may have significantly less "upcoming" data than others. *Mitigation*: Clear empty state message (FR-06-06).
+- **Assumption**: The `preferredRegion` setting from FEAT-07 is available and valid.
+
 ## Acceptance Criteria
 
 - [ ] `CalendarGrid` renders a month view with days as cells (`FR-06-01`).
@@ -83,3 +96,6 @@ Users currently have no way to see what's coming soon in a structured, temporal 
 - [ ] Tapping a `ReleaseCard` navigates to the entry's detail page (`FR-06-07`).
 - [ ] Empty months show a "No upcoming releases" message (`FR-06-06`).
 - [ ] Skeleton loaders appear during data fetching transitions (`NFR-Performance`).
+- [ ] The grid falls back to a list-view or single-column layout on viewports < 640px (`NFR-UI/UX`).
+- [ ] An error toast with a retry button appears if the API request fails (`FR-06-08`).
+- [ ] The selected month persists in the URL or session state after a page reload (`FR-06-03`).
