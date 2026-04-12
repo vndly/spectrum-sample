@@ -8,4 +8,5 @@ Feature: FR-07-01 — Theme Toggle
     Given the current theme is "dark"
     When I click the "Light" theme option
     Then the app's visual style should update to light mode
-    And the setting should persist in localStorage
+    And I reload the page
+    Then the theme should still be "light"

@@ -16,3 +16,10 @@ Feature: FR-07-06 — Import Data
     When I upload a backup file with "3" DIFFERENT movies
     And I choose the "Merge" strategy
     Then my library should now contain "5" movies
+
+  Scenario: FR-07-06-03 — Canceling overwrite strategy
+    Given I have "2" movies in my library
+    When I upload a backup file with "10" movies
+    And I choose the "Overwrite" strategy
+    And I cancel the destructive action
+    Then my library should still contain "2" movies

@@ -7,5 +7,6 @@ Feature: FR-07-03 — Region Select
   Scenario: FR-07-03-01 — Changing content region
     Given the current region is "US"
     When I select "France" from the region dropdown
-    Then the setting should persist in localStorage
-    And navigating to the "/calendar" page should show releases for "FR"
+    And I reload the page
+    Then the setting should still be "FR"
+    And navigating to the "/calendar" page should show "Premiere: [Date] (France)" in the release card

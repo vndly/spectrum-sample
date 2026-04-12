@@ -2,6 +2,6 @@
 
 ## Contents
 
-1. **[Requirements](./requirements.md)**: Functional and non-functional requirements for settings and data management.
-2. **[Plan](./plan.md)**: Implementation plan for user settings and import/export functionality.
-3. **[Scenarios](./scenarios/)**: Test scenarios for user settings and data management.
+1. **[Requirements](./requirements.md)**: Comprehensive scope and functional specifications for personalization and data portability.
+2. **[Plan](./plan.md)**: Implementation roadmap for theme, locale, and region settings with JSON import/export logic.
+3. **[Scenarios](./scenarios/)**: Acceptance test cases for validating state persistence and data integrity during migrations.

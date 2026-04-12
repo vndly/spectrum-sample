@@ -2,7 +2,7 @@
 
 - **ID**: FEAT-07
 - **Title**: User Settings & Data Management
-- **Status**: review
+- **Status**: approved
 - **Importance**: high
 - **Type**: functional
 - **Tags**: [settings, preferences, data, i18n]
@@ -58,15 +58,15 @@ Users have different preferences for UI appearance and content language. They al
 
 ## Functional Requirements
 
-| ID       | Requirement     | Description                                                             | Priority |
-| -------- | --------------- | ----------------------------------------------------------------------- | -------- |
-| FR-07-01 | Theme Toggle    | Switch between dark and light modes.                                    | P0       |
-| FR-07-02 | Language Select | Change UI and API content language (en, es, fr).                        | P0       |
-| FR-07-03 | Region Select   | Set preferred region for streaming and releases.                        | P1       |
-| FR-07-04 | Home Section    | Select default section for the Home screen (trending, popular, search). | P2       |
-| FR-07-05 | Export Data     | Download a JSON file containing all user data.                          | P1       |
-| FR-07-06 | Import Data     | Upload a JSON file to restore user data (Merge or Overwrite).           | P1       |
-| FR-07-07 | Validation      | Validate imported JSON schema and version.                              | P0       |
+| ID       | Requirement     | Description                                                                                                 | Priority |
+| -------- | --------------- | ----------------------------------------------------------------------------------------------------------- | -------- |
+| FR-07-01 | Theme Toggle    | Switch between dark and light modes.                                                                        | P0       |
+| FR-07-02 | Language Select | Change UI and API content language (en, es, fr). Triggers a re-fetch of all currently active view metadata. | P0       |
+| FR-07-03 | Region Select   | Set preferred region for streaming and releases.                                                            | P1       |
+| FR-07-04 | Home Section    | Select default section for the Home screen (trending, popular, search).                                     | P2       |
+| FR-07-05 | Export Data     | Download a JSON file containing all user data.                                                              | P1       |
+| FR-07-06 | Import Data     | Upload a JSON file to restore user data (Merge or Overwrite).                                               | P1       |
+| FR-07-07 | Validation      | Validate imported JSON schema and version.                                                                  | P0       |
 
 ## Import / Export Specification
 
@@ -111,14 +111,19 @@ The export produces a single JSON file containing the full user data set:
 
 ### UI/UX
 
-- **NFR-07-03 (Navigation)**: Settings should be easily accessible from the sidebar.
+- **NFR-07-03 (Navigation)**: Settings should be easily accessible from the primary sidebar navigation.
 - **NFR-07-04 (Destruction Safety)**: Confirmation dialog for destructive actions (Overwrite import).
+
+## Constraints
+
+- **Data Size**: The exported JSON file must stay within the 5MB browser `localStorage` limit.
+- **Persistence**: All settings changes must persist across page reloads and browser sessions.
 
 ## Risks & Assumptions
 
 ### Risks
 
-- **Data Loss (High)**: Users might accidentally overwrite their library during import. _Mitigation_: Forced backup export before overwrite.
+- **Data Loss (High)**: Users might accidentally overwrite their library during import. _Mitigation_: Forced JSON download or local snapshot backup before overwrite.
 - **Schema Drift (Medium)**: Export files from old versions might be incompatible. _Mitigation_: Version-based migration logic in import.
 
 ### Assumptions
@@ -128,13 +133,15 @@ The export produces a single JSON file containing the full user data set:
 
 ## Acceptance Criteria
 
-- [ ] Theme toggle updates the app's visual style instantly.
-- [ ] Layout Mode (grid vs list) updates library and search views immediately.
-- [ ] Language select updates UI translations and re-fetches API data if needed.
+- [ ] Theme toggle updates the app's visual style within 100ms without a page reload.
+- [ ] Layout Mode (grid vs list) updates library and search views immediately (within 100ms) without re-fetching data.
+- [ ] Language select updates UI translations and triggers a refresh of active view metadata.
 - [ ] Region select is used as a parameter in relevant API calls (e.g., calendar).
 - [ ] Export produces a valid JSON file as specified.
 - [ ] Import correctly handles "Merge" and "Overwrite" strategies.
 - [ ] Import rejects malformed or invalid JSON.
 - [ ] Import validation fails if version is unsupported or schema is invalid (NFR-07-01).
-- [ ] Settings icon is visible and functional in the sidebar (NFR-07-03).
+- [ ] Sanitization logic prevents XSS from malicious payloads in imported names (NFR-07-02).
+- [ ] Settings icon is visible and functional in the primary sidebar (NFR-07-03).
 - [ ] Overwrite import requires a secondary confirmation (NFR-07-04).
+- [ ] Default home section selection persists and is applied on the next app load (FR-07-04).
