@@ -253,13 +253,13 @@ watch(isGenreOpen, async (open) => {
     <div v-if="showYearRange" class="flex items-center gap-2">
       <div
         data-testid="year-from-control"
-        class="flex items-center overflow-hidden rounded-lg border border-slate-700 bg-surface shadow-lg shadow-black/10"
+        class="flex h-9 items-center overflow-hidden rounded-lg border border-slate-700 bg-surface shadow-lg shadow-black/10"
       >
         <button
           data-testid="year-from-decrement"
           type="button"
           :aria-label="t('home.filters.year.decrement', { label: getYearLabel('yearFrom') })"
-          class="flex size-10 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
+          class="flex h-full w-9 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
           @click="stepYear('yearFrom', -1)"
         >
           <Minus class="size-4" />
@@ -269,7 +269,7 @@ watch(isGenreOpen, async (open) => {
           :value="modelValue.yearFrom ?? ''"
           type="number"
           :placeholder="t('home.filters.yearFrom')"
-          class="w-20 border-x border-slate-700 bg-transparent px-2 py-2 text-center text-sm text-white placeholder-slate-500 outline-none ring-accent [appearance:textfield] focus:ring-2 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          class="h-full w-20 border-x border-slate-700 bg-transparent px-2 text-center text-sm text-white placeholder-slate-500 outline-none ring-accent [appearance:textfield] focus:ring-2 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           :min="MIN_YEAR"
           :max="MAX_YEAR"
           @input="handleYearInput('yearFrom', $event)"
@@ -278,7 +278,7 @@ watch(isGenreOpen, async (open) => {
           data-testid="year-from-increment"
           type="button"
           :aria-label="t('home.filters.year.increment', { label: getYearLabel('yearFrom') })"
-          class="flex size-10 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
+          class="flex h-full w-9 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
           @click="stepYear('yearFrom', 1)"
         >
           <Plus class="size-4" />
@@ -287,13 +287,13 @@ watch(isGenreOpen, async (open) => {
       <span class="text-slate-500">-</span>
       <div
         data-testid="year-to-control"
-        class="flex items-center overflow-hidden rounded-lg border border-slate-700 bg-surface shadow-lg shadow-black/10"
+        class="flex h-9 items-center overflow-hidden rounded-lg border border-slate-700 bg-surface shadow-lg shadow-black/10"
       >
         <button
           data-testid="year-to-decrement"
           type="button"
           :aria-label="t('home.filters.year.decrement', { label: getYearLabel('yearTo') })"
-          class="flex size-10 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
+          class="flex h-full w-9 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
           @click="stepYear('yearTo', -1)"
         >
           <Minus class="size-4" />
@@ -303,7 +303,7 @@ watch(isGenreOpen, async (open) => {
           :value="modelValue.yearTo ?? ''"
           type="number"
           :placeholder="t('home.filters.yearTo')"
-          class="w-20 border-x border-slate-700 bg-transparent px-2 py-2 text-center text-sm text-white placeholder-slate-500 outline-none ring-accent [appearance:textfield] focus:ring-2 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          class="h-full w-20 border-x border-slate-700 bg-transparent px-2 text-center text-sm text-white placeholder-slate-500 outline-none ring-accent [appearance:textfield] focus:ring-2 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           :min="MIN_YEAR"
           :max="MAX_YEAR"
           @input="handleYearInput('yearTo', $event)"
@@ -312,7 +312,7 @@ watch(isGenreOpen, async (open) => {
           data-testid="year-to-increment"
           type="button"
           :aria-label="t('home.filters.year.increment', { label: getYearLabel('yearTo') })"
-          class="flex size-10 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
+          class="flex h-full w-9 items-center justify-center text-slate-300 transition-colors hover:bg-surface-hover hover:text-white"
           @click="stepYear('yearTo', 1)"
         >
           <Plus class="size-4" />

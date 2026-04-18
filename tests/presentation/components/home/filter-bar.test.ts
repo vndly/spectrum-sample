@@ -166,6 +166,26 @@ describe('FilterBar', () => {
     expect(clearButton?.classes()).toContain('bg-surface')
   })
 
+  it('renders the year controls with the same compact height as the genre selector', () => {
+    const wrapper = mount(FilterBar, {
+      global: { plugins: [i18n, router] },
+    })
+
+    const genreButton = wrapper.findAll('button').find((button) => button.text().includes('Genre'))
+    const yearFromControl = wrapper.get('[data-testid="year-from-control"]')
+    const yearFromDecrement = wrapper.get('[data-testid="year-from-decrement"]')
+    const yearFromInput = wrapper.get('[data-testid="year-from-input"]')
+    const yearToControl = wrapper.get('[data-testid="year-to-control"]')
+
+    expect(genreButton?.classes()).toContain('py-2')
+    expect(yearFromControl.classes()).toContain('h-9')
+    expect(yearToControl.classes()).toContain('h-9')
+    expect(yearFromDecrement.classes()).toContain('h-full')
+    expect(yearFromDecrement.classes()).toContain('w-9')
+    expect(yearFromInput.classes()).toContain('h-full')
+    expect(yearFromInput.classes()).not.toContain('py-2')
+  })
+
   it('calls clearAll when clear button clicked', async () => {
     mockFilters.value.mediaType = 'movie'
     const wrapper = mount(FilterBar, {
