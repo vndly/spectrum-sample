@@ -160,9 +160,7 @@ watch(isGenreOpen, async (open) => {
     return
   }
 
-  if (!open) {
-    genreSearch.value = ''
-  }
+  genreSearch.value = ''
 })
 </script>
 

@@ -176,6 +176,46 @@ describe('MetadataPanel', () => {
     expect(writers.text()).toContain('Writers')
   })
 
+  it('renders separators plus plural directors and singular writer labels', () => {
+    const wrapper = mount(MetadataPanel, {
+      props: {
+        ...defaultProps,
+        releaseDate: '2010-01-01',
+        runtime: 120,
+        genres: [{ id: 1, name: 'Drama' }],
+        crew: [
+          {
+            id: 1,
+            name: 'Director One',
+            job: 'Director',
+            department: 'Directing',
+            profile_path: null,
+          },
+          {
+            id: 2,
+            name: 'Director Two',
+            job: 'Director',
+            department: 'Directing',
+            profile_path: null,
+          },
+          {
+            id: 3,
+            name: 'Writer One',
+            job: 'Screenplay',
+            department: 'Writing',
+            profile_path: null,
+          },
+        ],
+      },
+      global: { plugins: [i18n] },
+    })
+
+    expect(wrapper.text()).toContain('2010')
+    expect(wrapper.text()).toContain('·')
+    expect(wrapper.get('[data-testid="directors"]').text()).toContain('Directors')
+    expect(wrapper.get('[data-testid="writers"]').text()).toContain('Writer')
+  })
+
   it('renders spoken languages (ED-02-06)', () => {
     // Arrange & Act
     const wrapper = mount(MetadataPanel, {

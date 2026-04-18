@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useLibraryEntry } from '@/application/use-library-entry'
 import { getLibraryEntry, saveLibraryEntry } from '@/infrastructure/storage.service'
+import * as storageService from '@/infrastructure/storage.service'
 import type { LibraryEntry } from '@/domain/library.schema'
 
 describe('useLibraryEntry', () => {
@@ -45,6 +46,52 @@ describe('useLibraryEntry', () => {
       expect(entry.value).not.toBeNull()
       expect(entry.value?.rating).toBe(4)
       expect(entry.value?.favorite).toBe(true)
+    })
+
+    it('synchronizes runtime, rating metadata, and release date from the latest detail payload', () => {
+      const saveSpy = vi.spyOn(storageService, 'saveLibraryEntry')
+      saveLibraryEntry(
+        createEntry({
+          runtime: 90,
+          voteAverage: 7,
+          releaseDate: '1999-01-01',
+        }),
+      )
+
+      const { entry } = useLibraryEntry(
+        550,
+        'movie',
+        'Fight Club',
+        '/poster.jpg',
+        8.4,
+        '1999-10-15',
+        139,
+      )
+
+      expect(entry.value?.runtime).toBe(139)
+      expect(entry.value?.voteAverage).toBe(8.4)
+      expect(entry.value?.releaseDate).toBe('1999-10-15')
+      expect(saveSpy).toHaveBeenCalled()
+
+      saveSpy.mockRestore()
+    })
+
+    it('does not resave the entry when metadata already matches', () => {
+      const saveSpy = vi.spyOn(storageService, 'saveLibraryEntry')
+      saveLibraryEntry(
+        createEntry({
+          runtime: 139,
+          voteAverage: 8.4,
+          releaseDate: '1999-10-15',
+        }),
+      )
+      saveSpy.mockClear()
+
+      useLibraryEntry(550, 'movie', 'Fight Club', '/poster.jpg', 8.4, '1999-10-15', 139)
+
+      expect(saveSpy).not.toHaveBeenCalled()
+
+      saveSpy.mockRestore()
     })
   })
 

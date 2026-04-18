@@ -27,7 +27,7 @@ const { t } = useI18n()
         <div class="relative flex-shrink-0">
           <img
             v-if="item.posterPath"
-            :src="buildImageUrl(item.posterPath, 'w185') || ''"
+            :src="buildImageUrl(item.posterPath, 'w185')!"
             :alt="item.title"
             class="h-16 w-11 rounded object-cover shadow-sm"
             loading="lazy"

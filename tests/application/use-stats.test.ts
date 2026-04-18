@@ -88,6 +88,62 @@ describe('useStats', () => {
     expect(genreDistribution.value[0].count).toBe(1)
   })
 
+  it('falls back to a generated genre label and exposes top rated items', () => {
+    vi.mocked(useGenres).mockReturnValue({
+      genres: ref([]),
+      loading: ref(false),
+      error: ref(null),
+      fetchGenres: vi.fn(),
+    } as unknown as ReturnType<typeof useGenres>)
+
+    const { genreDistribution, topRatedItems } = useStats()
+
+    expect(genreDistribution.value[0].name).toBe('Genre 28')
+    expect(topRatedItems.value[0].title).toBe('A')
+  })
+
+  it('sorts genre distribution entries by descending count', () => {
+    vi.mocked(useLibraryEntries).mockReturnValue({
+      allEntries: ref([
+        ...mockEntries,
+        {
+          id: 2,
+          mediaType: 'movie',
+          status: 'watched',
+          rating: 4,
+          runtime: 90,
+          genreIds: [35, 35],
+          watchDates: ['2026-02-01'],
+          title: 'B',
+          addedAt: '2026-02-01',
+          posterPath: null,
+          lists: [],
+          favorite: false,
+          tags: [],
+          notes: '',
+        },
+      ]),
+      entries: ref([]) as Ref<LibraryViewItem[]>,
+      refresh: vi.fn(),
+      getEntriesByStatus: vi.fn(),
+      getEntriesByList: vi.fn(),
+    } as unknown as ReturnType<typeof useLibraryEntries>)
+    vi.mocked(useGenres).mockReturnValue({
+      genres: ref([
+        { id: 28, name: 'Action' },
+        { id: 35, name: 'Comedy' },
+      ]),
+      loading: ref(false),
+      error: ref(null),
+      fetchGenres: vi.fn(),
+    } as unknown as ReturnType<typeof useGenres>)
+
+    const { genreDistribution } = useStats()
+
+    expect(genreDistribution.value[0].name).toBe('Comedy')
+    expect(genreDistribution.value[1].name).toBe('Action')
+  })
+
   it('formats chart data', () => {
     const { genreChartData, monthlyChartData } = useStats()
 

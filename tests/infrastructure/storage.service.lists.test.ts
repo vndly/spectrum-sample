@@ -63,6 +63,14 @@ describe('storage.service (lists)', () => {
       expect(result[0].name).toBe('List 1')
       expect(result[1].name).toBe('List 2')
     })
+
+    it('returns an empty array for corrupted or non-array list payloads', () => {
+      localStorage.setItem('plot-twisted-lists', 'not-json')
+      expect(getAllLists()).toEqual([])
+
+      localStorage.setItem('plot-twisted-lists', JSON.stringify({ id: 'bad' }))
+      expect(getAllLists()).toEqual([])
+    })
   })
 
   describe('saveList', () => {
@@ -142,6 +150,11 @@ describe('storage.service (lists)', () => {
       const updated = getAllLibraryEntries().find((e: any) => e.id === 550)
       expect(updated?.lists).toEqual(['new-list-1', 'new-list-2'])
     })
+
+    it('does nothing when the requested entry is missing', () => {
+      updateEntryLists(999, 'movie', ['missing'])
+      expect(getAllLibraryEntries()).toEqual([])
+    })
   })
 
   describe('removeListFromAllEntries', () => {
@@ -162,6 +175,19 @@ describe('storage.service (lists)', () => {
 
       expect(updated1?.lists).toEqual(['list-2'])
       expect(updated2?.lists).toEqual([])
+    })
+
+    it('leaves unrelated entries unchanged', () => {
+      const entry1 = createEntry({ id: 1, lists: ['list-1'] })
+      const entry2 = createEntry({ id: 2, lists: ['list-2'] })
+      saveLibraryEntry(entry1)
+      saveLibraryEntry(entry2)
+
+      removeListFromAllEntries('list-1')
+
+      const entries = getAllLibraryEntries()
+      const untouched = entries.find((entry: any) => entry.id === 2)
+      expect(untouched?.lists).toEqual(['list-2'])
     })
   })
 })

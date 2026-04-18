@@ -40,6 +40,7 @@ describe('ListManagerModal', () => {
 
   beforeEach(() => {
     vi.spyOn(useListsModule, 'useLists').mockReturnValue(mockUseLists as any)
+    mockUseLists.createList.mockClear()
   })
 
   it('renders a list item for each custom list', () => {
@@ -99,6 +100,22 @@ describe('ListManagerModal', () => {
     expect(wrapper.emitted('update:entryLists')?.[0]).toEqual([['1', '2']])
   })
 
+  it('removes a list when an already-selected checkbox is toggled off', async () => {
+    const i18n = createTestI18n()
+    const wrapper = mount(ListManagerModal, {
+      props: {
+        modelValue: true,
+        entryLists: ['1'],
+      },
+      global: { plugins: [i18n] },
+    })
+
+    const checkboxes = wrapper.findAll('input[type="checkbox"]')
+    await checkboxes[0].setValue(false)
+
+    expect(wrapper.emitted('update:entryLists')?.[0]).toEqual([[]])
+  })
+
   it('allows creating a new list from the modal', async () => {
     // Arrange
     const i18n = createTestI18n()
@@ -117,5 +134,54 @@ describe('ListManagerModal', () => {
 
     // Assert
     expect(mockUseLists.createList).toHaveBeenCalledWith('Favorites')
+  })
+
+  it('renders the empty-state message when no custom lists exist', () => {
+    lists.value = []
+    const i18n = createTestI18n()
+
+    const wrapper = mount(ListManagerModal, {
+      props: {
+        modelValue: true,
+        entryLists: [],
+      },
+      global: { plugins: [i18n] },
+    })
+
+    expect(wrapper.text()).toContain('No custom lists created yet.')
+    lists.value = [
+      { id: '1', name: 'Horror', createdAt: '2026-04-05' },
+      { id: '2', name: 'Sci-Fi', createdAt: '2026-04-05' },
+    ]
+  })
+
+  it('ignores empty list names and closes from the overlay and close button', async () => {
+    const i18n = createTestI18n()
+    const overlayWrapper = mount(ListManagerModal, {
+      props: {
+        modelValue: true,
+        entryLists: [],
+      },
+      global: { plugins: [i18n] },
+    })
+
+    await overlayWrapper.find('input[type="text"]').setValue('   ')
+    await overlayWrapper.find('form').trigger('submit')
+    expect(mockUseLists.createList).not.toHaveBeenCalled()
+
+    await overlayWrapper.get('.fixed').trigger('click')
+    expect(overlayWrapper.emitted('update:modelValue')?.[0]).toEqual([false])
+
+    const buttonWrapper = mount(ListManagerModal, {
+      props: {
+        modelValue: true,
+        entryLists: [],
+      },
+      global: { plugins: [i18n] },
+    })
+
+    const closeButton = buttonWrapper.findAll('button')[0]
+    await closeButton.trigger('click')
+    expect(buttonWrapper.emitted('update:modelValue')?.[0]).toEqual([false])
   })
 })

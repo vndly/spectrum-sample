@@ -107,4 +107,18 @@ describe('useLibraryEntries', () => {
       expect(entries.value[1].id).toBe(1) // B
     })
   })
+
+  describe('refresh', () => {
+    it('reloads entries from storage after initialization', () => {
+      saveLibraryEntry(createEntry({ id: 1, title: 'Entry 1' }))
+
+      const { entries, refresh } = useLibraryEntries()
+      expect(entries.value).toHaveLength(1)
+
+      saveLibraryEntry(createEntry({ id: 2, title: 'Entry 2' }))
+      refresh()
+
+      expect(entries.value).toHaveLength(2)
+    })
+  })
 })

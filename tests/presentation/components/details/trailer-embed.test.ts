@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import TrailerEmbed from '@/presentation/components/details/trailer-embed.vue'
@@ -132,5 +133,16 @@ describe('TrailerEmbed', () => {
     expect(thumbnail.exists()).toBe(true)
     expect(thumbnail.attributes('src')).toContain('img.youtube.com')
     expect(thumbnail.attributes('src')).toContain('SUXWAEX2jlg')
+  })
+
+  it('computes null embed and thumbnail URLs when no trailer is available', () => {
+    const wrapper = mount(TrailerEmbed, {
+      props: { videos: [] },
+      global: { plugins: [i18n] },
+    })
+
+    const setupState = (wrapper.vm as any).$?.setupState
+    expect(setupState.embedUrl).toBeNull()
+    expect(setupState.thumbnailUrl).toBeNull()
   })
 })

@@ -46,4 +46,17 @@ describe('storage.service settings', () => {
     const settings = getSettings()
     expect(settings).toEqual(DEFAULT_SETTINGS)
   })
+
+  it('falls back to defaults when merged settings still fail schema validation', () => {
+    localStorage.setItem(
+      STORAGE_KEY_SETTINGS,
+      JSON.stringify({
+        theme: 'light',
+        preferredRegion: 42,
+      }),
+    )
+
+    const settings = getSettings()
+    expect(settings).toEqual(DEFAULT_SETTINGS)
+  })
 })

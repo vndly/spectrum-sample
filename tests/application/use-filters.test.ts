@@ -123,4 +123,37 @@ describe('useFilters', () => {
     expect(vm.filters.mediaType).toBe('all')
     expect(vm.filters.genres).toEqual([])
   })
+
+  it('counts all active filter categories', async () => {
+    mockRoute.query = {
+      genres: '1',
+      mediaType: 'tv',
+      yearFrom: '2020',
+      yearTo: '2026',
+    }
+
+    const wrapper = mount(TestComponent, {
+      global: { plugins: [i18n] },
+    })
+    const vm = wrapper.vm as any
+
+    await nextTick()
+
+    expect(vm.activeFilterCount).toBe(4)
+  })
+
+  it('gracefully skips URL syncing when router and route are unavailable', async () => {
+    vi.mocked(useRouter).mockReturnValue(undefined as unknown as Router)
+    vi.mocked(useRoute).mockReturnValue(undefined as unknown as RouteLocationNormalizedLoaded)
+
+    const wrapper = mount(TestComponent, {
+      global: { plugins: [i18n] },
+    })
+    const vm = wrapper.vm as any
+
+    await nextTick()
+
+    vm.clearAll()
+    expect(vm.filters.mediaType).toBe('all')
+  })
 })

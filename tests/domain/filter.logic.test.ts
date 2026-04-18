@@ -5,6 +5,7 @@ import {
   toLibraryViewItem,
   getLibraryComparator,
   countActiveFilters,
+  matchesFilters,
 } from '@/domain/filter.logic'
 import { FilterState, DEFAULT_LIBRARY_FILTER_STATE } from '@/domain/filter.schema'
 import { SearchResultItem } from '@/domain/search.schema'
@@ -162,6 +163,77 @@ describe('filter.logic', () => {
     expect(filterResults(items, correctCombinedFilters)[0].id).toBe(1)
   })
 
+  it('should exclude person results and items without release dates when year filters are active', () => {
+    const person = {
+      id: 3,
+      name: 'Person',
+      media_type: 'person',
+    } as SearchResultItem
+    const movieWithoutDate = {
+      ...mockMovie,
+      id: 4,
+      release_date: '',
+    }
+    const filters: FilterState = {
+      genres: [],
+      mediaType: 'all',
+      yearFrom: 2020,
+      yearTo: null,
+    }
+
+    expect(matchesFilters(person, filters)).toBe(false)
+    expect(matchesFilters(movieWithoutDate, filters)).toBe(false)
+  })
+
+  it('should treat missing genre arrays and missing year-filtered dates as non-matches', () => {
+    const noGenresShow = {
+      ...mockShow,
+      genre_ids: undefined,
+    }
+    const noDateShow = {
+      ...mockShow,
+      first_air_date: '',
+    }
+
+    expect(
+      matchesFilters(noGenresShow, {
+        genres: [35],
+        mediaType: 'all',
+        yearFrom: null,
+        yearTo: null,
+      }),
+    ).toBe(false)
+
+    expect(
+      matchesFilters(noDateShow, {
+        genres: [],
+        mediaType: 'all',
+        yearFrom: null,
+        yearTo: 2021,
+      }),
+    ).toBe(false)
+
+    const itemWithoutGenreIds = { ...mockMovie } as Partial<typeof mockMovie>
+    delete itemWithoutGenreIds.genre_ids
+    expect(
+      matchesFilters(itemWithoutGenreIds as SearchResultItem, {
+        genres: [28],
+        mediaType: 'all',
+        yearFrom: null,
+        yearTo: null,
+      }),
+    ).toBe(false)
+
+    expect(
+      matchesFilters(noDateShow as SearchResultItem, {
+        genres: [],
+        mediaType: 'all',
+        yearFrom: null,
+        yearTo: null,
+      }),
+    ).toBe(true)
+  })
+
   describe('library filter logic', () => {
     const mockEntry: LibraryEntry = {
       id: 1,
@@ -311,6 +383,12 @@ describe('filter.logic', () => {
       it('sorts by releaseYear', () => {
         const sortedDesc = [...items].sort(getLibraryComparator('releaseYear', 'desc'))
         expect(sortedDesc.map((i) => i.id)).toEqual([1, 3, 2])
+      })
+
+      it('sorts missing release years as zero', () => {
+        const comparator = getLibraryComparator('releaseYear', 'asc')
+        expect(comparator({ ...items[0], releaseYear: undefined }, items[1])).toBeLessThan(0)
+        expect(comparator(items[0], { ...items[1], releaseYear: undefined })).toBeGreaterThan(0)
       })
 
       it('sorts by userRating', () => {

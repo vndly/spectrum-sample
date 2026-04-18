@@ -111,6 +111,25 @@ describe('useLists', () => {
       // Assert
       expect(lists.value.find((l) => l.id === id1)?.name).toBe('List 1')
     })
+
+    it('fails to rename when the new name is empty', () => {
+      const { lists, createList, renameList } = useLists()
+      createList('List 1')
+      const id = lists.value[0].id
+
+      renameList(id, '   ')
+
+      expect(lists.value[0].name).toBe('List 1')
+    })
+
+    it('fails to rename a missing list', () => {
+      const { createList, renameList } = useLists()
+      createList('List 1')
+
+      renameList('missing-id', 'Renamed')
+
+      expect(getAllLists()[0].name).toBe('List 1')
+    })
   })
 
   describe('deleteList', () => {

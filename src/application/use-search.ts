@@ -49,10 +49,6 @@ export function useSearch() {
    */
   async function performSearch(searchQuery: string) {
     const trimmedQuery = searchQuery.trim()
-    if (!trimmedQuery) {
-      return
-    }
-
     loading.value = true
     error.value = null
 

@@ -134,4 +134,20 @@ describe('RatingStars', () => {
     expect(wrapper.find('[data-testid="star-2"]').classes()).toContain('text-accent')
     expect(wrapper.find('[data-testid="star-3"]').classes()).toContain('text-slate-500')
   })
+
+  it('supports left and down arrow navigation and updates focus on button focus', async () => {
+    const wrapper = mount(RatingStars, {
+      props: { modelValue: 0 },
+    })
+
+    await wrapper.get('[data-testid="star-4"]').trigger('focus')
+    expect(wrapper.get('[data-testid="star-4"]').classes()).toContain('ring-2')
+
+    const container = wrapper.get('[data-testid="rating-stars"]')
+    await container.trigger('keydown', { key: 'ArrowLeft' })
+    await container.trigger('keydown', { key: 'ArrowDown' })
+    await container.trigger('keydown', { key: 'Enter' })
+
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
+  })
 })

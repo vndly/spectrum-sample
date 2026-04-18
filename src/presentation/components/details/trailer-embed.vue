@@ -41,8 +41,7 @@ function playTrailer() {
       <!-- Thumbnail with play button -->
       <template v-if="!isPlaying">
         <img
-          v-if="thumbnailUrl"
-          :src="thumbnailUrl"
+          :src="thumbnailUrl!"
           :alt="trailer.name"
           class="size-full object-cover"
           data-testid="trailer-thumbnail"

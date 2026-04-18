@@ -216,4 +216,14 @@ describe('useShowDetail', () => {
     expect(error.value).not.toBeNull()
     expect(error.value?.message).toContain('404')
   })
+
+  it('normalizes non-Error failures into a default show detail error', async () => {
+    mockGetShowDetail.mockRejectedValue('boom')
+
+    const { error } = useShowDetail(1396)
+    await nextTick()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(error.value?.message).toBe('Failed to fetch show details')
+  })
 })

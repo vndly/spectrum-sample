@@ -9,6 +9,9 @@ export default mergeConfig(
       globals: true,
       include: ['tests/**/*.test.ts'],
       setupFiles: ['./tests/setup.ts'],
+      coverage: {
+        exclude: ['src/assets/**', 'src/presentation/i18n/locales/**'],
+      },
     },
   }),
 )

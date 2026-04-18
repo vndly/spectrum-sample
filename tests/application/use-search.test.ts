@@ -251,6 +251,46 @@ describe('useSearch', () => {
     })
   })
 
+  describe('guard rails', () => {
+    it('does not search for whitespace-only retry values', async () => {
+      const { query, retry } = useSearch()
+
+      query.value = '   '
+      retry()
+      await nextTick()
+      await vi.runAllTimersAsync()
+
+      expect(mockSearchMulti).not.toHaveBeenCalled()
+    })
+
+    it('normalizes non-Error failures into a default search error', async () => {
+      mockSearchMulti.mockRejectedValue('boom')
+
+      const { query, error, results, hasSearched } = useSearch()
+
+      query.value = 'arrival'
+      await nextTick()
+      await vi.advanceTimersByTimeAsync(300)
+      await vi.runAllTimersAsync()
+
+      expect(error.value?.message).toBe('Search failed')
+      expect(results.value).toEqual([])
+      expect(hasSearched.value).toBe(false)
+    })
+
+    it('clears safely when no debounce timer is active', () => {
+      const { clear, query, results, loading, error, hasSearched } = useSearch()
+
+      clear()
+
+      expect(query.value).toBe('')
+      expect(results.value).toEqual([])
+      expect(loading.value).toBe(false)
+      expect(error.value).toBeNull()
+      expect(hasSearched.value).toBe(false)
+    })
+  })
+
   describe('loading state', () => {
     it('transitions from idle to loading to success (HS-07-01, HS-07-06)', async () => {
       // Arrange

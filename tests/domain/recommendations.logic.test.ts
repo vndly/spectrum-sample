@@ -127,6 +127,37 @@ describe('Recommendations Logic', () => {
       expect(result[0].id).toBe(1)
     })
 
+    it('falls back to addedAt when watchDates is missing', () => {
+      const entries: any[] = [
+        {
+          id: 1,
+          rating: 0,
+          addedAt: '2023-01-01T00:00:00Z',
+          mediaType: 'movie',
+          title: 'A',
+          status: 'watched',
+          favorite: false,
+          lists: [],
+          tags: [],
+          notes: '',
+        },
+        {
+          id: 2,
+          rating: 0,
+          addedAt: '2023-01-02T00:00:00Z',
+          mediaType: 'movie',
+          title: 'B',
+          status: 'watched',
+          favorite: false,
+          lists: [],
+          tags: [],
+          notes: '',
+        },
+      ]
+
+      expect(selectSeeds(entries as LibraryEntry[]).map((entry) => entry.id)).toEqual([2, 1])
+    })
+
     it('returns all entries if there are fewer than 5', () => {
       const entries: any[] = [
         {

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { exportData, importData } from '@/infrastructure/storage.service'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { exportData, importData, downloadFile, parseFile } from '@/infrastructure/storage.service'
 
 // Mocking global fetch for download trigger if needed, or window.URL
 const createObjectURLMock = vi.fn()
@@ -11,6 +11,11 @@ describe('storageService Import/Export', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
   })
 
   const validEntry = {
@@ -52,6 +57,34 @@ describe('storageService Import/Export', () => {
       expect(exported.settings).toEqual(mockSettings)
       expect(Object.values(exported.library)).toHaveLength(1)
       expect(exported.exportedAt).toBeDefined()
+    })
+
+    it('should export list records and sorted tags', async () => {
+      localStorage.setItem(
+        'plot-twisted-library',
+        JSON.stringify([
+          {
+            ...validEntry,
+            id: 1,
+            tags: ['beta', 'alpha'],
+          },
+        ]),
+      )
+      localStorage.setItem(
+        'plot-twisted-lists',
+        JSON.stringify([
+          {
+            id: '550e8400-e29b-41d4-a716-446655440001',
+            name: 'Favorites',
+            createdAt: '2026-04-18T10:00:00.000Z',
+          },
+        ]),
+      )
+
+      const exported = await exportData()
+
+      expect(exported.lists['550e8400-e29b-41d4-a716-446655440001'].name).toBe('Favorites')
+      expect(exported.tags).toEqual(['alpha', 'beta'])
     })
   })
 
@@ -147,6 +180,88 @@ describe('storageService Import/Export', () => {
       const entry = storedLibrary.find((e: { id: number }) => e.id === 666)
 
       expect(entry.title).not.toContain('<script>')
+    })
+
+    it('should sanitize imported list names during merge imports', async () => {
+      const exportWithList = {
+        ...validExport,
+        lists: {
+          '550e8400-e29b-41d4-a716-446655440001': {
+            id: '550e8400-e29b-41d4-a716-446655440001',
+            name: '<b>Favorites</b>',
+            createdAt: '2026-04-18T10:00:00.000Z',
+          },
+        },
+      }
+
+      await importData(exportWithList, 'merge')
+      const storedLists = JSON.parse(localStorage.getItem('plot-twisted-lists') || '[]')
+
+      expect(storedLists[0].name).toBe('Favorites')
+    })
+  })
+
+  describe('downloadFile', () => {
+    it('should create an anchor, click it, and revoke the object URL', () => {
+      vi.useFakeTimers()
+      const anchor = document.createElement('a')
+      const clickSpy = vi.spyOn(anchor, 'click').mockImplementation(() => {})
+      vi.spyOn(document, 'createElement').mockReturnValue(anchor)
+
+      downloadFile('hello', 'library.json', 'application/json')
+
+      expect(createObjectURLMock).toHaveBeenCalled()
+      expect(anchor.download).toBe('library.json')
+      expect(clickSpy).toHaveBeenCalled()
+
+      vi.advanceTimersByTime(100)
+      expect(revokeObjectURLMock).toHaveBeenCalled()
+    })
+  })
+
+  describe('parseFile', () => {
+    it('should resolve parsed JSON content', async () => {
+      const fileReaderMock = class {
+        onload: ((event: { target: { result: string } }) => void) | null = null
+        onerror: (() => void) | null = null
+
+        readAsText() {
+          this.onload?.({ target: { result: '{"ok":true}' } })
+        }
+      }
+      vi.stubGlobal('FileReader', fileReaderMock)
+
+      await expect(parseFile(new File(['{}'], 'valid.json'))).resolves.toEqual({ ok: true })
+    })
+
+    it('should reject invalid JSON content', async () => {
+      const fileReaderMock = class {
+        onload: ((event: { target: { result: string } }) => void) | null = null
+        onerror: (() => void) | null = null
+
+        readAsText() {
+          this.onload?.({ target: { result: '{' } })
+        }
+      }
+      vi.stubGlobal('FileReader', fileReaderMock)
+
+      await expect(parseFile(new File(['{'], 'invalid.json'))).rejects.toThrow(
+        'Invalid JSON format',
+      )
+    })
+
+    it('should reject file read errors', async () => {
+      const fileReaderMock = class {
+        onload: ((event: { target: { result: string } }) => void) | null = null
+        onerror: (() => void) | null = null
+
+        readAsText() {
+          this.onerror?.()
+        }
+      }
+      vi.stubGlobal('FileReader', fileReaderMock)
+
+      await expect(parseFile(new File(['{}'], 'error.json'))).rejects.toThrow('Failed to read file')
     })
   })
 })

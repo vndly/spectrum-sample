@@ -199,4 +199,18 @@ describe('ActionButtons', () => {
     // Assert
     expect(wrapper.emitted('share')).toBeTruthy()
   })
+
+  it('manage lists button emits and reflects the active list state', async () => {
+    const wrapper = mount(ActionButtons, {
+      props: { ...defaultProps, hasLists: true },
+      global: { plugins: [i18n] },
+    })
+
+    const button = wrapper.get('[data-testid="manage-lists-button"]')
+    expect(button.classes()).toContain('bg-accent')
+
+    await button.trigger('click')
+
+    expect(wrapper.emitted('manage-lists')).toBeTruthy()
+  })
 })

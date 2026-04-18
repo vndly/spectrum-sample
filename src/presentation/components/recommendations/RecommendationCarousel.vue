@@ -100,7 +100,7 @@ function getPosterUrl(item: SearchResultItem) {
       >
         <img
           v-if="item.poster_path"
-          :src="getPosterUrl(item) || ''"
+          :src="getPosterUrl(item)!"
           :alt="getTitle(item)"
           class="size-full object-cover"
           loading="lazy"

@@ -250,4 +250,14 @@ describe('useMovieDetail', () => {
     // Assert
     expect(error.value).toBeNull()
   })
+
+  it('normalizes non-Error failures into a default movie detail error', async () => {
+    mockGetMovieDetail.mockRejectedValue('boom')
+
+    const { error } = useMovieDetail(550)
+    await nextTick()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(error.value?.message).toBe('Failed to fetch movie details')
+  })
 })

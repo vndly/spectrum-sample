@@ -1,44 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import { describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import CalendarScreen from '@/presentation/views/calendar-screen.vue'
-import CalendarGrid from '@/presentation/components/calendar/calendar-grid.vue'
 
-// Mock vue-router
-const mockRoute = {
-  query: { year: '2026', month: '3' },
-}
-const mockRouter = {
-  push: vi.fn(),
-}
+const year = ref(2026)
+const month = ref(3)
+const nextMonth = vi.fn()
+const previousMonth = vi.fn()
+const goToToday = vi.fn()
+const movies = ref<any[]>([])
+const calendarDays = ref<Date[]>([])
+const moviesByDate = ref<Record<string, any[]>>({})
+const loading = ref(false)
+const error = ref<Error | null>(null)
+const retry = vi.fn()
 
-vi.mock('vue-router', () => ({
-  useRoute: () => mockRoute,
-  useRouter: () => mockRouter,
+vi.mock('@/application/use-calendar', () => ({
+  useCalendar: () => ({
+    year,
+    month,
+    nextMonth,
+    previousMonth,
+    goToToday,
+  }),
 }))
 
-// Mock useUpcomingMovies
 vi.mock('@/application/use-upcoming-movies', () => ({
   useUpcomingMovies: () => ({
-    movies: ref([]),
-    loading: ref(false),
-    error: ref(null),
-    retry: vi.fn(),
+    movies,
+    calendarDays,
+    moviesByDate,
+    loading,
+    error,
+    retry,
   }),
 }))
 
-// Mock useSettings
-vi.mock('@/application/use-settings', () => ({
-  useSettings: () => ({
-    language: ref('en'),
-    preferredRegion: ref('US'),
-  }),
-}))
-
-type Locale = 'en' | 'fr'
-
-function createTestI18n(locale: Locale) {
+function createTestI18n(locale: 'en' | 'fr') {
   return createI18n({
     legacy: false,
     locale,
@@ -61,35 +61,72 @@ function createTestI18n(locale: Locale) {
   })
 }
 
-function renderCalendarScreen(locale: Locale) {
+function renderCalendarScreen(locale: 'en' | 'fr' = 'en') {
   return mount(CalendarScreen, {
     global: {
       plugins: [createTestI18n(locale)],
       stubs: {
-        'lucide-vue-next': true,
+        CalendarGrid: {
+          name: 'CalendarGrid',
+          props: ['year', 'month', 'movies', 'calendarDays', 'moviesByDate', 'loading'],
+          template:
+            '<div data-testid="calendar-grid">{{ year }}-{{ month }}-{{ movies.length }}-{{ loading }}</div>',
+        },
       },
     },
   })
 }
 
 describe('CalendarScreen', () => {
-  it('renders the header with localized month and year in English', () => {
-    // Arrange
-    const wrapper = renderCalendarScreen('en')
-
-    // Assert
-    expect(wrapper.get('h1').text()).toContain('April')
-    expect(wrapper.get('h1').text()).toContain('2026')
-    expect(wrapper.findComponent(CalendarGrid).exists()).toBe(true)
+  beforeEach(() => {
+    year.value = 2026
+    month.value = 3
+    movies.value = []
+    calendarDays.value = [new Date(2026, 2, 31), new Date(2026, 3, 1)]
+    moviesByDate.value = {}
+    loading.value = false
+    error.value = null
+    nextMonth.mockReset()
+    previousMonth.mockReset()
+    goToToday.mockReset()
+    retry.mockReset()
   })
 
-  it('renders the header with localized month and year in French', () => {
-    // Arrange
-    const wrapper = renderCalendarScreen('fr')
+  it('renders the localized month header and passes props into CalendarGrid', () => {
+    const wrapper = renderCalendarScreen('en')
 
-    // Assert
-    expect(wrapper.get('h1').text()).toContain('avril')
+    expect(wrapper.get('h1').text()).toContain('April')
     expect(wrapper.get('h1').text()).toContain('2026')
-    expect(wrapper.findComponent(CalendarGrid).exists()).toBe(true)
+    expect(wrapper.get('[data-testid="calendar-grid"]').text()).toBe('2026-3-0-false')
+  })
+
+  it('renders the header in French and triggers the navigation actions', async () => {
+    const wrapper = renderCalendarScreen('fr')
+    const buttons = wrapper.findAll('button')
+
+    expect(wrapper.get('h1').text()).toContain('avril')
+
+    await buttons[0].trigger('click')
+    await buttons[1].trigger('click')
+    await buttons[2].trigger('click')
+
+    expect(previousMonth).toHaveBeenCalled()
+    expect(goToToday).toHaveBeenCalled()
+    expect(nextMonth).toHaveBeenCalled()
+  })
+
+  it('renders the error state and retries when requested', async () => {
+    error.value = new Error('Network error')
+
+    const wrapper = renderCalendarScreen()
+
+    expect(wrapper.text()).toContain('Network error')
+    expect(wrapper.find('[data-testid="calendar-grid"]').exists()).toBe(false)
+
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === 'Retry')
+      ?.trigger('click')
+    expect(retry).toHaveBeenCalled()
   })
 })

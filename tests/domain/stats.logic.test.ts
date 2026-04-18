@@ -4,6 +4,7 @@ import {
   calculateGenreDistribution,
   calculateMonthlyActivity,
   getTopRatedItems,
+  formatWatchTime,
 } from '@/domain/stats.logic'
 import type { LibraryEntry } from '@/domain/library.schema'
 
@@ -91,6 +92,17 @@ describe('stats.logic', () => {
       expect(metrics.averageRating).toBe(0)
       expect(metrics.totalWatchTimeMinutes).toBe(0)
     })
+
+    it('treats missing runtimes as zero watch time', () => {
+      const metrics = calculateKeyMetrics([
+        {
+          ...MOCK_ENTRIES[0],
+          runtime: undefined,
+        },
+      ])
+
+      expect(metrics.totalWatchTimeMinutes).toBe(0)
+    })
   })
 
   describe('calculateGenreDistribution', () => {
@@ -110,6 +122,22 @@ describe('stats.logic', () => {
       expect(activity[2]).toBe(1) // Mar 10 (Movie B)
       expect(activity[3]).toBe(0)
     })
+
+    it('ignores watch dates outside the requested year', () => {
+      const activity = calculateMonthlyActivity(
+        [
+          ...MOCK_ENTRIES,
+          {
+            ...MOCK_ENTRIES[0],
+            id: 5,
+            watchDates: ['2025-12-31'],
+          },
+        ],
+        2026,
+      )
+
+      expect(activity[11]).toBe(0)
+    })
   })
 
   describe('getTopRatedItems', () => {
@@ -124,6 +152,46 @@ describe('stats.logic', () => {
     it('limits the results', () => {
       const top = getTopRatedItems(MOCK_ENTRIES, 2)
       expect(top.length).toBe(2)
+    })
+
+    it('breaks rating ties by title', () => {
+      const top = getTopRatedItems([
+        ...MOCK_ENTRIES,
+        {
+          id: 5,
+          mediaType: 'movie',
+          title: 'Alpha',
+          status: 'watched',
+          rating: 5,
+          runtime: 110,
+          genreIds: [],
+          watchDates: ['2026-04-01'],
+          addedAt: '2026-01-01',
+          favorite: false,
+          lists: [],
+          tags: [],
+          notes: '',
+          posterPath: null,
+        },
+      ])
+
+      expect(top[0].title).toBe('Alpha')
+      expect(top[1].title).toBe('Movie A')
+    })
+  })
+
+  describe('formatWatchTime', () => {
+    it('formats zero minutes', () => {
+      expect(formatWatchTime(0)).toBe('0m')
+    })
+
+    it('formats days, hours, and minutes', () => {
+      expect(formatWatchTime(24 * 60 + 90)).toBe('1d 1h 30m')
+    })
+
+    it('omits zero-minute suffixes when days or hours are present', () => {
+      expect(formatWatchTime(24 * 60)).toBe('1d')
+      expect(formatWatchTime(120)).toBe('2h')
     })
   })
 })

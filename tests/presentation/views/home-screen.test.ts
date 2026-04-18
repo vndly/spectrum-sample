@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount, flushPromises } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { createRouter, createMemoryHistory } from 'vue-router'
@@ -5,6 +6,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { nextTick } from 'vue'
 import HomeScreen from '@/presentation/views/home-screen.vue'
 import * as providerClient from '@/infrastructure/provider.client'
+import { useBrowse } from '@/application/use-browse'
 
 import { ref } from 'vue'
 
@@ -101,6 +103,14 @@ describe('HomeScreen', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     mockSearchMulti.mockReset()
+    vi.mocked(useBrowse).mockReturnValue({
+      trending: ref([]),
+      popularMovies: ref([]),
+      popularShows: ref([]),
+      loading: ref(true),
+      error: ref(null),
+      retry: vi.fn(),
+    } as any)
   })
 
   afterEach(() => {
@@ -273,6 +283,63 @@ describe('HomeScreen', () => {
       // Either browse mode XOR search mode components should be visible
       const inSearchMode = hasSearchResults || hasEmpty || hasSkeletons || hasError
       expect(hasBrowse && inSearchMode).toBe(false)
+    })
+  })
+
+  describe('retry and empty browse states', () => {
+    it('retries a failed search from the search results component', async () => {
+      mockSearchMulti.mockRejectedValueOnce(new Error('boom')).mockResolvedValueOnce({
+        page: 1,
+        results: [mockMovieResult],
+        total_pages: 1,
+        total_results: 1,
+      })
+
+      const wrapper = mountComponent()
+      const input = wrapper.find('input[type="search"]')
+
+      await input.setValue('fight')
+      await nextTick()
+      await vi.advanceTimersByTimeAsync(300)
+      await flushPromises()
+
+      await wrapper.get('[data-testid="retry-button"]').trigger('click')
+      await flushPromises()
+
+      expect(mockSearchMulti).toHaveBeenCalledTimes(2)
+    })
+
+    it('retries browse loading failures', async () => {
+      const retry = vi.fn()
+      vi.mocked(useBrowse).mockReturnValue({
+        trending: ref([]),
+        popularMovies: ref([]),
+        popularShows: ref([]),
+        loading: ref(false),
+        error: ref(new Error('boom')),
+        retry,
+      } as any)
+
+      const wrapper = mountComponent()
+      await wrapper.get('[data-testid="browse-error"] button').trigger('click')
+
+      expect(retry).toHaveBeenCalled()
+    })
+
+    it('shows the browse empty state and lets the user clear filters', async () => {
+      vi.mocked(useBrowse).mockReturnValue({
+        trending: ref([]),
+        popularMovies: ref([]),
+        popularShows: ref([]),
+        loading: ref(false),
+        error: ref(null),
+        retry: vi.fn(),
+      } as any)
+
+      const wrapper = mountComponent()
+
+      expect(wrapper.text()).toContain('No results found')
+      await wrapper.get('[data-testid="browse-sections"] button').trigger('click')
     })
   })
 

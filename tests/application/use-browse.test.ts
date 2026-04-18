@@ -163,6 +163,18 @@ describe('useBrowse', () => {
     expect(vm.trending).toHaveLength(0)
   })
 
+  it('normalizes non-Error failures into a default browse error', async () => {
+    vi.mocked(providerClient.getTrending).mockRejectedValue('boom')
+
+    const wrapper = mount(TestComponent)
+    const vm = wrapper.vm as any
+
+    await nextTick()
+    await nextTick()
+
+    expect(vm.error?.message).toBe('Failed to load browse data')
+  })
+
   it('retries fetching data', async () => {
     vi.mocked(providerClient.getTrending)
       .mockRejectedValueOnce(new Error('Fail'))
