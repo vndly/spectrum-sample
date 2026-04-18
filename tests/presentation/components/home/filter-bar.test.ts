@@ -176,6 +176,7 @@ describe('FilterBar', () => {
     const yearFromDecrement = wrapper.get('[data-testid="year-from-decrement"]')
     const yearFromInput = wrapper.get('[data-testid="year-from-input"]')
     const yearToControl = wrapper.get('[data-testid="year-to-control"]')
+    const yearToInput = wrapper.get('[data-testid="year-to-input"]')
 
     expect(genreButton?.classes()).toContain('py-2')
     expect(yearFromControl.classes()).toContain('h-9')
@@ -183,6 +184,9 @@ describe('FilterBar', () => {
     expect(yearFromDecrement.classes()).toContain('h-full')
     expect(yearFromDecrement.classes()).toContain('w-9')
     expect(yearFromInput.classes()).toContain('h-full')
+    expect(yearFromInput.classes()).toContain('w-16')
+    expect(yearFromInput.classes()).not.toContain('w-20')
+    expect(yearToInput.classes()).toContain('w-16')
     expect(yearFromInput.classes()).not.toContain('py-2')
   })
 
