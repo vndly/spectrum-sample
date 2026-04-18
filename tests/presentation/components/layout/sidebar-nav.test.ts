@@ -50,16 +50,20 @@ describe('SidebarNav', () => {
 
     // Assert
     const sidebar = wrapper.get('aside')
+    const brandHeader = wrapper.get('aside > div')
     const nav = wrapper.get('nav[aria-label="Primary navigation"]')
     const links = wrapper.findAll('a')
 
     expect(sidebar.classes()).toContain('fixed')
     expect(sidebar.classes()).toContain('w-56')
     expect(sidebar.classes()).toContain('bg-bg-secondary')
+    expect(brandHeader.classes()).toContain('py-4')
+    expect(brandHeader.classes()).not.toContain('py-6')
     expect(nav.classes()).toContain('pb-6')
     expect(nav.classes()).not.toContain('px-4')
     expect(nav.classes()).not.toContain('py-6')
     expect(wrapper.text()).toContain('Plot Twisted')
+    expect(wrapper.text()).toContain('🎬')
     expect(links).toHaveLength(5)
 
     // R-01b-02-01 — documented order: Home, Recommendations, Calendar, Library, Settings

@@ -29,8 +29,11 @@ function isActiveRoute(path: string) {
     class="fixed inset-y-0 left-0 flex w-56 flex-col bg-bg-secondary max-md:hidden"
     aria-label="Desktop sidebar"
   >
-    <div class="border-b border-white/10 px-6 py-6">
-      <p class="text-lg font-bold text-white">{{ $t('app.title') }}</p>
+    <div class="border-b border-white/10 px-6 py-4">
+      <p class="flex items-center gap-3 text-lg font-bold tracking-tight text-white">
+        <span aria-hidden="true" class="text-base leading-none">🎬</span>
+        <span>{{ $t('app.title') }}</span>
+      </p>
     </div>
 
     <nav class="flex flex-1 flex-col gap-2 pb-6" aria-label="Primary navigation">
