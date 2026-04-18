@@ -360,10 +360,10 @@ onUnmounted(() => {
     <button
       v-if="activeFilterCount > 0"
       type="button"
-      class="ml-auto flex items-center gap-1 text-sm text-slate-400 transition-colors hover:text-accent"
+      class="ml-auto inline-flex items-center gap-2 rounded-full border border-slate-700 bg-surface px-4 py-2 text-sm font-medium text-white shadow-lg shadow-black/10 transition-colors hover:border-teal-500/60 hover:bg-surface-hover"
       @click="emit('clear')"
     >
-      <X class="size-4" />
+      <X class="size-4 text-teal-400" />
       <span>{{ t('home.filters.clear') }}</span>
     </button>
   </div>

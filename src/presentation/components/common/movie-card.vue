@@ -57,7 +57,7 @@ const posterUrl = computed(() => {
 /** Returns the media type label. */
 const mediaTypeLabel = computed(() => {
   if (props.item.media_type === 'movie') return 'Movie'
-  if (props.item.media_type === 'tv') return 'TV Show'
+  if (props.item.media_type === 'tv') return 'Show'
   return ''
 })
 

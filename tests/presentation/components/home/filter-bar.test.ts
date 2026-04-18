@@ -41,9 +41,9 @@ const i18n = createI18n({
       'home.filters.genre': 'Genre',
       'home.filters.mediaType.all': 'All',
       'home.filters.mediaType.movie': 'Movies',
-      'home.filters.mediaType.tv': 'TV Shows',
-      'home.filters.yearFrom': 'From Year',
-      'home.filters.yearTo': 'To Year',
+      'home.filters.mediaType.tv': 'Shows',
+      'home.filters.yearFrom': 'From',
+      'home.filters.yearTo': 'To',
       'home.filters.year.decrement': 'Decrease {label}',
       'home.filters.year.increment': 'Increase {label}',
       'home.filters.clear': 'Clear All',
@@ -111,6 +111,18 @@ describe('FilterBar', () => {
       global: { plugins: [i18n, router] },
     })
     expect(wrapper.text()).toContain('Clear All')
+  })
+
+  it('renders the clear action as a button-like control', async () => {
+    mockFilters.value.mediaType = 'movie'
+
+    const wrapper = mount(FilterBar, {
+      global: { plugins: [i18n, router] },
+    })
+
+    const clearButton = wrapper.findAll('button').find((b) => b.text() === 'Clear All')
+    expect(clearButton?.classes()).toContain('rounded-full')
+    expect(clearButton?.classes()).toContain('bg-surface')
   })
 
   it('calls clearAll when clear button clicked', async () => {
