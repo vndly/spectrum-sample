@@ -10,8 +10,6 @@ const filters = ref({
   mediaType: 'all',
   ratingMin: 0,
   ratingMax: 5,
-  status: 'all',
-  listIds: [],
 })
 const activeFilterCount = ref(0)
 const clearFilters = vi.fn()
@@ -20,8 +18,6 @@ const sortOrder = ref('desc')
 const entries = ref<any[]>([])
 const allEntries = ref<any[]>([])
 const refresh = vi.fn()
-const lists = ref<{ id: string; name: string }[]>([])
-const createList = vi.fn()
 const genres = ref([{ id: 1, name: 'Action' }])
 const fetchGenres = vi.fn()
 const language = ref('en')
@@ -49,13 +45,6 @@ vi.mock('@/application/use-library-entries', () => ({
   }),
 }))
 
-vi.mock('@/application/use-lists', () => ({
-  useLists: () => ({
-    lists,
-    createList,
-  }),
-}))
-
 vi.mock('@/application/use-genres', () => ({
   useGenres: () => ({
     genres,
@@ -80,18 +69,12 @@ function createTestI18n() {
         'page.library.title': 'Library',
         'library.tabs.watchlist': 'Watchlist',
         'library.tabs.watched': 'Watched',
-        'library.tabs.lists': 'Lists',
         'library.empty.filtered.title': 'No matches',
         'library.empty.filtered.description': 'Try clearing your filters.',
         'library.empty.watchlist.title': 'Your watchlist is empty',
         'library.empty.watchlist.description': 'Add movies and shows you want to watch later.',
         'library.empty.watched.title': 'Nothing watched yet',
         'library.empty.watched.description': 'Titles you finish will appear here.',
-        'library.empty.list.title': 'This list is empty',
-        'library.empty.list.description': 'Add something to this list.',
-        'library.empty.allLists.title': 'Create your first list',
-        'library.empty.allLists.description': 'Lists help you group titles.',
-        'library.lists.newNamePlaceholder': 'New list name',
         'home.filters.clear': 'Clear filters',
       },
     },
@@ -118,9 +101,8 @@ function renderLibraryScreen() {
         },
         FilterBar: {
           name: 'FilterBar',
-          props: ['showWatchStatus', 'showCustomLists', 'activeFilterCount'],
-          template:
-            '<div data-testid="filter-bar">{{ showWatchStatus }}|{{ showCustomLists }}|{{ activeFilterCount }}</div>',
+          props: ['activeFilterCount'],
+          template: '<div data-testid="filter-bar">{{ activeFilterCount }}</div>',
         },
         EmptyState: {
           name: 'EmptyState',
@@ -140,18 +122,14 @@ describe('LibraryScreen', () => {
       mediaType: 'all',
       ratingMin: 0,
       ratingMax: 5,
-      status: 'all',
-      listIds: [],
     }
     activeFilterCount.value = 0
     entries.value = []
     allEntries.value = []
-    lists.value = []
     genres.value = [{ id: 1, name: 'Action' }]
     language.value = 'en'
     clearFilters.mockReset()
     refresh.mockReset()
-    createList.mockReset()
     fetchGenres.mockReset()
   })
 
@@ -161,7 +139,7 @@ describe('LibraryScreen', () => {
     expect(wrapper.get('h1').text()).toBe('Library')
     expect(fetchGenres).toHaveBeenCalledWith('en')
     expect(wrapper.get('[data-testid="empty-state"] h2').text()).toBe('Your watchlist is empty')
-    expect(wrapper.get('[data-testid="filter-bar"]').text()).toContain('false|true|0')
+    expect(wrapper.get('[data-testid="filter-bar"]').text()).toBe('0')
   })
 
   it('switches to the watched tab and renders the watched empty state', async () => {
@@ -179,8 +157,6 @@ describe('LibraryScreen', () => {
         id: 1,
         title: 'Arrival',
         status: 'watchlist',
-        listIds: [],
-        lists: [],
       },
     ]
     activeFilterCount.value = 2
@@ -193,59 +169,29 @@ describe('LibraryScreen', () => {
     expect(clearFilters).toHaveBeenCalled()
   })
 
-  it('handles custom list selection and renders list-specific entries', async () => {
+  it('renders entries for the active status tab', async () => {
     entries.value = [
       {
         id: 2,
         title: 'Severance',
         status: 'watchlist',
-        listIds: ['list-2'],
-        lists: ['list-2'],
+      },
+      {
+        id: 3,
+        title: 'Andor',
+        status: 'watched',
       },
     ]
     allEntries.value = [...entries.value]
-    lists.value = [
-      { id: 'list-1', name: 'Sci-Fi' },
-      { id: 'list-2', name: 'Office Dramas' },
-    ]
 
     const wrapper = renderLibraryScreen()
 
-    wrapper.findComponent({ name: 'TabToggle' }).vm.$emit('update:active-tab', 'lists')
-    await nextTick()
+    expect(wrapper.get('[data-testid="entry-grid"]').text()).toBe('1')
 
-    expect(wrapper.text()).toContain('Sci-Fi')
-    expect(wrapper.text()).toContain('Office Dramas')
-    expect(wrapper.get('[data-testid="empty-state"] h2').text()).toBe('This list is empty')
-    expect(wrapper.get('[data-testid="filter-bar"]').text()).toContain('true|false')
-
-    await wrapper
-      .findAll('button')
-      .find((button) => button.text() === 'Office Dramas')
-      ?.trigger('click')
+    wrapper.findComponent({ name: 'TabToggle' }).vm.$emit('update:active-tab', 'watched')
     await nextTick()
 
     expect(wrapper.get('[data-testid="entry-grid"]').text()).toBe('1')
-  })
-
-  it('renders the no-lists state and creates a new list from the form', async () => {
-    const wrapper = renderLibraryScreen()
-
-    wrapper.findComponent({ name: 'TabToggle' }).vm.$emit('update:active-tab', 'lists')
-    await nextTick()
-
-    expect(wrapper.get('[data-testid="empty-state"] h2').text()).toBe('Create your first list')
-
-    const input = wrapper.get('input[type="text"]')
-    await input.setValue('   ')
-    await wrapper.get('form').trigger('submit')
-    expect(createList).not.toHaveBeenCalled()
-
-    await input.setValue('Favorites')
-    await wrapper.get('form').trigger('submit')
-
-    expect(createList).toHaveBeenCalledWith('Favorites')
-    expect(refresh).toHaveBeenCalled()
   })
 
   it('updates sort and filter state from child v-model emissions', async () => {

@@ -17,7 +17,6 @@ describe('useLibraryEntry', () => {
     rating: 0,
     favorite: false,
     status: 'none',
-    lists: [],
     tags: [],
     notes: '',
     watchDates: [],

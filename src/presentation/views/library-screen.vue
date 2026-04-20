@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import { Bookmark, Eye, List as ListIcon, Plus, X } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { Bookmark, Eye, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useLibraryEntries } from '@/application/use-library-entries'
-import { useLists } from '@/application/use-lists'
 import { useLibraryFilters } from '@/application/use-library-filters'
 import { useSort } from '@/application/use-sort'
 import { useGenres } from '@/application/use-genres'
@@ -17,19 +16,16 @@ import SortDropdown from '@/presentation/components/common/sort-dropdown.vue'
 const { t } = useI18n()
 const { filters, activeFilterCount, clearFilters } = useLibraryFilters()
 const { sortField, sortOrder } = useSort()
-const { entries, refresh, allEntries } = useLibraryEntries(filters, sortField, sortOrder)
-const { lists, createList } = useLists()
+const { entries, allEntries } = useLibraryEntries(filters, sortField, sortOrder)
 const { genres, fetchGenres } = useGenres()
 const { language } = useSettings()
 
-type TabId = 'watchlist' | 'watched' | 'lists'
+type TabId = 'watchlist' | 'watched'
 const activeTab = ref<TabId>('watchlist')
-const selectedListId = ref<string | null>(null)
 
 const tabs = [
   { id: 'watchlist', label: t('library.tabs.watchlist') },
   { id: 'watched', label: t('library.tabs.watched') },
-  { id: 'lists', label: t('library.tabs.lists') },
 ]
 
 /**
@@ -38,13 +34,9 @@ const tabs = [
 const filteredEntries = computed(() => {
   if (activeTab.value === 'watchlist') {
     return entries.value.filter((e) => e.status === 'watchlist')
-  } else if (activeTab.value === 'watched') {
-    return entries.value.filter((e) => e.status === 'watched')
-  } else if (activeTab.value === 'lists' && selectedListId.value) {
-    const listId = selectedListId.value
-    return entries.value.filter((e) => e.listIds.includes(listId))
   }
-  return []
+
+  return entries.value.filter((e) => e.status === 'watched')
 })
 
 /**
@@ -54,25 +46,10 @@ const isBaseScopeEmpty = computed(() => {
   const allData = allEntries.value // Use already fetched entries
   if (activeTab.value === 'watchlist') {
     return !allData.some((e) => e.status === 'watchlist')
-  } else if (activeTab.value === 'watched') {
-    return !allData.some((e) => e.status === 'watched')
-  } else if (activeTab.value === 'lists' && selectedListId.value) {
-    const listId = selectedListId.value
-    return !allData.some((e) => e.lists.includes(listId))
   }
-  return true
-})
 
-// Set initial list if lists exist and tab is 'lists'
-watch(
-  [activeTab, lists],
-  ([newTab, newLists]) => {
-    if (newTab === 'lists' && !selectedListId.value && newLists.length > 0) {
-      selectedListId.value = newLists[0].id
-    }
-  },
-  { immediate: true },
-)
+  return !allData.some((e) => e.status === 'watched')
+})
 
 onMounted(() => {
   fetchGenres(language.value)
@@ -83,26 +60,6 @@ onMounted(() => {
  */
 function handleTabChange(tabId: string) {
   activeTab.value = tabId as TabId
-}
-
-/**
- * Handles list selection.
- */
-function selectList(id: string) {
-  selectedListId.value = id
-}
-
-const newListName = ref('')
-
-/**
- * Handles creating a new list.
- */
-function handleCreateList() {
-  const name = newListName.value.trim()
-  if (!name) return
-  createList(name)
-  newListName.value = ''
-  refresh()
 }
 </script>
 
@@ -123,32 +80,12 @@ function handleCreateList() {
       <FilterBar
         v-model="filters"
         :genres="genres"
-        :lists="lists"
         :active-filter-count="activeFilterCount"
         show-genre
         show-media-type
         show-rating-range
-        :show-watch-status="activeTab === 'lists'"
-        :show-custom-lists="activeTab !== 'lists'"
         @clear="clearFilters"
       />
-    </div>
-
-    <!-- Custom Lists Selector (only visible in 'lists' tab) -->
-    <div v-if="activeTab === 'lists' && lists.length > 0" class="flex flex-wrap gap-2">
-      <button
-        v-for="list in lists"
-        :key="list.id"
-        class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
-        :class="
-          selectedListId === list.id
-            ? 'bg-accent text-white'
-            : 'bg-surface text-slate-400 hover:text-white'
-        "
-        @click="selectList(list.id)"
-      >
-        {{ list.name }}
-      </button>
     </div>
 
     <!-- Main Content -->
@@ -193,39 +130,6 @@ function handleCreateList() {
             :title="t('library.empty.watched.title')"
             :description="t('library.empty.watched.description')"
           />
-
-          <!-- List Empty (specific list) -->
-          <EmptyState
-            v-else-if="activeTab === 'lists' && selectedListId"
-            :icon="ListIcon"
-            :title="t('library.empty.list.title')"
-            :description="t('library.empty.list.description')"
-          />
-
-          <!-- No Lists at all -->
-          <div v-else-if="activeTab === 'lists' && lists.length === 0" class="py-12">
-            <EmptyState
-              :icon="ListIcon"
-              :title="t('library.empty.allLists.title')"
-              :description="t('library.empty.allLists.description')"
-            >
-              <form class="mt-6 flex w-full max-w-xs gap-2" @submit.prevent="handleCreateList">
-                <input
-                  v-model="newListName"
-                  type="text"
-                  class="flex-1 rounded-lg border border-white/10 bg-surface px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-accent focus:outline-none"
-                  :placeholder="t('library.lists.newNamePlaceholder')"
-                />
-                <button
-                  type="submit"
-                  class="flex size-10 items-center justify-center rounded-lg bg-accent text-white transition-colors hover:bg-accent/80"
-                  :disabled="!newListName.trim()"
-                >
-                  <Plus class="size-5" />
-                </button>
-              </form>
-            </EmptyState>
-          </div>
         </template>
       </div>
     </main>

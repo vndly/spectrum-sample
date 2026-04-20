@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
@@ -9,7 +9,6 @@ import { useLibraryEntry } from '@/application/use-library-entry'
 import { useSettings } from '@/application/use-settings'
 import { useToast } from '@/presentation/composables/use-toast'
 import { useRouter } from 'vue-router'
-import * as storageService from '@/infrastructure/storage.service'
 
 const push = vi.fn()
 const mockShowData = ref<any>(null)
@@ -26,7 +25,6 @@ const libraryEntry = {
     rating: 4,
     favorite: true,
     status: 'watched',
-    lists: ['list-1'],
   }),
   setRating,
   toggleFavorite,
@@ -57,16 +55,6 @@ vi.mock('@/application/use-settings', () => ({
 vi.mock('@/presentation/composables/use-toast', () => ({
   useToast: vi.fn(),
 }))
-
-vi.mock('@/infrastructure/storage.service', async () => {
-  const actual = await vi.importActual<typeof import('@/infrastructure/storage.service')>(
-    '@/infrastructure/storage.service',
-  )
-  return {
-    ...actual,
-    updateEntryLists: vi.fn(),
-  }
-})
 
 const i18n = createI18n({
   legacy: false,
@@ -113,13 +101,12 @@ function renderShowScreen() {
           template: '<div data-testid="synopsis">{{ overview }}</div>',
         },
         ActionButtons: {
-          props: ['shareUrl', 'hasLists', 'status'],
+          props: ['shareUrl', 'status'],
           template: `
             <div data-testid="action-buttons">
               <button data-testid="toggle-favorite" @click="$emit('toggle-favorite')"></button>
               <button data-testid="status-none" @click="$emit('update-status', 'none')"></button>
-              <button data-testid="manage-lists" @click="$emit('manage-lists')"></button>
-              <button data-testid="share" @click="$emit('share')">{{ shareUrl }}|{{ hasLists }}|{{ status }}</button>
+              <button data-testid="share" @click="$emit('share')">{{ shareUrl }}|{{ status }}</button>
             </div>
           `,
         },
@@ -133,11 +120,6 @@ function renderShowScreen() {
         StreamingBadges: {
           props: ['region'],
           template: '<div data-testid="streaming-badges">{{ region }}</div>',
-        },
-        ListManagerModal: {
-          props: ['modelValue', 'entryLists'],
-          template:
-            '<div data-testid="list-manager-modal">{{ modelValue }}|{{ entryLists.join(\',\') }}<button data-testid="emit-update-lists" @click="$emit(\'update:entry-lists\', [\'list-2\'])"></button><button data-testid="emit-close-modal" @click="$emit(\'update:modelValue\', false)"></button></div>',
         },
         DetailSkeleton: {
           template: '<div data-testid="detail-skeleton"></div>',
@@ -161,7 +143,6 @@ describe('ShowScreen', () => {
       rating: 4,
       favorite: true,
       status: 'watched',
-      lists: ['list-1'],
     }
     push.mockReset()
     mockRefresh.mockReset()
@@ -180,7 +161,6 @@ describe('ShowScreen', () => {
     vi.mocked(useLibraryEntry).mockReturnValue(libraryEntry as any)
     vi.mocked(useSettings).mockReturnValue({ preferredRegion } as any)
     vi.mocked(useToast).mockReturnValue({ addToast } as any)
-    vi.mocked(storageService.updateEntryLists).mockReset()
   })
 
   afterEach(() => {
@@ -221,7 +201,7 @@ describe('ShowScreen', () => {
     expect(push).toHaveBeenCalledWith('/')
   })
 
-  it('renders content and routes rating, favorite, status, and list updates to the library entry', async () => {
+  it('renders content and routes rating, favorite, and status updates to the library entry', async () => {
     mockLoading.value = false
     mockShowData.value = {
       id: 1396,
@@ -250,16 +230,10 @@ describe('ShowScreen', () => {
     await wrapper.get('[data-testid="rating-stars"]').trigger('click')
     await wrapper.get('[data-testid="toggle-favorite"]').trigger('click')
     await wrapper.get('[data-testid="status-none"]').trigger('click')
-    await wrapper.get('[data-testid="manage-lists"]').trigger('click')
-    await nextTick()
-    await wrapper.get('[data-testid="emit-update-lists"]').trigger('click')
 
     expect(setRating).toHaveBeenCalledWith(5)
     expect(toggleFavorite).toHaveBeenCalled()
     expect(setStatus).toHaveBeenCalledWith('none')
-    expect(wrapper.get('[data-testid="list-manager-modal"]').text()).toContain('true|list-1')
-    expect(storageService.updateEntryLists).toHaveBeenCalledWith(1396, 'tv', ['list-2'])
-    expect(loadEntry).toHaveBeenCalled()
   })
 
   it('uses the native share API when available', async () => {
@@ -382,11 +356,6 @@ describe('ShowScreen', () => {
       undefined,
     )
     expect(wrapper.get('[data-testid="rating-stars"]').text()).toBe('0')
-    expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('false|none')
-
-    await wrapper.get('[data-testid="emit-close-modal"]').trigger('click')
-    await nextTick()
-
-    expect(wrapper.get('[data-testid="list-manager-modal"]').text()).toContain('false|')
+    expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('/show/1396|none')
   })
 })

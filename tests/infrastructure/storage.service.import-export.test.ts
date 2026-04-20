@@ -26,7 +26,6 @@ describe('storageService Import/Export', () => {
     rating: 0,
     favorite: false,
     status: 'none',
-    lists: [],
     tags: [],
     notes: '',
     watchDates: [],
@@ -34,7 +33,7 @@ describe('storageService Import/Export', () => {
   }
 
   describe('exportData', () => {
-    it('should generate a valid export object containing library, lists, tags, and settings', async () => {
+    it('should generate a valid export object containing library, tags, and settings', async () => {
       // Setup mock data in localStorage
       const mockSettings = {
         theme: 'dark',
@@ -56,10 +55,11 @@ describe('storageService Import/Export', () => {
       expect(exported.schemaVersion).toBe(1)
       expect(exported.settings).toEqual(mockSettings)
       expect(Object.values(exported.library)).toHaveLength(1)
+      expect('lists' in exported).toBe(false)
       expect(exported.exportedAt).toBeDefined()
     })
 
-    it('should export list records and sorted tags', async () => {
+    it('should export sorted tags', async () => {
       localStorage.setItem(
         'plot-twisted-library',
         JSON.stringify([
@@ -70,20 +70,9 @@ describe('storageService Import/Export', () => {
           },
         ]),
       )
-      localStorage.setItem(
-        'plot-twisted-lists',
-        JSON.stringify([
-          {
-            id: '550e8400-e29b-41d4-a716-446655440001',
-            name: 'Favorites',
-            createdAt: '2026-04-18T10:00:00.000Z',
-          },
-        ]),
-      )
 
       const exported = await exportData()
 
-      expect(exported.lists['550e8400-e29b-41d4-a716-446655440001'].name).toBe('Favorites')
       expect(exported.tags).toEqual(['alpha', 'beta'])
     })
   })
@@ -94,7 +83,6 @@ describe('storageService Import/Export', () => {
       schemaVersion: 1,
       exportedAt: new Date().toISOString(),
       library: { '550-movie': validEntry },
-      lists: {},
       tags: ['action'],
       settings: {
         theme: 'light',
@@ -182,22 +170,29 @@ describe('storageService Import/Export', () => {
       expect(entry.title).not.toContain('<script>')
     })
 
-    it('should sanitize imported list names during merge imports', async () => {
-      const exportWithList = {
+    it('should ignore legacy list data during imports', async () => {
+      const legacyExport = {
         ...validExport,
+        library: {
+          '550-movie': {
+            ...validEntry,
+            lists: ['550e8400-e29b-41d4-a716-446655440001'],
+          },
+        },
         lists: {
           '550e8400-e29b-41d4-a716-446655440001': {
             id: '550e8400-e29b-41d4-a716-446655440001',
-            name: '<b>Favorites</b>',
+            name: 'Legacy list',
             createdAt: '2026-04-18T10:00:00.000Z',
           },
         },
       }
 
-      await importData(exportWithList, 'merge')
-      const storedLists = JSON.parse(localStorage.getItem('plot-twisted-lists') || '[]')
+      await importData(legacyExport, 'merge')
 
-      expect(storedLists[0].name).toBe('Favorites')
+      const storedLibrary = JSON.parse(localStorage.getItem('plot-twisted-library') || '[]')
+      expect(storedLibrary[0]).not.toHaveProperty('lists')
+      expect(localStorage.getItem('plot-twisted-lists')).toBeNull()
     })
   })
 

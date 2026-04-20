@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Heart, Bookmark, Eye, Share2, ExternalLink, List } from 'lucide-vue-next'
+import { Heart, Bookmark, Eye, Share2, ExternalLink } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { WatchStatus } from '@/domain/library.schema'
 
@@ -9,13 +9,11 @@ const props = defineProps<{
   imdbId: string | null
   shareUrl: string
   shareTitle: string
-  hasLists?: boolean
 }>()
 
 const emit = defineEmits<{
   'toggle-favorite': []
   'update-status': [status: WatchStatus]
-  'manage-lists': []
   share: []
 }>()
 
@@ -76,19 +74,6 @@ function handleStatusClick(newStatus: WatchStatus) {
       @click="handleStatusClick('watched')"
     >
       <Eye class="size-5" :class="status === 'watched' ? 'fill-current' : ''" />
-    </button>
-
-    <!-- Manage lists button -->
-    <button
-      type="button"
-      class="flex size-11 items-center justify-center rounded-lg transition-colors"
-      :class="hasLists ? 'bg-accent text-white' : 'bg-surface text-slate-400 hover:text-white'"
-      :aria-label="t('details.actions.manageLists')"
-      :title="t('details.actions.manageLists')"
-      data-testid="manage-lists-button"
-      @click="emit('manage-lists')"
-    >
-      <List class="size-5" />
     </button>
 
     <!-- Share button -->

@@ -57,7 +57,6 @@ describe('useSettings', () => {
       exportedAt: '2026-04-18T10:00:00.000Z',
       schemaVersion: 1,
       library: {},
-      lists: {},
       tags: [],
       settings: baseSettings,
     })
@@ -74,7 +73,6 @@ describe('useSettings', () => {
           exportedAt: '2026-04-18T10:00:00.000Z',
           schemaVersion: 1,
           library: {},
-          lists: {},
           tags: [],
           settings: baseSettings,
         },

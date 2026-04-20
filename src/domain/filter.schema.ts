@@ -37,8 +37,6 @@ export const LibraryFilterStateSchema = z.object({
   mediaType: z.enum(['all', 'movie', 'tv']),
   ratingMin: z.number().min(0).max(5),
   ratingMax: z.number().min(0).max(5),
-  status: z.enum(['watchlist', 'watched', 'none', 'all']),
-  listIds: z.array(z.string()),
 })
 
 /** Inferred type for the library filter state. */
@@ -62,6 +60,4 @@ export const DEFAULT_LIBRARY_FILTER_STATE: LibraryFilterState = {
   mediaType: 'all',
   ratingMin: 0,
   ratingMax: 5,
-  status: 'all',
-  listIds: [],
 }

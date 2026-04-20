@@ -8,11 +8,6 @@ interface Genre {
   name: string
 }
 
-interface CustomList {
-  id: string
-  name: string
-}
-
 interface FilterValues {
   genres: number[]
   mediaType: 'all' | 'movie' | 'tv'
@@ -20,21 +15,16 @@ interface FilterValues {
   yearTo?: number | null
   ratingMin?: number
   ratingMax?: number
-  status?: 'all' | 'watchlist' | 'watched' | 'none'
-  listIds?: string[]
 }
 
 const props = defineProps<{
   genres: Genre[]
-  lists?: CustomList[]
   modelValue: FilterValues
   activeFilterCount: number
   showGenre?: boolean
   showMediaType?: boolean
   showYearRange?: boolean
   showRatingRange?: boolean
-  showWatchStatus?: boolean
-  showCustomLists?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -70,20 +60,6 @@ function toggleGenre(id: number) {
     genres.splice(index, 1)
   }
   emit('update:modelValue', { ...props.modelValue, genres })
-}
-
-/**
- * Toggles a custom list ID in the filter state.
- */
-function toggleList(id: string) {
-  const listIds = [...(props.modelValue.listIds || [])]
-  const index = listIds.indexOf(id)
-  if (index === -1) {
-    listIds.push(id)
-  } else {
-    listIds.splice(index, 1)
-  }
-  emit('update:modelValue', { ...props.modelValue, listIds })
 }
 
 /**
@@ -352,41 +328,6 @@ watch(isGenreOpen, async (open) => {
             })
         "
       />
-    </div>
-
-    <!-- Watch Status (Library Lists View Only) -->
-    <div v-if="showWatchStatus" class="flex overflow-hidden rounded-lg bg-surface">
-      <button
-        v-for="status in ['all', 'watchlist', 'watched', 'none'] as const"
-        :key="status"
-        type="button"
-        class="px-4 py-2 text-sm font-medium transition-colors"
-        :class="[
-          modelValue.status === status
-            ? 'bg-accent text-white'
-            : 'text-slate-400 hover:text-white hover:bg-surface-hover',
-        ]"
-        @click="emit('update:modelValue', { ...modelValue, status })"
-      >
-        {{ t(`library.filters.status.${status}`) }}
-      </button>
-    </div>
-
-    <!-- Custom Lists Multi-Select (Library Watchlist/Watched Tabs Only) -->
-    <div v-if="showCustomLists && lists" class="flex flex-wrap gap-2">
-      <button
-        v-for="list in lists"
-        :key="list.id"
-        class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
-        :class="
-          modelValue.listIds?.includes(list.id)
-            ? 'bg-accent text-white'
-            : 'bg-surface text-slate-400 hover:text-white'
-        "
-        @click="toggleList(list.id)"
-      >
-        {{ list.name }}
-      </button>
     </div>
 
     <!-- Clear All -->

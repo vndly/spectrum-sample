@@ -18,7 +18,6 @@ describe('useLibraryEntries', () => {
     rating: 0,
     favorite: false,
     status: 'none',
-    lists: [],
     tags: [],
     notes: '',
     watchDates: [],
@@ -55,24 +54,6 @@ describe('useLibraryEntries', () => {
       // Assert
       expect(watchlist).toHaveLength(2)
       expect(watched).toHaveLength(1)
-    })
-  })
-
-  describe('getEntriesByList', () => {
-    it('returns entries filtered by list ID (L-05)', () => {
-      // Arrange
-      saveLibraryEntry(createEntry({ id: 1, lists: ['list-1'] }))
-      saveLibraryEntry(createEntry({ id: 2, lists: ['list-1', 'list-2'] }))
-      saveLibraryEntry(createEntry({ id: 3, lists: ['list-2'] }))
-
-      // Act
-      const { getEntriesByList } = useLibraryEntries()
-      const list1 = getEntriesByList('list-1')
-      const list2 = getEntriesByList('list-2')
-
-      // Assert
-      expect(list1).toHaveLength(2)
-      expect(list2).toHaveLength(2)
     })
   })
 

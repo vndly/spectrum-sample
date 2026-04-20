@@ -1,19 +1,19 @@
 # Plan: Library Management, Sorting, and Filtering
 
-Comprehensive implementation of library collections, status tracking, and advanced client-side sorting/filtering.
+Comprehensive implementation of library status tracking and advanced client-side sorting/filtering.
 
 ## Phase 1: Core Management (Infrastructure & Domain)
 
-1. [x] **Define schemas**: Add `ListSchema` and `LibraryEntrySchema` with `voteAverage` and `releaseDate`.
-2. [x] **Storage Service**: Implement CRUD for lists and list-entry associations.
+1. [x] **Define schemas**: Add `LibraryEntrySchema` with `voteAverage` and `releaseDate`.
+2. [x] **Storage Service**: Implement CRUD for library entries.
 3. [x] **Unit Tests**: Verify schema validation and storage logic.
 
-## Phase 2: Collections (Application & Presentation)
+## Phase 2: Status Tabs (Application & Presentation)
 
-1. [x] **Composables**: Create `useLibraryEntries` and `useLists`.
-2. [x] **UI Components**: Create `TabToggle`, `EntryGrid`, and `ListManagerModal`.
+1. [x] **Composables**: Create `useLibraryEntries`.
+2. [x] **UI Components**: Create `TabToggle` and `EntryGrid`.
 3. [x] **Integration**: Implement `LibraryScreen` with tab-based filtering.
-4. [x] **Verification**: Verify status toggling and list management.
+4. [x] **Verification**: Verify status toggling.
 
 ## Phase 3: Sorting and Filtering (Domain & Infrastructure)
 

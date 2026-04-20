@@ -28,7 +28,7 @@ Users have different preferences for UI appearance and content language. They al
 
 - **R-01a: App Scaffolding**: Provides the sidebar/navigation and global layouts.
 - **02-home: Home Screen**: Uses the 'Home Section' and 'Layout Mode' settings.
-- **R-05: Library Management: Collections, Sorting, and Filtering**: Provides the data (library entries, lists, tags) for import/export.
+- **R-05: Library Management: Sorting and Filtering**: Provides the data (library entries and tags) for import/export.
 - **FEAT-06: Release Calendar Sync**: Uses the 'Region' setting for filtering.
 
 ## Decisions
@@ -81,7 +81,6 @@ The export produces a single JSON file containing the full user data set:
   "exportedAt": "2026-03-21T12:00:00.000Z",
   "schemaVersion": 1,
   "library": { "550": { "...LibraryEntry" } },
-  "lists": { "uuid-1": { "...CustomList" } },
   "tags": ["horror", "90s"],
   "settings": { "...Settings" }
 }
@@ -94,13 +93,13 @@ The export produces a single JSON file containing the full user data set:
 
 1. Parse as JSON; reject if malformed.
 2. Validate top-level structure with Zod.
-3. Validate each `LibraryEntry` and `CustomList` individually.
+3. Validate each `LibraryEntry` individually.
 4. Run schema migrations if `schemaVersion` is old.
 5. Report skipped entries with reasons.
 
 ### Merge vs. Overwrite
 
-- **Merge**: Existing data kept. Imported library entries and lists replace duplicates (by ID/UUID). Tags are unioned. Settings are ignored.
+- **Merge**: Existing data kept. Imported library entries replace duplicates by ID. Tags are unioned. Settings are ignored.
 - **Overwrite**: ALL existing data is replaced. Requires a destructive action confirmation.
 
 ## Non-Functional Requirements

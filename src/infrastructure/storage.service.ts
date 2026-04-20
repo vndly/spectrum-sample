@@ -1,16 +1,16 @@
-import type { LibraryEntry, MediaType, List } from '@/domain/library.schema'
-import { LibraryEntrySchema, ListSchema } from '@/domain/library.schema'
+import type { LibraryEntry, MediaType } from '@/domain/library.schema'
+import { LibraryEntrySchema } from '@/domain/library.schema'
 import type { Settings, ExportData } from '@/domain/settings.schema'
 import { SettingsSchema, DEFAULT_SETTINGS, ImportDataSchema } from '@/domain/settings.schema'
 
 /** Storage key for the library data in localStorage. */
 export const STORAGE_KEY = 'plot-twisted-library'
 
-/** Storage key for custom lists in localStorage. */
-export const STORAGE_KEY_LISTS = 'plot-twisted-lists'
-
 /** Storage key for settings in localStorage. */
 export const STORAGE_KEY_SETTINGS = 'plot-twisted-settings'
+
+/** Legacy storage key for data removed with the list feature. */
+const LEGACY_LISTS_STORAGE_KEY = 'plot-twisted-lists'
 
 /**
  * Retrieves user settings from localStorage.
@@ -18,6 +18,8 @@ export const STORAGE_KEY_SETTINGS = 'plot-twisted-settings'
  * @returns Validated user settings
  */
 export function getSettings(): Settings {
+  localStorage.removeItem(LEGACY_LISTS_STORAGE_KEY)
+
   const stored = localStorage.getItem(STORAGE_KEY_SETTINGS)
 
   let settings: Partial<Settings> = {}
@@ -79,10 +81,10 @@ export function getAllLibraryEntries(): LibraryEntry[] {
       return []
     }
 
-    // Validate each entry, filter out invalid ones
-    return parsed.filter((entry) => {
+    // Validate and normalize each entry, stripping legacy fields.
+    return parsed.flatMap((entry) => {
       const result = LibraryEntrySchema.safeParse(entry)
-      return result.success
+      return result.success ? [result.data] : []
     })
   } catch {
     return []
@@ -132,114 +134,17 @@ export function removeLibraryEntry(id: number, mediaType: MediaType): void {
 }
 
 /**
- * Retrieves all custom lists from localStorage.
- * @returns Array of validated lists, or empty array if none exist
- */
-export function getAllLists(): List[] {
-  const stored = localStorage.getItem(STORAGE_KEY_LISTS)
-  if (!stored) {
-    return []
-  }
-
-  try {
-    const parsed = JSON.parse(stored)
-    if (!Array.isArray(parsed)) {
-      return []
-    }
-
-    return parsed.filter((list) => {
-      const result = ListSchema.safeParse(list)
-      return result.success
-    })
-  } catch {
-    return []
-  }
-}
-
-/**
- * Saves or updates a custom list in localStorage.
- * @param list - The list to save
- */
-export function saveList(list: List): void {
-  const lists = getAllLists()
-  const existingIndex = lists.findIndex((l) => l.id === list.id)
-
-  if (existingIndex >= 0) {
-    lists[existingIndex] = list
-  } else {
-    lists.push(list)
-  }
-
-  localStorage.setItem(STORAGE_KEY_LISTS, JSON.stringify(lists))
-}
-
-/**
- * Removes a custom list from localStorage.
- * @param id - The UUID of the list to remove
- */
-export function removeList(id: string): void {
-  const lists = getAllLists()
-  const filtered = lists.filter((l) => l.id !== id)
-  localStorage.setItem(STORAGE_KEY_LISTS, JSON.stringify(filtered))
-}
-
-/**
- * Retrieves library entries associated with a specific list ID.
- * @param listId - The UUID of the custom list
- * @returns Array of associated library entries
- */
-export function getListEntries(listId: string): LibraryEntry[] {
-  const entries = getAllLibraryEntries()
-  return entries.filter((entry) => entry.lists.includes(listId))
-}
-
-/**
- * Updates the associated lists for a specific library entry.
- * @param id - TMDB ID
- * @param mediaType - Media type
- * @param listIds - New array of list IDs
- */
-export function updateEntryLists(id: number, mediaType: MediaType, listIds: string[]): void {
-  const entry = getLibraryEntry(id, mediaType)
-  if (entry) {
-    saveLibraryEntry({ ...entry, lists: listIds })
-  }
-}
-
-/**
- * Removes a list ID from all library entries that contain it.
- * Used for maintaining integrity when a list is deleted.
- * @param listId - The UUID of the deleted list
- */
-export function removeListFromAllEntries(listId: string): void {
-  const entries = getAllLibraryEntries()
-  const updated = entries.map((entry) => {
-    if (entry.lists.includes(listId)) {
-      return { ...entry, lists: entry.lists.filter((id) => id !== listId) }
-    }
-    return entry
-  })
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-}
-
-/**
  * Generates an export object containing all user data.
  * @returns The export data object
  */
 export async function exportData(): Promise<ExportData> {
   const libraryEntries = getAllLibraryEntries()
-  const lists = getAllLists()
   const settings = getSettings()
 
   // Convert arrays to records as expected by schema
   const libraryRecord: Record<string, LibraryEntry> = {}
   libraryEntries.forEach((entry) => {
     libraryRecord[`${entry.id}-${entry.mediaType}`] = entry
-  })
-
-  const listRecord: Record<string, List> = {}
-  lists.forEach((list) => {
-    listRecord[list.id] = list
   })
 
   // Extract all unique tags
@@ -253,7 +158,6 @@ export async function exportData(): Promise<ExportData> {
     exportedAt: new Date().toISOString(),
     schemaVersion: 1,
     library: libraryRecord,
-    lists: listRecord,
     tags: Array.from(tags).sort(),
     settings,
   }
@@ -293,33 +197,21 @@ export async function importData(data: unknown, strategy: 'merge' | 'overwrite')
     tags: entry.tags.map(sanitize),
   })
 
-  const sanitizeList = (list: List): List => ({
-    ...list,
-    name: sanitize(list.name),
-  })
-
   // 4. Apply strategy
   if (strategy === 'overwrite') {
     // Clear existing
     localStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem(STORAGE_KEY_LISTS)
     localStorage.removeItem(STORAGE_KEY_SETTINGS)
 
     // Save imported
     const libraryEntries = Object.values(validatedData.library).map(sanitizeEntry)
     localStorage.setItem(STORAGE_KEY, JSON.stringify(libraryEntries))
 
-    const lists = Object.values(validatedData.lists).map(sanitizeList)
-    localStorage.setItem(STORAGE_KEY_LISTS, JSON.stringify(lists))
-
     saveSettings(validatedData.settings)
   } else {
     // Merge
     const importedLibrary = Object.values(validatedData.library).map(sanitizeEntry)
     importedLibrary.forEach((entry) => saveLibraryEntry(entry))
-
-    const importedLists = Object.values(validatedData.lists).map(sanitizeList)
-    importedLists.forEach((list) => saveList(list))
 
     // Settings are ignored in merge strategy per requirements
   }

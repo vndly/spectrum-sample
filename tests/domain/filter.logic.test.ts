@@ -243,7 +243,6 @@ describe('filter.logic', () => {
       rating: 4,
       favorite: false,
       status: 'watchlist',
-      lists: ['list-1'],
       tags: [],
       notes: '',
       watchDates: [],
@@ -303,32 +302,12 @@ describe('filter.logic', () => {
       ).toBe(false)
     })
 
-    it('filters by status', () => {
-      expect(
-        matchesLibraryFilters(item, { ...DEFAULT_LIBRARY_FILTER_STATE, status: 'watchlist' }),
-      ).toBe(true)
-      expect(
-        matchesLibraryFilters(item, { ...DEFAULT_LIBRARY_FILTER_STATE, status: 'watched' }),
-      ).toBe(false)
-    })
-
-    it('filters by custom list', () => {
-      expect(
-        matchesLibraryFilters(item, { ...DEFAULT_LIBRARY_FILTER_STATE, listIds: ['list-1'] }),
-      ).toBe(true)
-      expect(
-        matchesLibraryFilters(item, { ...DEFAULT_LIBRARY_FILTER_STATE, listIds: ['list-2'] }),
-      ).toBe(false)
-    })
-
     it('counts active filters correctly', () => {
       expect(countActiveFilters(DEFAULT_LIBRARY_FILTER_STATE)).toBe(0)
       expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, genres: [28] })).toBe(1)
       expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, mediaType: 'movie' })).toBe(1)
       expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, ratingMin: 1 })).toBe(1)
       expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, ratingMax: 4 })).toBe(1)
-      expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, status: 'watchlist' })).toBe(1)
-      expect(countActiveFilters({ ...DEFAULT_LIBRARY_FILTER_STATE, listIds: ['list-1'] })).toBe(1)
 
       expect(
         countActiveFilters({

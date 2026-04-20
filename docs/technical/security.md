@@ -16,7 +16,7 @@ If token secrecy ever becomes a requirement (e.g., usage-based billing on a diff
 
 ## XSS Prevention
 
-User-provided strings flow into the app in three places: search queries, library entry fields (notes, tags), and custom list names.
+User-provided strings flow into the app through search queries and library entry fields such as notes and tags.
 
 **Defenses:**
 
@@ -28,7 +28,7 @@ No additional sanitization library (e.g., DOMPurify) is needed because user stri
 
 ## localStorage Trust Model
 
-All user data (library entries, custom lists, tags, settings) is stored in the browser's localStorage.
+All user data (library entries, tags, and settings) is stored in the browser's localStorage.
 
 **Properties:**
 

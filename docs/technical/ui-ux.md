@@ -83,7 +83,7 @@ The most-used component across Home, Recommendations, Library, and search result
 
 ### Tab Toggle
 
-Horizontal row of text tabs (e.g., Library: Watchlist / Watched / Lists).
+Horizontal row of text tabs (e.g., Library: Watchlist / Watched).
 
 - Active tab: white text with underline or bold weight.
 - Inactive tabs: muted gray text.

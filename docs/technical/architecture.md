@@ -18,7 +18,7 @@ src/
 │   │   ├── common/            # Reusable UI pieces (cards, search bar, filters)
 │   │   ├── home/              # Home screen, search results, trending/popular
 │   │   ├── details/           # Movie/show detail view and subcomponents
-│   │   ├── library/           # Watchlist, watched, custom lists
+│   │   ├── library/           # Watchlist and watched views
 │   │   ├── stats/             # Charts and analytics
 │   │   ├── recommendations/   # Recommendation views
 │   │   ├── calendar/          # Release calendar
@@ -124,16 +124,16 @@ User clicks "Add to Watchlist"
 
 Routes are defined in `src/presentation/router.ts` using Vue Router with `createWebHistory()` for clean URLs (no hash fragments).
 
-| Path               | View             | Purpose                          |
-| ------------------ | ---------------- | -------------------------------- |
-| `/`                | Home             | Search bar, trending, popular    |
-| `/movie/:id`       | Movie details    | Full movie info, actions         |
-| `/show/:id`        | TV show details  | Full show info, actions          |
-| `/library`         | Library          | Watchlist, watched, custom lists |
-| `/stats`           | Stats            | Viewing history analytics        |
-| `/recommendations` | Recommendations  | Personalized suggestions         |
-| `/calendar`        | Release calendar | Upcoming releases                |
-| `/settings`        | Settings         | Theme, language, data export     |
+| Path               | View             | Purpose                       |
+| ------------------ | ---------------- | ----------------------------- |
+| `/`                | Home             | Search bar, trending, popular |
+| `/movie/:id`       | Movie details    | Full movie info, actions      |
+| `/show/:id`        | TV show details  | Full show info, actions       |
+| `/library`         | Library          | Watchlist and watched entries |
+| `/stats`           | Stats            | Viewing history analytics     |
+| `/recommendations` | Recommendations  | Personalized suggestions      |
+| `/calendar`        | Release calendar | Upcoming releases             |
+| `/settings`        | Settings         | Theme, language, data export  |
 
 A catch-all route `/:pathMatch(.*)*` redirects unknown paths to `/`.
 
@@ -191,7 +191,7 @@ App.vue
         │       └── Gallery
         │
         ├── /library → LibraryScreen
-        │       ├── TabToggle (watchlist / watched / lists)
+        │       ├── TabToggle (watchlist / watched)
         │       ├── ViewStatsLink (visible when watched entries exist)
         │       ├── FilterBar
         │       ├── SortDropdown
@@ -221,6 +221,6 @@ No external state library (no Pinia/Vuex). State is managed across three tiers:
 
 - **Component-local** — UI toggles, form inputs, modal open/close. Uses `ref()` / `computed()` inside `<script setup>`.
 - **Application-shared** — Library entries, search results, trending data. Uses `ref()` inside composables, shared across components.
-- **Persistent** — User library, lists, tags, settings. Uses localStorage via `storage.service.ts` (see [Data Model](./data-model.md)).
+- **Persistent** — User library, tags, and settings. Uses localStorage via `storage.service.ts` (see [Data Model](./data-model.md)).
 
 All persistent data is validated with Zod on read to guard against corruption or schema drift.

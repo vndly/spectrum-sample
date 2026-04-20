@@ -32,6 +32,14 @@ describe('storage.service settings', () => {
     expect(localStorage.getItem('layoutMode')).toBeNull()
   })
 
+  it('removes legacy list storage data', () => {
+    localStorage.setItem('plot-twisted-lists', JSON.stringify([{ name: 'Old list' }]))
+
+    getSettings()
+
+    expect(localStorage.getItem('plot-twisted-lists')).toBeNull()
+  })
+
   it('merges existing settings with defaults when some fields are missing', () => {
     localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify({ theme: 'light' }))
 

@@ -28,7 +28,6 @@ export const LibraryEntrySchema = z.object({
   rating: z.number().min(0).max(5),
   favorite: z.boolean(),
   status: WatchStatusSchema,
-  lists: z.array(z.string()),
   tags: z.array(z.string()),
   notes: z.string(),
   watchDates: z.array(z.string()),
@@ -44,15 +43,3 @@ export const LibraryEntrySchema = z.object({
 
 /** Inferred type for a library entry. */
 export type LibraryEntry = z.infer<typeof LibraryEntrySchema>
-
-/**
- * Schema for a custom user-defined list.
- */
-export const ListSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  createdAt: z.string().datetime(),
-})
-
-/** Inferred type for a list. */
-export type List = z.infer<typeof ListSchema>

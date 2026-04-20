@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { SortFieldSchema, SortOrderSchema } from './filter.schema'
-import { LibraryEntrySchema, ListSchema } from './library.schema'
+import { LibraryEntrySchema } from './library.schema'
 
 /**
  * Schema for user settings.
@@ -42,7 +42,6 @@ export const ExportDataSchema = z.object({
   exportedAt: z.string().datetime(),
   schemaVersion: z.literal(1),
   library: z.record(z.string(), LibraryEntrySchema),
-  lists: z.record(z.string(), ListSchema),
   tags: z.array(z.string()),
   settings: SettingsSchema,
 })

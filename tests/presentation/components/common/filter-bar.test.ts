@@ -10,8 +10,6 @@ type FilterModel = {
   yearTo: number | null
   ratingMin: number
   ratingMax: number
-  status: 'all' | 'watchlist' | 'watched' | 'none'
-  listIds?: string[]
 }
 
 const addEventListener = vi.spyOn(document, 'addEventListener')
@@ -35,10 +33,6 @@ const i18n = createI18n({
       'home.filters.year.decrement': 'Decrement {label}',
       'home.filters.clear': 'Clear filters',
       'library.filters.rating': 'Rating',
-      'library.filters.status.all': 'All statuses',
-      'library.filters.status.watchlist': 'Watchlist',
-      'library.filters.status.watched': 'Watched',
-      'library.filters.status.none': 'None',
     },
   },
 })
@@ -64,8 +58,6 @@ describe('FilterBar', () => {
       yearTo: null,
       ratingMin: 0,
       ratingMax: 5,
-      status: 'all',
-      listIds: [],
       ...overrides,
     }
   }
@@ -73,15 +65,12 @@ describe('FilterBar', () => {
   function renderFilterBar(
     overrides: Partial<{
       genres: { id: number; name: string }[]
-      lists: { id: string; name: string }[]
       modelValue: FilterModel
       activeFilterCount: number
       showGenre: boolean
       showMediaType: boolean
       showYearRange: boolean
       showRatingRange: boolean
-      showWatchStatus: boolean
-      showCustomLists: boolean
     }> = {},
   ) {
     return mount(FilterBar, {
@@ -89,10 +78,6 @@ describe('FilterBar', () => {
         genres: [
           { id: 1, name: 'Action' },
           { id: 2, name: 'Comedy' },
-        ],
-        lists: [
-          { id: 'list-1', name: 'Favorites' },
-          { id: 'list-2', name: 'Watch Party' },
         ],
         modelValue: createModelValue(),
         activeFilterCount: 0,
@@ -179,14 +164,12 @@ describe('FilterBar', () => {
     expect(emissions?.[3].yearTo).toBe(2024)
   })
 
-  it('emits media, rating, status, list, and clear interactions', async () => {
+  it('emits media, rating, and clear interactions', async () => {
     const wrapper = renderFilterBar({
       showMediaType: true,
       showRatingRange: true,
-      showWatchStatus: true,
-      showCustomLists: true,
       activeFilterCount: 2,
-      modelValue: createModelValue({ listIds: ['list-1'] }),
+      modelValue: createModelValue(),
     })
 
     await wrapper
@@ -200,14 +183,6 @@ describe('FilterBar', () => {
 
     await wrapper
       .findAll('button')
-      .find((button) => button.text() === 'Watched')
-      ?.trigger('click')
-    await wrapper
-      .findAll('button')
-      .find((button) => button.text() === 'Favorites')
-      ?.trigger('click')
-    await wrapper
-      .findAll('button')
       .find((button) => button.text() === 'Clear filters')
       ?.trigger('click')
 
@@ -217,30 +192,20 @@ describe('FilterBar', () => {
     expect(updatePayloads?.some((payload) => payload.mediaType === 'movie')).toBe(true)
     expect(updatePayloads?.some((payload) => payload.ratingMin === 2.5)).toBe(true)
     expect(updatePayloads?.some((payload) => payload.ratingMax === 4.5)).toBe(true)
-    expect(updatePayloads?.some((payload) => payload.status === 'watched')).toBe(true)
-    expect(updatePayloads?.some((payload) => JSON.stringify(payload.listIds) === '[]')).toBe(true)
     expect(wrapper.emitted('clear')).toHaveLength(1)
   })
 
-  it('adds a custom list and uses the current year when stepping an empty year control', async () => {
+  it('uses the current year when stepping an empty year control', async () => {
     const wrapper = renderFilterBar({
       showYearRange: true,
-      showCustomLists: true,
-      modelValue: createModelValue({ yearFrom: null, listIds: undefined }),
+      modelValue: createModelValue({ yearFrom: null }),
     })
 
-    await wrapper
-      .findAll('button')
-      .find((button) => button.text() === 'Favorites')
-      ?.trigger('click')
     await wrapper.get('[data-testid="year-from-increment"]').trigger('click')
 
     const updatePayloads = wrapper
       .emitted('update:modelValue')
       ?.map(([payload]) => payload as FilterModel)
-    expect(
-      updatePayloads?.some((payload) => JSON.stringify(payload.listIds) === '["list-1"]'),
-    ).toBe(true)
     expect(updatePayloads?.some((payload) => payload.yearFrom === 2027)).toBe(true)
   })
 })

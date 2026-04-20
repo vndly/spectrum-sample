@@ -61,20 +61,10 @@ export function useLibraryEntries(
     return allEntries.value.filter((entry) => entry.status === status)
   }
 
-  /**
-   * Filters entries by a custom list ID.
-   * @param listId - The UUID of the custom list
-   * @returns Array of filtered entries
-   */
-  const getEntriesByList = (listId: string) => {
-    return allEntries.value.filter((entry) => entry.lists.includes(listId))
-  }
-
   return {
     allEntries,
     entries,
     refresh,
     getEntriesByStatus,
-    getEntriesByList,
   }
 }

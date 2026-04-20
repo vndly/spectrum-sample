@@ -58,7 +58,7 @@ Users who track their media consumption often want to see high-level metrics, su
 **Out of Scope:**
 
 - Comparison with global community stats.
-- Advanced filtering of stats (e.g., stats for a specific custom list).
+- Advanced filtering of stats.
 - Exporting stats as images or PDF.
 - Historical stats beyond the current year (deferred).
 

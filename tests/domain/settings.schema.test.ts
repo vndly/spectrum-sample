@@ -48,7 +48,6 @@ describe('Settings Domain Schemas', () => {
       rating: 0,
       favorite: false,
       status: 'none',
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],
@@ -60,7 +59,6 @@ describe('Settings Domain Schemas', () => {
       exportedAt: new Date().toISOString(),
       schemaVersion: 1,
       library: { '1-movie': validEntry },
-      lists: {},
       tags: ['test'],
       settings: {
         theme: 'dark',
@@ -93,7 +91,6 @@ describe('Settings Domain Schemas', () => {
         exportedAt: new Date().toISOString(),
         schemaVersion: 1,
         library: {},
-        lists: {},
         tags: [],
         settings: {
           theme: 'dark',

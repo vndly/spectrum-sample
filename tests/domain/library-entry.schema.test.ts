@@ -41,7 +41,7 @@ describe('LibraryEntrySchema', () => {
       rating: 5,
       favorite: true,
       status: 'watched',
-      lists: ['favorites', 'action'],
+      legacyField: 'ignored',
       tags: ['classic', 'thriller'],
       notes: 'Great movie!',
       watchDates: ['2024-01-15', '2024-06-20'],
@@ -58,7 +58,7 @@ describe('LibraryEntrySchema', () => {
     expect(result.rating).toBe(5)
     expect(result.favorite).toBe(true)
     expect(result.status).toBe('watched')
-    expect(result.lists).toHaveLength(2)
+    expect('legacyField' in result).toBe(false)
     expect(result.tags).toHaveLength(2)
   })
 
@@ -71,7 +71,6 @@ describe('LibraryEntrySchema', () => {
       posterPath: null,
       favorite: false,
       status: 'none',
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],
@@ -98,7 +97,6 @@ describe('LibraryEntrySchema', () => {
       posterPath: null,
       rating: 0,
       favorite: false,
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],
@@ -123,7 +121,6 @@ describe('LibraryEntrySchema', () => {
       rating: 0,
       favorite: false,
       status: 'none',
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],
@@ -148,7 +145,6 @@ describe('LibraryEntrySchema', () => {
       rating: 0,
       favorite: false,
       status: 'none',
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],
@@ -172,7 +168,6 @@ describe('LibraryEntrySchema', () => {
       rating: 0,
       favorite: false,
       status: 'none',
-      lists: [],
       tags: [],
       notes: '',
       watchDates: [],

@@ -104,7 +104,6 @@ describe('StatsScreen', () => {
           genreIds: [28],
           watchDates: ['2026-01-01'],
           addedAt: '2026-01-01',
-          lists: [],
           favorite: false,
           tags: [],
           notes: '',

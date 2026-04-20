@@ -15,7 +15,6 @@ export interface LibraryViewItem {
   voteAverage?: number
   rating: number
   status: 'watchlist' | 'watched' | 'none'
-  listIds: string[]
   genreIds: number[]
   addedAt: string
 }
@@ -36,7 +35,6 @@ export function toLibraryViewItem(entry: LibraryEntry): LibraryViewItem {
     voteAverage: entry.voteAverage,
     rating: entry.rating,
     status: entry.status,
-    listIds: entry.lists,
     genreIds: entry.genreIds || [],
     addedAt: entry.addedAt,
   }
@@ -65,19 +63,6 @@ export function matchesLibraryFilters(item: LibraryViewItem, filters: LibraryFil
   // Rating Range Filter
   if (item.rating < filters.ratingMin || item.rating > filters.ratingMax) {
     return false
-  }
-
-  // Status Filter (Only on Lists view, but the logic can be here)
-  if (filters.status !== 'all' && item.status !== filters.status) {
-    return false
-  }
-
-  // Custom List Filter
-  if (filters.listIds.length > 0) {
-    const isInAnyList = filters.listIds.some((id) => item.listIds.includes(id))
-    if (!isInAnyList) {
-      return false
-    }
   }
 
   return true
@@ -125,8 +110,6 @@ export function countActiveFilters(filters: LibraryFilterState): number {
   if (filters.genres.length > 0) count++
   if (filters.mediaType !== 'all') count++
   if (filters.ratingMin > 0 || filters.ratingMax < 5) count++
-  if (filters.status !== 'all') count++
-  if (filters.listIds.length > 0) count++
   return count
 }
 

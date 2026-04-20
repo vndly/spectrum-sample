@@ -127,7 +127,6 @@ Additionally, while browse mode provides trending and popular content, users nee
 - Collection/franchise navigation.
 - Similar/recommended titles section (separate feature in roadmap).
 - Server-side filtering (TMDB API filtering).
-- Persistent custom lists (already in Roadmap 05).
 
 ## Functional Requirements
 

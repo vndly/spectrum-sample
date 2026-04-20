@@ -37,23 +37,10 @@ interface LibraryEntry {
   status: 'watchlist' | 'watched' | 'none'
   rating: number // user-assigned rating (0 to 5)
   favorite: boolean
-  lists: string[] // IDs of custom lists this entry belongs to
   tags: string[]
   notes: string
   watchDates: string[]
   addedAt: string // ISO date
-}
-```
-
-### CustomList
-
-User-created list for grouping library entries.
-
-```ts
-interface CustomList {
-  id: string // generated UUID
-  name: string // user-provided name, trimmed + sanitized
-  createdAt: string // ISO date
 }
 ```
 
@@ -83,9 +70,6 @@ All user data is persisted in localStorage as JSON, keyed under a single top-lev
   "library": {
     "[provider-id]": "LibraryEntry"
   },
-  "lists": {
-    "[list-uuid]": "CustomList"
-  },
   "tags": ["tag1", "tag2"],
   "settings": "Settings"
 }
@@ -93,7 +77,6 @@ All user data is persisted in localStorage as JSON, keyed under a single top-lev
 
 - **`schemaVersion`** — integer incremented on breaking changes. `storage.service.ts` checks this on startup and runs migration functions to transform old data shapes.
 - **`library`** — dictionary of `LibraryEntry` objects keyed by provider ID. Only entries the user has explicitly saved appear here.
-- **`lists`** — dictionary of `CustomList` objects keyed by UUID. Membership is tracked on the entry side (`LibraryEntry.lists`).
 - **`tags`** — global tag list. Kept in sync with tags referenced by library entries.
 - **`settings`** — single `Settings` object. Defaults are applied if missing keys are detected during Zod validation.
 
@@ -114,16 +97,16 @@ All user data is persisted in localStorage as JSON, keyed under a single top-lev
 3. Register the function in the `migrations` map keyed by the target version number.
 
 ```ts
-// Example: adding a "color" field to CustomList in version 2
+// Example: adding a required runtime field in version 2
 const migrations: Record<number, (data: unknown) => unknown> = {
   2: migrateV1ToV2,
 }
 
 function migrateV1ToV2(data: SchemaV1): SchemaV2 {
-  const lists = Object.fromEntries(
-    Object.entries(data.lists).map(([id, list]) => [id, { ...list, color: null }]),
+  const library = Object.fromEntries(
+    Object.entries(data.library).map(([id, entry]) => [id, { ...entry, runtime: 0 }]),
   )
-  return { ...data, lists, schemaVersion: 2 }
+  return { ...data, library, schemaVersion: 2 }
 }
 ```
 
@@ -135,7 +118,7 @@ function migrateV1ToV2(data: SchemaV1): SchemaV2 {
 
 ## Storage Limits
 
-Browsers typically enforce a 5–10 MB localStorage quota per origin. The app stores all user data (library entries, custom lists, tags, settings) under a single localStorage key as serialized JSON.
+Browsers typically enforce a 5–10 MB localStorage quota per origin. The app stores user library entries, tags, and settings in localStorage as serialized JSON.
 
 **Current handling:** There is no proactive quota monitoring or `QuotaExceededError` handling. If a write exceeds the browser's limit, the standard error convention applies — a toast notification alerts the user (e.g., "Storage issue detected. Some data may not be saved.").
 

@@ -15,11 +15,9 @@ import ProviderRatingBadge from '@/presentation/components/details/provider-rati
 import Synopsis from '@/presentation/components/details/synopsis.vue'
 import RatingStars from '@/presentation/components/details/rating-stars.vue'
 import ActionButtons from '@/presentation/components/details/action-buttons.vue'
-import ListManagerModal from '@/presentation/components/details/list-manager-modal.vue'
 import DetailSkeleton from '@/presentation/components/details/detail-skeleton.vue'
 import EmptyState from '@/presentation/components/common/empty-state.vue'
 import { AlertCircle } from 'lucide-vue-next'
-import { updateEntryLists } from '@/infrastructure/storage.service'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,7 +30,6 @@ const { data: show, loading, error, refresh } = useShowDetail(showId)
 
 // Library entry composable - initialized once show data is available
 const libraryEntryRef = ref<ReturnType<typeof useLibraryEntry> | null>(null)
-const isListModalOpen = ref(false)
 
 watch(
   show,
@@ -67,10 +64,6 @@ const watchStatus = computed(() => {
   const entry = libraryEntryRef.value?.entry
   return entry?.status ?? 'none'
 })
-const entryLists = computed(() => {
-  const entry = libraryEntryRef.value?.entry
-  return entry?.lists ?? []
-})
 
 /** Whether this is a 404 error. */
 const isNotFound = computed(() => error.value?.message?.includes('404'))
@@ -93,14 +86,6 @@ function handleToggleFavorite() {
 /** Handles status change. */
 function handleUpdateStatus(status: 'watchlist' | 'watched' | 'none') {
   libraryEntryRef.value?.setStatus(status)
-}
-
-/** Handles list update. */
-function handleUpdateLists(lists: string[]) {
-  // Ensure entry exists before updating lists
-  libraryEntryRef.value?.setStatus(watchStatus.value)
-  updateEntryLists(showId.value, 'tv', lists)
-  libraryEntryRef.value?.loadEntry() // Reload from storage
 }
 
 /** Handles share action. */
@@ -210,10 +195,8 @@ function goHome() {
           :imdb-id="null"
           :share-url="shareUrl"
           :share-title="show.name"
-          :has-lists="entryLists.length > 0"
           @toggle-favorite="handleToggleFavorite"
           @update-status="handleUpdateStatus"
-          @manage-lists="isListModalOpen = true"
           @share="handleShare"
         />
 
@@ -226,13 +209,6 @@ function goHome() {
         <!-- Streaming providers -->
         <StreamingBadges :providers="show['watch/providers'].results" :region="preferredRegion" />
       </div>
-
-      <!-- Modals -->
-      <ListManagerModal
-        v-model="isListModalOpen"
-        :entry-lists="entryLists"
-        @update:entry-lists="handleUpdateLists"
-      />
     </template>
   </div>
 </template>

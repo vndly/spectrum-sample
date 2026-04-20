@@ -8,10 +8,9 @@ Feature: LS-05 — Default Sort
     And the sort selection shows "Date Added (Newest First)"
 
     Examples:
-      | Scope                         |
-      | "Watchlist"                   |
-      | "Watched"                     |
-      | "selected custom list Favorites" |
+      | Scope       |
+      | "Watchlist" |
+      | "Watched"   |
 
   Scenario: LS-05-02 — Default sort label is localized in French
     Given my app language is set to "fr"

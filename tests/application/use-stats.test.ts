@@ -41,7 +41,6 @@ describe('useStats', () => {
       title: 'A',
       addedAt: '2026-01-01',
       posterPath: null,
-      lists: [],
       favorite: false,
       tags: [],
       notes: '',
@@ -56,7 +55,6 @@ describe('useStats', () => {
       entries: ref([]) as Ref<LibraryViewItem[]>,
       refresh: vi.fn(),
       getEntriesByStatus: vi.fn(),
-      getEntriesByList: vi.fn(),
     } as unknown as ReturnType<typeof useLibraryEntries>)
 
     vi.mocked(useGenres).mockReturnValue({
@@ -117,7 +115,6 @@ describe('useStats', () => {
           title: 'B',
           addedAt: '2026-02-01',
           posterPath: null,
-          lists: [],
           favorite: false,
           tags: [],
           notes: '',
@@ -126,7 +123,6 @@ describe('useStats', () => {
       entries: ref([]) as Ref<LibraryViewItem[]>,
       refresh: vi.fn(),
       getEntriesByStatus: vi.fn(),
-      getEntriesByList: vi.fn(),
     } as unknown as ReturnType<typeof useLibraryEntries>)
     vi.mocked(useGenres).mockReturnValue({
       genres: ref([
