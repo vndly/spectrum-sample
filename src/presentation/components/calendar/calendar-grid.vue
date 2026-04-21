@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Calendar } from 'lucide-vue-next'
 import { formatDateISO } from '@/domain/calendar.logic'
 import type { MovieListItem } from '@/domain/movie.schema'
 import ReleaseCard from './release-card.vue'
 import SkeletonLoader from '@/presentation/components/common/skeleton-loader.vue'
-import EmptyState from '@/presentation/components/common/empty-state.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
@@ -107,14 +105,6 @@ function isToday(date: Date) {
           </div>
         </template>
       </div>
-
-      <div v-if="!loading && movies.length === 0" class="mt-8">
-        <EmptyState
-          :icon="Calendar"
-          :title="$t('calendar.empty.title')"
-          :description="$t('calendar.empty.description')"
-        />
-      </div>
     </div>
 
     <!-- Mobile List Fallback (< 640px) -->
@@ -153,13 +143,6 @@ function isToday(date: Date) {
             />
           </div>
         </div>
-      </template>
-      <template v-else>
-        <EmptyState
-          :icon="Calendar"
-          :title="$t('calendar.empty.title')"
-          :description="$t('calendar.empty.description')"
-        />
       </template>
     </div>
   </div>

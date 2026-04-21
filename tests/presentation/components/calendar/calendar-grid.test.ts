@@ -122,13 +122,13 @@ describe('CalendarGrid', () => {
     expect(dayCells.some((cell) => cell.classes().includes('ring-teal-500/30'))).toBe(true)
   })
 
-  it('renders empty states when no movies are available', () => {
+  it('does not render an empty state when no movies are available', () => {
     const wrapper = renderCalendarGrid({
       movies: [],
       moviesByDate: {},
     })
 
-    expect(wrapper.findAll('[data-testid="empty-state"]')).toHaveLength(2)
-    expect(wrapper.text()).toContain('No releases this month')
+    expect(wrapper.findAll('[data-testid="empty-state"]')).toHaveLength(0)
+    expect(wrapper.text()).not.toContain('No releases this month')
   })
 })

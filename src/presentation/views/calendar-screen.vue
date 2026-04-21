@@ -22,7 +22,7 @@ function getMonthName(year: number, month: number) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6 px-2 pb-8 pt-2 md:px-3 md:pb-10">
     <!-- Header with Month/Year and Navigation -->
     <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
