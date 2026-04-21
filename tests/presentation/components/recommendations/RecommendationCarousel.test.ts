@@ -30,6 +30,8 @@ const i18n = createI18n({
   messages: {
     en: {
       'recommendations.section.title': 'Because you liked {name}',
+      'recommendations.scrollNext': 'Scroll recommendations right',
+      'recommendations.scrollPrevious': 'Scroll recommendations left',
       'errors.generic': 'Something went wrong',
       'common.retry': 'Retry',
     },
@@ -156,6 +158,50 @@ describe('RecommendationCarousel', () => {
     expect(push).toHaveBeenNthCalledWith(1, '/movie/1')
     expect(push).toHaveBeenNthCalledWith(2, '/show/2')
     expect(push).toHaveBeenNthCalledWith(3, '/movie/1')
+  })
+
+  it('renders scroll controls and scrolls the carousel when clicked', async () => {
+    const wrapper = renderCarousel()
+
+    const scrollContainer = wrapper.get('[data-testid="recommendation-carousel"]')
+      .element as HTMLElement
+    const scrollBy = vi.fn()
+    scrollContainer.scrollBy = scrollBy
+    Object.defineProperty(scrollContainer, 'clientWidth', {
+      configurable: true,
+      value: 600,
+    })
+
+    expect(wrapper.get('[data-testid="recommendation-carousel"]').classes()).toContain(
+      '[scrollbar-width:none]',
+    )
+    expect(wrapper.get('[data-testid="recommendation-scroll-next"]').attributes('aria-label')).toBe(
+      'Scroll recommendations right',
+    )
+    expect(
+      wrapper.get('[data-testid="recommendation-scroll-previous"]').attributes('aria-label'),
+    ).toBe('Scroll recommendations left')
+
+    await wrapper.get('[data-testid="recommendation-scroll-next"]').trigger('click')
+    await wrapper.get('[data-testid="recommendation-scroll-previous"]').trigger('click')
+
+    expect(scrollBy).toHaveBeenNthCalledWith(1, {
+      left: 510,
+      behavior: 'smooth',
+    })
+    expect(scrollBy).toHaveBeenNthCalledWith(2, {
+      left: -510,
+      behavior: 'smooth',
+    })
+  })
+
+  it('hides scroll controls when there is only one recommendation', () => {
+    const wrapper = renderCarousel({
+      items: [movieItem],
+    })
+
+    expect(wrapper.find('[data-testid="recommendation-scroll-next"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="recommendation-scroll-previous"]').exists()).toBe(false)
   })
 
   it('renders fallback text when a recommendation has no poster', () => {

@@ -12,7 +12,7 @@ function handleIntersect(index: number) {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
+  <div class="space-y-8 px-2 pb-8 pt-2 md:px-3 md:pb-10">
     <header class="space-y-2">
       <h2 class="text-2xl font-bold text-white">
         {{ t('recommendations.title') }}

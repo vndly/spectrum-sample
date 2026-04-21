@@ -75,6 +75,8 @@
   "recommendations.trending.title": "Tendances du jour",
   "recommendations.popular.movies.title": "Films populaires",
   "recommendations.popular.shows.title": "Séries populaires",
+  "recommendations.scrollNext": "Faire défiler les recommandations vers la droite",
+  "recommendations.scrollPrevious": "Faire défiler les recommandations vers la gauche",
   "page.calendar.title": "Calendrier",
   "page.home.title": "Accueil",
   "page.library.title": "Bibliothèque",

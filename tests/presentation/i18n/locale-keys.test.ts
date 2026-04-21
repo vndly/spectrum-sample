@@ -117,6 +117,8 @@ const EXPECTED_KEYS = [
   'recommendations.becauseYouWatched',
   'recommendations.popular.movies.title',
   'recommendations.popular.shows.title',
+  'recommendations.scrollNext',
+  'recommendations.scrollPrevious',
   'recommendations.title',
   'recommendations.trending.title',
   'stats.charts.genre.label',

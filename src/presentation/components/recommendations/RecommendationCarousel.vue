@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useIntersectionObserver } from '@/presentation/composables/use-intersection-observer'
 import { buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
@@ -23,8 +24,9 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const { t } = useI18n()
+const sectionRef = ref<HTMLElement | null>(null)
 const carouselRef = ref<HTMLElement | null>(null)
-const { observe, isIntersecting } = useIntersectionObserver(carouselRef)
+const { observe, isIntersecting } = useIntersectionObserver(sectionRef)
 
 onMounted(() => {
   observe()
@@ -51,14 +53,52 @@ function getPosterUrl(item: SearchResultItem) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return buildImageUrl((item as any).poster_path, IMAGE_SIZES.poster.medium)
 }
+
+/**
+ * Scrolls the carousel in the requested direction.
+ */
+function scrollCarousel(direction: 'previous' | 'next') {
+  if (!carouselRef.value) {
+    return
+  }
+
+  const offset = Math.max(carouselRef.value.clientWidth * 0.85, 280)
+  carouselRef.value.scrollBy({
+    left: direction === 'next' ? offset : -offset,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <template>
-  <section ref="carouselRef" class="space-y-4">
-    <h3 class="text-lg font-bold text-white">
-      <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
-      {{ t(titleKey, titleParams as any) }}
-    </h3>
+  <section ref="sectionRef" class="space-y-4">
+    <div class="flex items-center justify-between gap-4">
+      <h3 class="text-lg font-bold text-white">
+        <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
+        {{ t(titleKey, titleParams as any) }}
+      </h3>
+
+      <div v-if="!loading && !error && fetched && items.length > 1" class="flex items-center gap-2">
+        <button
+          data-testid="recommendation-scroll-previous"
+          type="button"
+          :aria-label="t('recommendations.scrollPrevious')"
+          class="flex size-10 items-center justify-center rounded-full border border-slate-700 bg-surface text-slate-300 transition-colors hover:border-teal-500/50 hover:bg-surface-hover hover:text-white"
+          @click="scrollCarousel('previous')"
+        >
+          <ChevronLeft class="size-5" />
+        </button>
+        <button
+          data-testid="recommendation-scroll-next"
+          type="button"
+          :aria-label="t('recommendations.scrollNext')"
+          class="flex size-10 items-center justify-center rounded-full border border-slate-700 bg-surface text-slate-300 transition-colors hover:border-teal-500/50 hover:bg-surface-hover hover:text-white"
+          @click="scrollCarousel('next')"
+        >
+          <ChevronRight class="size-5" />
+        </button>
+      </div>
+    </div>
 
     <!-- Error state -->
     <div
@@ -87,7 +127,12 @@ function getPosterUrl(item: SearchResultItem) {
     <div v-else-if="items.length === 0" class="h-4"></div>
 
     <!-- Scrollable carousel -->
-    <div v-else class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+    <div
+      v-else
+      ref="carouselRef"
+      data-testid="recommendation-carousel"
+      class="flex gap-4 overflow-x-auto pb-4 pr-2 snap-x scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    >
       <div
         v-for="item in items as any[]"
         :key="`${item.media_type}-${item.id}`"
@@ -118,13 +163,3 @@ function getPosterUrl(item: SearchResultItem) {
     </div>
   </section>
 </template>
-
-<style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>

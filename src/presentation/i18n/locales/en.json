@@ -75,6 +75,8 @@
   "recommendations.trending.title": "Trending Today",
   "recommendations.popular.movies.title": "Popular Movies",
   "recommendations.popular.shows.title": "Popular Shows",
+  "recommendations.scrollNext": "Scroll recommendations right",
+  "recommendations.scrollPrevious": "Scroll recommendations left",
   "page.calendar.title": "Calendar",
   "page.home.title": "Home",
   "page.library.title": "Library",

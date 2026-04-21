@@ -109,6 +109,9 @@ describe('RecommendationsScreen', () => {
   it('renders carousels in English and handles intersect events by section index', async () => {
     const wrapper = renderRecommendationsScreen('en')
 
+    expect(wrapper.classes()).toEqual(
+      expect.arrayContaining(['px-2', 'pb-8', 'pt-2', 'md:px-3', 'md:pb-10']),
+    )
     expect(wrapper.get('h2').text()).toBe('Recommended for You')
     expect(wrapper.findAll('[data-testid="recommendation-carousel"]')).toHaveLength(2)
 
