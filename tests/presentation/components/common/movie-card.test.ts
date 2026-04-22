@@ -33,6 +33,8 @@ describe('MovieCard', () => {
     expect(wrapper.text()).toContain('1999')
     expect(wrapper.text()).toContain('8.4')
     expect(wrapper.get('img').attributes('alt')).toBe('Fight Club')
+    expect(wrapper.get('img').attributes('src')).toContain('/w342/fight-club.jpg')
+    expect(wrapper.get('img').attributes('srcset')).toContain('/w500/fight-club.jpg 500w')
   })
 
   it('renders a list TV card with fallback art and media label', () => {

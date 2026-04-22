@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import type { MediaResult } from '@/application/use-browse'
-import { buildImageUrl } from '@/infrastructure/image.helper'
+import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
 
 defineProps<{
@@ -35,7 +35,26 @@ function getTitle(item: MediaResult) {
  * Returns the backdrop URL with fallbacks.
  */
 function getBackdropUrl(item: MediaResult) {
-  return buildImageUrl(item.backdrop_path || item.poster_path, IMAGE_SIZES.backdrop.medium)
+  if (item.backdrop_path) {
+    return buildImageUrl(item.backdrop_path, IMAGE_SIZES.backdrop.large)
+  }
+
+  return buildImageUrl(item.poster_path, IMAGE_SIZES.poster.large)
+}
+
+/**
+ * Returns responsive backdrop candidates for sharper carousel cards.
+ */
+function getBackdropSrcSet(item: MediaResult) {
+  if (item.backdrop_path) {
+    return buildImageSrcSet(item.backdrop_path, [
+      IMAGE_SIZES.backdrop.small,
+      IMAGE_SIZES.backdrop.medium,
+      IMAGE_SIZES.backdrop.large,
+    ])
+  }
+
+  return buildImageSrcSet(item.poster_path, [IMAGE_SIZES.poster.medium, IMAGE_SIZES.poster.large])
 }
 
 /**
@@ -126,6 +145,8 @@ function scrollCarousel(direction: 'previous' | 'next') {
       >
         <img
           :src="getBackdropUrl(item) || ''"
+          :srcset="getBackdropSrcSet(item) || undefined"
+          sizes="256px"
           :alt="getTitle(item)"
           class="size-full object-cover"
           loading="lazy"

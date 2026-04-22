@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useIntersectionObserver } from '@/presentation/composables/use-intersection-observer'
-import { buildImageUrl } from '@/infrastructure/image.helper'
+import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
 import type { SearchResultItem } from '@/domain/search.schema'
 
@@ -52,6 +52,14 @@ function getTitle(item: SearchResultItem) {
 function getPosterUrl(item: SearchResultItem) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return buildImageUrl((item as any).poster_path, IMAGE_SIZES.poster.medium)
+}
+
+function getPosterSrcSet(item: SearchResultItem) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return buildImageSrcSet((item as any).poster_path, [
+    IMAGE_SIZES.poster.medium,
+    IMAGE_SIZES.poster.large,
+  ])
 }
 
 /**
@@ -146,6 +154,8 @@ function scrollCarousel(direction: 'previous' | 'next') {
         <img
           v-if="item.poster_path"
           :src="getPosterUrl(item)!"
+          :srcset="getPosterSrcSet(item)!"
+          sizes="(max-width: 768px) 128px, 160px"
           :alt="getTitle(item)"
           class="size-full object-cover"
           loading="lazy"

@@ -75,6 +75,9 @@ describe('TrendingCarousel', () => {
     expect(wrapper.text()).toContain('Show Name')
     expect(wrapper.findAll('img')).toHaveLength(2)
     expect(wrapper.findAll('img')[0].attributes('src')).toContain('/poster.jpg')
+    expect(wrapper.findAll('img')[0].attributes('src')).toContain('/w500/poster.jpg')
+    expect(wrapper.findAll('img')[0].attributes('srcset')).toContain('/w342/poster.jpg 342w')
+    expect(wrapper.findAll('img')[1].attributes('src')).toContain('/w1280/backdrop2.jpg')
     expect(wrapper.text()).not.toContain('not-a-date')
   })
 

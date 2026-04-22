@@ -16,6 +16,8 @@ describe('HeroBackdrop', () => {
     const img = wrapper.find('[data-testid="backdrop-image"]')
     expect(img.exists()).toBe(true)
     expect(img.attributes('src')).toContain('/backdrop.jpg')
+    expect(img.attributes('src')).toContain('/w1280/backdrop.jpg')
+    expect(img.attributes('srcset')).toContain('/w780/backdrop.jpg 780w')
   })
 
   it('renders gradient overlay (ED-01-02)', () => {

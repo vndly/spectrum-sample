@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { Film, Star } from 'lucide-vue-next'
 import type { MovieListItem } from '@/domain/movie.schema'
 import type { ShowListItem } from '@/domain/show.schema'
-import { buildImageUrl } from '@/infrastructure/image.helper'
+import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
 
 const props = withDefaults(
@@ -51,7 +51,26 @@ const displayRating = computed(() => {
 
 /** Returns the poster URL or null if no poster available. */
 const posterUrl = computed(() => {
-  return buildImageUrl(props.item.poster_path, IMAGE_SIZES.poster.small)
+  const size = props.variant === 'list' ? IMAGE_SIZES.poster.small : IMAGE_SIZES.poster.medium
+  return buildImageUrl(props.item.poster_path, size)
+})
+
+/** Returns responsive poster candidates for high-density displays. */
+const posterSrcSet = computed(() => {
+  return buildImageSrcSet(props.item.poster_path, [
+    IMAGE_SIZES.poster.small,
+    IMAGE_SIZES.poster.medium,
+    IMAGE_SIZES.poster.large,
+  ])
+})
+
+/** Returns the rendered poster size hint for the browser image picker. */
+const posterSizes = computed(() => {
+  if (props.variant === 'list') {
+    return '48px'
+  }
+
+  return '(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 14vw'
 })
 
 /** Returns the media type label. */
@@ -99,6 +118,8 @@ function handleKeydown(event: KeyboardEvent) {
         <img
           v-if="posterUrl"
           :src="posterUrl"
+          :srcset="posterSrcSet || undefined"
+          :sizes="posterSizes"
           :alt="displayTitle"
           loading="lazy"
           class="size-full object-cover"
@@ -136,6 +157,8 @@ function handleKeydown(event: KeyboardEvent) {
           <img
             v-if="posterUrl"
             :src="posterUrl"
+            :srcset="posterSrcSet || undefined"
+            :sizes="posterSizes"
             :alt="displayTitle"
             loading="lazy"
             class="size-full object-cover"

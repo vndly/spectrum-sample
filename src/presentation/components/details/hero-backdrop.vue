@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { buildImageUrl } from '@/infrastructure/image.helper'
+import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
 
 const props = defineProps<{
@@ -11,7 +11,15 @@ const props = defineProps<{
 
 /** Returns the backdrop image URL or null if no backdrop. */
 const backdropUrl = computed(() => {
-  return buildImageUrl(props.backdropPath, IMAGE_SIZES.backdrop.medium)
+  return buildImageUrl(props.backdropPath, IMAGE_SIZES.backdrop.large)
+})
+
+/** Returns responsive backdrop candidates for high-density displays. */
+const backdropSrcSet = computed(() => {
+  return buildImageSrcSet(props.backdropPath, [
+    IMAGE_SIZES.backdrop.medium,
+    IMAGE_SIZES.backdrop.large,
+  ])
 })
 </script>
 
@@ -21,6 +29,8 @@ const backdropUrl = computed(() => {
     <img
       v-if="backdropUrl"
       :src="backdropUrl"
+      :srcset="backdropSrcSet || undefined"
+      sizes="100vw"
       :alt="`Backdrop for ${title}`"
       class="size-full object-cover"
       data-testid="backdrop-image"

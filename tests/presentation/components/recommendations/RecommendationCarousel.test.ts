@@ -149,6 +149,7 @@ describe('RecommendationCarousel', () => {
     expect(wrapper.text()).toContain('Arrival')
     expect(wrapper.text()).toContain('Severance')
     expect(wrapper.find('img')?.attributes('alt')).toBe('Arrival')
+    expect(wrapper.find('img')?.attributes('srcset')).toContain('/w500/arrival.jpg 500w')
 
     const cards = wrapper.findAll('[role="button"]')
     await cards[0].trigger('click')
