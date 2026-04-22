@@ -27,7 +27,12 @@ const appStyles = readFileSync(resolve(process.cwd(), 'src/assets/main.css'), 'u
 const routes = [
   {
     path: '/',
-    component: { template: '<div data-testid="view-home">Home view</div>' },
+    component: {
+      name: 'HomeScreen',
+      data: () => ({ persistedValue: '' }),
+      template:
+        '<div><input data-testid="home-state-input" v-model="persistedValue" /><div data-testid="view-home">Home view {{ persistedValue }}</div></div>',
+    },
     meta: { titleKey: 'page.home.title' },
   },
   {
@@ -193,6 +198,24 @@ describe('AppShell', () => {
 
     // Assert
     expect(wrapper.get('[data-testid="view-home"]').element).toBe(initialView)
+  })
+
+  it('preserves home state after opening a detail route and going back', async () => {
+    // Arrange
+    const { wrapper, router } = await renderAppShell('/')
+    await wrapper.get('[data-testid="home-state-input"]').setValue('fight')
+
+    // Act
+    await router.push('/movie/550')
+    await flushPromises()
+    router.back()
+    await flushPromises()
+
+    // Assert
+    expect(wrapper.get<HTMLInputElement>('[data-testid="home-state-input"]').element.value).toBe(
+      'fight',
+    )
+    expect(wrapper.get('[data-testid="view-home"]').text()).toContain('fight')
   })
 
   // SC-10-03 — Global overlays stack above shell chrome

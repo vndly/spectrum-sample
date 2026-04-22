@@ -22,7 +22,9 @@ const route = useRoute()
       >
         <RouterView v-slot="{ Component }">
           <Transition name="fade" mode="out-in">
-            <component :is="Component" :key="route.path" />
+            <KeepAlive include="HomeScreen">
+              <component :is="Component" :key="route.path" />
+            </KeepAlive>
           </Transition>
         </RouterView>
       </main>

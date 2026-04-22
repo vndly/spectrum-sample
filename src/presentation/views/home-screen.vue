@@ -12,6 +12,10 @@ import SearchResults from '@/presentation/components/home/search-results.vue'
 import TrendingCarousel from '@/presentation/components/home/trending-carousel.vue'
 import PopularGrid from '@/presentation/components/home/popular-grid.vue'
 
+defineOptions({
+  name: 'HomeScreen',
+})
+
 const { t } = useI18n()
 const {
   query,
