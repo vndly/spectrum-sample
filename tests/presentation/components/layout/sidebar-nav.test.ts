@@ -87,12 +87,12 @@ describe('SidebarNav', () => {
     const { wrapper } = await renderSidebarNav('/', 'fr')
 
     // Assert
-    expect(wrapper.get('a[href="/"]').text()).toContain('Accueil')
+    expect(wrapper.get('a[href="/?reset=1"]').text()).toContain('Accueil')
     expect(wrapper.get('a[href="/recommendations"]').text()).toContain('Recommandations')
     expect(wrapper.get('a[href="/calendar"]').text()).toContain('Calendrier')
     expect(wrapper.get('a[href="/library"]').text()).toContain('Bibliothèque')
     expect(wrapper.get('a[href="/settings"]').text()).toContain('Paramètres')
-    expect(wrapper.find('a[href="/"] [data-icon="house"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/?reset=1"] [data-icon="house"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/recommendations"] [data-icon="compass"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/calendar"] [data-icon="calendar-days"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/library"] [data-icon="bookmark"]').exists()).toBe(true)
@@ -116,7 +116,7 @@ describe('SidebarNav', () => {
 
     // Assert
     const recommendationsLink = wrapper.get('a[href="/recommendations"]')
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
 
     expect(recommendationsLink.classes()).toContain('border-accent')
     expect(recommendationsLink.classes()).toContain('bg-accent/10')
@@ -134,7 +134,7 @@ describe('SidebarNav', () => {
 
     // Assert
     const activeLink = wrapper.get('a[href="/library"]')
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
     const calendarLink = wrapper.get('a[href="/calendar"]')
 
     expect(activeLink.classes()).toContain('border-accent')
@@ -153,7 +153,7 @@ describe('SidebarNav', () => {
     const { wrapper } = await renderSidebarNav('/')
 
     // Assert
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
     const libraryLink = wrapper.get('a[href="/library"]')
 
     expect(homeLink.classes()).toContain('border-accent')
@@ -169,7 +169,7 @@ describe('SidebarNav', () => {
     const { wrapper } = await renderSidebarNav('/settings')
 
     // Assert
-    expect(wrapper.get('a[href="/"]').classes()).toContain('text-slate-500')
+    expect(wrapper.get('a[href="/?reset=1"]').classes()).toContain('text-slate-500')
     expect(wrapper.get('a[href="/calendar"]').classes()).toContain('text-slate-500')
     expect(wrapper.get('a[href="/library"]').classes()).toContain('text-slate-500')
   })

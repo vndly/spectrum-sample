@@ -75,7 +75,7 @@ describe('BottomNav', () => {
     expect(wrapper.find('a[href^="/show/"]').exists()).toBe(false)
 
     // Icons present
-    expect(wrapper.find('a[href="/"] [data-icon="house"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/?reset=1"] [data-icon="house"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/recommendations"] [data-icon="compass"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/calendar"] [data-icon="calendar-days"]').exists()).toBe(true)
     expect(wrapper.find('a[href="/library"] [data-icon="bookmark"]').exists()).toBe(true)
@@ -101,7 +101,7 @@ describe('BottomNav', () => {
 
     // Assert
     const activeLink = wrapper.get('a[href="/library"]')
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
 
     expect(activeLink.classes()).toContain('text-accent')
     expect(homeLink.classes()).toContain('text-slate-500')
@@ -116,7 +116,7 @@ describe('BottomNav', () => {
 
     // Assert
     const recommendationsLink = wrapper.get('a[href="/recommendations"]')
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
 
     expect(recommendationsLink.classes()).toContain('text-accent')
     expect(homeLink.classes()).toContain('text-slate-500')
@@ -129,7 +129,7 @@ describe('BottomNav', () => {
     const { wrapper } = await renderBottomNav('/')
 
     // Assert
-    const homeLink = wrapper.get('a[href="/"]')
+    const homeLink = wrapper.get('a[href="/?reset=1"]')
     const libraryLink = wrapper.get('a[href="/library"]')
 
     expect(homeLink.classes()).toContain('text-accent')
@@ -142,7 +142,7 @@ describe('BottomNav', () => {
     const { wrapper } = await renderBottomNav('/settings')
 
     // Assert
-    expect(wrapper.get('a[href="/"]').classes()).toContain('text-slate-500')
+    expect(wrapper.get('a[href="/?reset=1"]').classes()).toContain('text-slate-500')
     expect(wrapper.get('a[href="/calendar"]').classes()).toContain('text-slate-500')
     expect(wrapper.get('a[href="/library"]').classes()).toContain('text-slate-500')
   })

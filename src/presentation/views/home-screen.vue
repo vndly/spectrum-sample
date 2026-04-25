@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onActivated } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { AlertCircle } from 'lucide-vue-next'
 import { useSearch } from '@/application/use-search'
 import { useBrowse, type MediaResult } from '@/application/use-browse'
@@ -17,6 +18,8 @@ defineOptions({
 })
 
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const {
   query,
   results,
@@ -25,6 +28,7 @@ const {
   hasSearched,
   isSearchMode,
   retry: retrySearch,
+  clear: clearSearch,
 } = useSearch()
 const {
   trending,
@@ -35,7 +39,7 @@ const {
   retry: retryBrowse,
 } = useBrowse()
 
-const { filters, clearAll } = useFilters()
+const { filters, clearAll: clearFilters } = useFilters()
 
 /** Filtered trending results. */
 const filteredTrending = computed(
@@ -56,6 +60,25 @@ const filteredPopularShows = computed(
 const filteredSearchResults = computed(
   () => filterResults(results.value, filters.value) as MediaResult[],
 )
+
+/**
+ * Clears all filters and search input.
+ */
+function clearAll() {
+  clearFilters()
+  clearSearch()
+}
+
+/**
+ * Reset state when navigating from sidebar (detected via reset query param).
+ */
+onActivated(async () => {
+  if (route.query.reset) {
+    clearAll()
+    await nextTick()
+    router.replace({ query: {} })
+  }
+})
 
 /**
  * Handles retry event from SearchResults.

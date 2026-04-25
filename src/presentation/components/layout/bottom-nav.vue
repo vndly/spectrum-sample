@@ -12,7 +12,7 @@ interface NavItem {
 const route = useRoute()
 
 const navItems: ReadonlyArray<NavItem> = [
-  { to: '/', labelKey: 'nav.home', icon: House },
+  { to: '/?reset=1', labelKey: 'nav.home', icon: House },
   { to: '/recommendations', labelKey: 'nav.recommendations', icon: Compass },
   { to: '/calendar', labelKey: 'nav.calendar', icon: CalendarDays },
   { to: '/library', labelKey: 'nav.library', icon: Bookmark },
@@ -20,7 +20,8 @@ const navItems: ReadonlyArray<NavItem> = [
 ]
 
 function isActiveRoute(path: string) {
-  return path === '/' ? route.path === '/' : route.path === path
+  const basePath = path.split('?')[0]
+  return basePath === '/' ? route.path === '/' : route.path === basePath
 }
 </script>
 
