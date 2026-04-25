@@ -86,11 +86,6 @@ function renderShowScreen() {
           props: ['voteAverage'],
           template: '<div data-testid="provider-rating-badge">{{ voteAverage }}</div>',
         },
-        RatingStars: {
-          props: ['modelValue'],
-          template:
-            '<button data-testid="rating-stars" @click="$emit(\'update:modelValue\', 5)">{{ modelValue }}</button>',
-        },
         MetadataPanel: {
           props: ['firstAirDate', 'numberOfSeasons', 'numberOfEpisodes'],
           template:
@@ -201,7 +196,7 @@ describe('ShowScreen', () => {
     expect(push).toHaveBeenCalledWith('/')
   })
 
-  it('renders content and routes rating, favorite, and status updates to the library entry', async () => {
+  it('renders content and routes status updates to the library entry', async () => {
     mockLoading.value = false
     mockShowData.value = {
       id: 1396,
@@ -227,12 +222,8 @@ describe('ShowScreen', () => {
     expect(wrapper.get('[data-testid="hero-backdrop"]').text()).toContain('Breaking Bad')
     expect(wrapper.get('[data-testid="streaming-badges"]').text()).toBe('US')
 
-    await wrapper.get('[data-testid="rating-stars"]').trigger('click')
-    await wrapper.get('[data-testid="toggle-favorite"]').trigger('click')
     await wrapper.get('[data-testid="status-none"]').trigger('click')
 
-    expect(setRating).toHaveBeenCalledWith(5)
-    expect(toggleFavorite).toHaveBeenCalled()
     expect(setStatus).toHaveBeenCalledWith('none')
   })
 
@@ -319,7 +310,7 @@ describe('ShowScreen', () => {
     expect(addToast).toHaveBeenCalledWith({ message: 'Failed to copy link', type: 'error' })
   })
 
-  it('applies modal v-model updates and falls back to empty library entry defaults', async () => {
+  it('falls back to empty library entry defaults', async () => {
     mockLoading.value = false
     mockShowData.value = {
       id: 1396,
@@ -355,7 +346,6 @@ describe('ShowScreen', () => {
       '2008-01-20',
       undefined,
     )
-    expect(wrapper.get('[data-testid="rating-stars"]').text()).toBe('0')
     expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('/show/1396|none')
   })
 })

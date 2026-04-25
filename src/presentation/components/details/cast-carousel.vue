@@ -25,8 +25,13 @@ function getProfileUrl(profilePath: string | null): string | null {
 
 <template>
   <section v-if="cast.length > 0" data-testid="cast-carousel">
-    <h2 class="mb-3 text-lg font-semibold text-white">{{ t('details.cast.title') }}</h2>
-    <div class="flex gap-4 overflow-x-auto pb-2" data-testid="cast-scroll-container">
+    <h2 class="mb-3 text-lg font-semibold text-slate-950 dark:text-white">
+      {{ t('details.cast.title') }}
+    </h2>
+    <div
+      class="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      data-testid="cast-scroll-container"
+    >
       <div
         v-for="member in displayCast"
         :key="member.id"
@@ -34,7 +39,7 @@ function getProfileUrl(profilePath: string | null): string | null {
         data-testid="cast-member"
       >
         <!-- Profile image -->
-        <div class="size-20 overflow-hidden rounded-full bg-surface md:size-24">
+        <div class="size-20 overflow-hidden rounded-full bg-slate-200 dark:bg-surface md:size-24">
           <img
             v-if="getProfileUrl(member.profile_path)"
             :src="getProfileUrl(member.profile_path)!"
@@ -45,7 +50,7 @@ function getProfileUrl(profilePath: string | null): string | null {
           />
           <div
             v-else
-            class="flex size-full items-center justify-center text-slate-500"
+            class="flex size-full items-center justify-center text-slate-400 dark:text-slate-500"
             data-testid="cast-placeholder"
           >
             <User class="size-8" />
@@ -53,10 +58,12 @@ function getProfileUrl(profilePath: string | null): string | null {
         </div>
 
         <!-- Name and character -->
-        <p class="mt-2 w-20 truncate text-center text-xs font-medium text-white md:w-24">
+        <p
+          class="mt-2 w-20 truncate text-center text-xs font-medium text-slate-950 dark:text-white md:w-24"
+        >
           {{ member.name }}
         </p>
-        <p class="w-20 truncate text-center text-xs text-slate-400 md:w-24">
+        <p class="w-20 truncate text-center text-xs text-slate-500 dark:text-slate-400 md:w-24">
           {{ member.character }}
         </p>
       </div>

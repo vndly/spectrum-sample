@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Heart, Bookmark, Eye, Share2, ExternalLink } from 'lucide-vue-next'
+import { Bookmark, Eye, Share2, ExternalLink } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { WatchStatus } from '@/domain/library.schema'
 
 const props = defineProps<{
-  favorite: boolean
   status: WatchStatus
   imdbId: string | null
   shareUrl: string
@@ -12,7 +11,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'toggle-favorite': []
   'update-status': [status: WatchStatus]
   share: []
 }>()
@@ -31,19 +29,6 @@ function handleStatusClick(newStatus: WatchStatus) {
 
 <template>
   <div class="flex flex-wrap gap-2" data-testid="action-buttons">
-    <!-- Favorite button -->
-    <button
-      type="button"
-      class="flex size-11 items-center justify-center rounded-lg transition-colors"
-      :class="favorite ? 'bg-accent text-white' : 'bg-surface text-slate-400 hover:text-white'"
-      :aria-label="favorite ? t('details.actions.unfavorite') : t('details.actions.favorite')"
-      :title="favorite ? t('details.actions.unfavorite') : t('details.actions.favorite')"
-      data-testid="favorite-button"
-      @click="emit('toggle-favorite')"
-    >
-      <Heart class="size-5" :class="favorite ? 'fill-current' : ''" />
-    </button>
-
     <!-- Watchlist button -->
     <button
       type="button"
@@ -51,7 +36,7 @@ function handleStatusClick(newStatus: WatchStatus) {
       :class="
         status === 'watchlist'
           ? 'bg-accent text-white'
-          : 'bg-surface text-slate-400 hover:text-white'
+          : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 dark:bg-surface dark:text-slate-400 dark:hover:text-white'
       "
       :aria-label="t('details.actions.watchlist')"
       :title="t('details.actions.watchlist')"
@@ -66,7 +51,9 @@ function handleStatusClick(newStatus: WatchStatus) {
       type="button"
       class="flex size-11 items-center justify-center rounded-lg transition-colors"
       :class="
-        status === 'watched' ? 'bg-accent text-white' : 'bg-surface text-slate-400 hover:text-white'
+        status === 'watched'
+          ? 'bg-accent text-white'
+          : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 dark:bg-surface dark:text-slate-400 dark:hover:text-white'
       "
       :aria-label="t('details.actions.watched')"
       :title="t('details.actions.watched')"
@@ -79,7 +66,7 @@ function handleStatusClick(newStatus: WatchStatus) {
     <!-- Share button -->
     <button
       type="button"
-      class="flex size-11 items-center justify-center rounded-lg bg-surface text-slate-400 transition-colors hover:text-white"
+      class="flex size-11 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:bg-surface dark:text-slate-400 dark:hover:text-white"
       aria-label="Share"
       :title="t('details.actions.share')"
       data-testid="share-button"
@@ -94,7 +81,7 @@ function handleStatusClick(newStatus: WatchStatus) {
       :href="`https://www.imdb.com/title/${imdbId}`"
       target="_blank"
       rel="noopener noreferrer"
-      class="flex size-11 items-center justify-center rounded-lg bg-surface text-slate-400 transition-colors hover:text-white"
+      class="flex size-11 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:bg-surface dark:text-slate-400 dark:hover:text-white"
       :aria-label="t('details.actions.imdb')"
       :title="t('details.actions.imdb')"
       data-testid="imdb-link"

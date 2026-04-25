@@ -21,6 +21,8 @@
   "details.metadata.seasons": "Seasons",
   "details.metadata.writer": "Writer",
   "details.metadata.writers": "Writers",
+  "details.metadata.language": "Language",
+  "details.synopsis.title": "Synopsis",
   "details.notFound.home": "Back to Home",
   "details.notFound.message": "This title doesn't exist or has been removed.",
   "details.notFound.title": "Not found",

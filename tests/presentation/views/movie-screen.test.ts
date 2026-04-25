@@ -86,11 +86,6 @@ function renderMovieScreen() {
           props: ['voteAverage'],
           template: '<div data-testid="provider-rating-badge">{{ voteAverage }}</div>',
         },
-        RatingStars: {
-          props: ['modelValue'],
-          template:
-            '<button data-testid="rating-stars" @click="$emit(\'update:modelValue\', 4)">{{ modelValue }}</button>',
-        },
         MetadataPanel: {
           props: ['releaseDate', 'runtime'],
           template: '<div data-testid="metadata-panel">{{ releaseDate }}|{{ runtime }}</div>',
@@ -204,7 +199,7 @@ describe('MovieScreen', () => {
     expect(push).toHaveBeenCalledWith('/')
   })
 
-  it('renders content and routes rating, favorite, and status updates to the library entry', async () => {
+  it('renders content and routes status updates to the library entry', async () => {
     mockLoading.value = false
     mockMovieData.value = {
       id: 550,
@@ -231,12 +226,8 @@ describe('MovieScreen', () => {
     expect(wrapper.get('[data-testid="hero-backdrop"]').text()).toContain('Fight Club')
     expect(wrapper.get('[data-testid="streaming-badges"]').text()).toBe('US')
 
-    await wrapper.get('[data-testid="rating-stars"]').trigger('click')
-    await wrapper.get('[data-testid="toggle-favorite"]').trigger('click')
     await wrapper.get('[data-testid="status-watched"]').trigger('click')
 
-    expect(setRating).toHaveBeenCalledWith(4)
-    expect(toggleFavorite).toHaveBeenCalled()
     expect(setStatus).toHaveBeenCalledWith('watched')
   })
 
@@ -325,7 +316,7 @@ describe('MovieScreen', () => {
     expect(addToast).toHaveBeenCalledWith({ message: 'Failed to copy link', type: 'error' })
   })
 
-  it('applies modal v-model updates and falls back to empty library entry defaults', async () => {
+  it('falls back to empty library entry defaults', async () => {
     mockLoading.value = false
     mockMovieData.value = {
       id: 550,
@@ -362,7 +353,6 @@ describe('MovieScreen', () => {
       '1999-10-15',
       undefined,
     )
-    expect(wrapper.get('[data-testid="rating-stars"]').text()).toBe('0')
     expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('/movie/550|none')
   })
 })

@@ -24,50 +24,11 @@ const i18n = createI18n({
 
 describe('ActionButtons', () => {
   const defaultProps = {
-    favorite: false,
     status: 'none' as const,
     imdbId: null,
     shareUrl: '/movie/550',
     shareTitle: 'Fight Club',
   }
-
-  it('favorite button toggles state and emits event (ED-07-01)', async () => {
-    // Arrange
-    const wrapper = mount(ActionButtons, {
-      props: defaultProps,
-      global: { plugins: [i18n] },
-    })
-
-    // Act
-    await wrapper.find('[data-testid="favorite-button"]').trigger('click')
-
-    // Assert
-    expect(wrapper.emitted('toggle-favorite')).toBeTruthy()
-  })
-
-  it('favorite button shows filled heart when favorited (ED-07-02)', () => {
-    // Arrange & Act
-    const wrapper = mount(ActionButtons, {
-      props: { ...defaultProps, favorite: true },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    const btn = wrapper.find('[data-testid="favorite-button"]')
-    expect(btn.classes()).toContain('bg-accent')
-  })
-
-  it('favorite button shows outline heart when not favorited (ED-07-03)', () => {
-    // Arrange & Act
-    const wrapper = mount(ActionButtons, {
-      props: { ...defaultProps, favorite: false },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    const btn = wrapper.find('[data-testid="favorite-button"]')
-    expect(btn.classes()).toContain('bg-surface')
-  })
 
   it('watchlist button sets status (ED-08-01)', async () => {
     // Arrange

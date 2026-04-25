@@ -36,8 +36,12 @@ function playTrailer() {
 
 <template>
   <section v-if="trailer" data-testid="trailer-embed">
-    <h2 class="mb-3 text-lg font-semibold text-white">{{ t('details.trailer.title') }}</h2>
-    <div class="relative aspect-video w-full overflow-hidden rounded-lg bg-surface">
+    <h2 class="mb-3 text-lg font-semibold text-slate-950 dark:text-white">
+      {{ t('details.trailer.title') }}
+    </h2>
+    <div
+      class="relative aspect-video max-w-lg overflow-hidden rounded-lg bg-slate-200 dark:bg-surface"
+    >
       <!-- Thumbnail with play button -->
       <template v-if="!isPlaying">
         <img
@@ -48,12 +52,12 @@ function playTrailer() {
         />
         <div class="absolute inset-0 flex items-center justify-center bg-black/40">
           <button
-            class="flex size-16 items-center justify-center rounded-full bg-white/90 text-accent transition-transform hover:scale-110"
+            class="flex size-14 items-center justify-center rounded-full bg-white/90 text-accent transition-transform hover:scale-110"
             :aria-label="t('details.trailer.play')"
             data-testid="play-button"
             @click="playTrailer"
           >
-            <Play class="size-8 fill-current" />
+            <Play class="size-6 fill-current" />
           </button>
         </div>
       </template>

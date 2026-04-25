@@ -16,6 +16,7 @@ const i18n = createI18n({
           writers: 'Writers',
           seasons: 'Seasons',
           episodes: 'Episodes',
+          language: 'Language',
         },
       },
     },
@@ -106,7 +107,7 @@ describe('MetadataPanel', () => {
     expect(seasonInfo.text()).toContain('62')
   })
 
-  it('renders genres as comma-separated list (ED-02-04)', () => {
+  it('renders genres as pills (ED-02-04)', () => {
     // Arrange & Act
     const wrapper = mount(MetadataPanel, {
       props: {
@@ -122,7 +123,8 @@ describe('MetadataPanel', () => {
     // Assert
     const genres = wrapper.find('[data-testid="genres"]')
     expect(genres.exists()).toBe(true)
-    expect(genres.text()).toBe('Drama, Thriller')
+    expect(genres.text()).toContain('Drama')
+    expect(genres.text()).toContain('Thriller')
   })
 
   it('renders directors list (ED-02-05)', () => {
@@ -176,7 +178,7 @@ describe('MetadataPanel', () => {
     expect(writers.text()).toContain('Writers')
   })
 
-  it('renders separators plus plural directors and singular writer labels', () => {
+  it('renders plural directors and singular writer labels', () => {
     const wrapper = mount(MetadataPanel, {
       props: {
         ...defaultProps,
@@ -211,7 +213,6 @@ describe('MetadataPanel', () => {
     })
 
     expect(wrapper.text()).toContain('2010')
-    expect(wrapper.text()).toContain('·')
     expect(wrapper.get('[data-testid="directors"]').text()).toContain('Directors')
     expect(wrapper.get('[data-testid="writers"]').text()).toContain('Writer')
   })

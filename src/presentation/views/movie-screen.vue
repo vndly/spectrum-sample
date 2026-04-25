@@ -14,7 +14,6 @@ import StreamingBadges from '@/presentation/components/details/streaming-badges.
 import BoxOffice from '@/presentation/components/details/box-office.vue'
 import ProviderRatingBadge from '@/presentation/components/details/provider-rating-badge.vue'
 import Synopsis from '@/presentation/components/details/synopsis.vue'
-import RatingStars from '@/presentation/components/details/rating-stars.vue'
 import ActionButtons from '@/presentation/components/details/action-buttons.vue'
 import DetailSkeleton from '@/presentation/components/details/detail-skeleton.vue'
 import EmptyState from '@/presentation/components/common/empty-state.vue'
@@ -53,14 +52,6 @@ watch(
 )
 
 // Computed properties for safe template access
-const userRating = computed(() => {
-  const entry = libraryEntryRef.value?.entry
-  return entry?.rating ?? 0
-})
-const isFavorite = computed(() => {
-  const entry = libraryEntryRef.value?.entry
-  return entry?.favorite ?? false
-})
 const watchStatus = computed(() => {
   const entry = libraryEntryRef.value?.entry
   return entry?.status ?? 'none'
@@ -73,16 +64,6 @@ const isNotFound = computed(() => error.value?.message?.includes('404'))
 const shareUrl = computed(() => {
   return `${window.location.origin}/movie/${movieId.value}`
 })
-
-/** Handles rating change. */
-function handleRatingChange(value: number) {
-  libraryEntryRef.value?.setRating(value)
-}
-
-/** Handles favorite toggle. */
-function handleToggleFavorite() {
-  libraryEntryRef.value?.toggleFavorite()
-}
 
 /** Handles status change. */
 function handleUpdateStatus(status: 'watchlist' | 'watched' | 'none') {
@@ -169,12 +150,9 @@ function goHome() {
         :tagline="movie.tagline"
       />
 
-      <div class="space-y-6 px-4 py-6 md:px-6">
-        <!-- Rating badge and user rating -->
-        <div class="flex flex-wrap items-center gap-4">
-          <ProviderRatingBadge :vote-average="movie.vote_average" />
-          <RatingStars :model-value="userRating" @update:model-value="handleRatingChange" />
-        </div>
+      <div class="space-y-6 px-4 py-4 md:px-6 md:py-6">
+        <!-- Rating badge -->
+        <ProviderRatingBadge :vote-average="movie.vote_average" />
 
         <!-- Metadata -->
         <MetadataPanel
@@ -193,12 +171,10 @@ function goHome() {
 
         <!-- Action buttons -->
         <ActionButtons
-          :favorite="isFavorite"
           :status="watchStatus"
           :imdb-id="movie.imdb_id"
           :share-url="shareUrl"
           :share-title="movie.title"
-          @toggle-favorite="handleToggleFavorite"
           @update-status="handleUpdateStatus"
           @share="handleShare"
         />

@@ -1,21 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import StreamingBadges from '@/presentation/components/details/streaming-badges.vue'
-import { createI18n } from 'vue-i18n'
-
-const i18n = createI18n({
-  legacy: false,
-  locale: 'en',
-  messages: {
-    en: {
-      details: {
-        streaming: {
-          notAvailable: 'Not available for streaming',
-        },
-      },
-    },
-  },
-})
 
 describe('StreamingBadges', () => {
   const mockProviders = {
@@ -36,7 +21,6 @@ describe('StreamingBadges', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'US' },
-      global: { plugins: [i18n] },
     })
 
     // Assert
@@ -46,28 +30,24 @@ describe('StreamingBadges', () => {
     expect(logos[1].attributes('alt')).toBe('Hulu')
   })
 
-  it('displays "Not available" when no providers for region (ED-05-02)', () => {
+  it('does not render when no providers for region (ED-05-02)', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'JP' },
-      global: { plugins: [i18n] },
     })
 
-    // Assert
-    const notAvailable = wrapper.find('[data-testid="not-available"]')
-    expect(notAvailable.exists()).toBe(true)
-    expect(notAvailable.text()).toBe('Not available for streaming')
+    // Assert - section should not be rendered at all
+    expect(wrapper.find('[data-testid="streaming-badges"]').exists()).toBe(false)
   })
 
   it('handles missing region data gracefully (ED-05-03)', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: {}, region: 'US' },
-      global: { plugins: [i18n] },
     })
 
-    // Assert
-    expect(wrapper.find('[data-testid="not-available"]').exists()).toBe(true)
+    // Assert - section should not be rendered at all
+    expect(wrapper.find('[data-testid="streaming-badges"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-testid="provider-logo"]')).toHaveLength(0)
   })
 
@@ -84,18 +64,16 @@ describe('StreamingBadges', () => {
     // Act
     const wrapper = mount(StreamingBadges, {
       props: { providers, region: 'US' },
-      global: { plugins: [i18n] },
     })
 
-    // Assert
-    expect(wrapper.find('[data-testid="not-available"]').exists()).toBe(true)
+    // Assert - section should not be rendered at all
+    expect(wrapper.find('[data-testid="streaming-badges"]').exists()).toBe(false)
   })
 
   it('renders correct logo URLs', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'US' },
-      global: { plugins: [i18n] },
     })
 
     // Assert

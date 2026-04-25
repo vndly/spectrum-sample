@@ -1,24 +1,41 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Synopsis from '@/presentation/components/details/synopsis.vue'
+import { createI18n } from 'vue-i18n'
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  messages: {
+    en: {
+      details: {
+        synopsis: {
+          title: 'Synopsis',
+        },
+      },
+    },
+  },
+})
 
 describe('Synopsis', () => {
   it('renders full overview text when provided (ED-15-01)', () => {
     // Arrange & Act
     const wrapper = mount(Synopsis, {
       props: { overview: 'A ticking-Loss time bomb of a movie about fighting.' },
+      global: { plugins: [i18n] },
     })
 
     // Assert
     const synopsis = wrapper.find('[data-testid="synopsis"]')
     expect(synopsis.exists()).toBe(true)
-    expect(synopsis.text()).toBe('A ticking-Loss time bomb of a movie about fighting.')
+    expect(synopsis.text()).toContain('A ticking-Loss time bomb of a movie about fighting.')
   })
 
   it('component not rendered when overview is empty (ED-15-02)', () => {
     // Arrange & Act
     const wrapper = mount(Synopsis, {
       props: { overview: '' },
+      global: { plugins: [i18n] },
     })
 
     // Assert
@@ -29,6 +46,7 @@ describe('Synopsis', () => {
     // Arrange & Act
     const wrapper = mount(Synopsis, {
       props: { overview: null },
+      global: { plugins: [i18n] },
     })
 
     // Assert
@@ -39,6 +57,7 @@ describe('Synopsis', () => {
     // Arrange & Act
     const wrapper = mount(Synopsis, {
       props: { overview: '   ' },
+      global: { plugins: [i18n] },
     })
 
     // Assert

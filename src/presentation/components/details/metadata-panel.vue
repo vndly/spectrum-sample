@@ -39,12 +39,6 @@ const seasonInfo = computed(() => {
   return `${props.numberOfSeasons} ${t('details.metadata.seasons')} · ${props.numberOfEpisodes} ${t('details.metadata.episodes')}`
 })
 
-/** Formats genres as comma-separated list. */
-const genreList = computed(() => {
-  if (props.genres.length === 0) return null
-  return props.genres.map((g) => g.name).join(', ')
-})
-
 /** Extracts directors from crew. */
 const directors = computed(() => {
   return props.crew.filter((c) => c.job === 'Director')
@@ -63,38 +57,84 @@ const languageList = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-3 text-sm" data-testid="metadata-panel">
-    <!-- Primary info line: year, runtime/seasons, genres -->
-    <div class="flex flex-wrap items-center gap-2 text-slate-300">
-      <span v-if="year" data-testid="year">{{ year }}</span>
-      <span v-if="year && (formattedRuntime || seasonInfo)">·</span>
-      <span v-if="formattedRuntime" data-testid="runtime">{{ formattedRuntime }}</span>
-      <span v-if="seasonInfo" data-testid="season-info">{{ seasonInfo }}</span>
-      <span v-if="(formattedRuntime || seasonInfo) && genreList">·</span>
-      <span v-if="genreList" data-testid="genres">{{ genreList }}</span>
+  <div class="space-y-4" data-testid="metadata-panel">
+    <!-- Primary info pills: year, runtime/seasons -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span
+        v-if="year"
+        class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium tracking-wide text-slate-600 dark:bg-surface dark:text-slate-300"
+        data-testid="year"
+      >
+        {{ year }}
+      </span>
+      <span
+        v-if="formattedRuntime"
+        class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium tracking-wide text-slate-600 dark:bg-surface dark:text-slate-300"
+        data-testid="runtime"
+      >
+        {{ formattedRuntime }}
+      </span>
+      <span
+        v-if="seasonInfo"
+        class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium tracking-wide text-slate-600 dark:bg-surface dark:text-slate-300"
+        data-testid="season-info"
+      >
+        {{ seasonInfo }}
+      </span>
     </div>
 
-    <!-- Directors -->
-    <div v-if="directors.length > 0" class="text-slate-400" data-testid="directors">
-      <span class="font-medium text-slate-300">
-        {{
-          directors.length === 1 ? t('details.metadata.director') : t('details.metadata.directors')
-        }}:
+    <!-- Genre pills -->
+    <div v-if="genres.length > 0" class="flex flex-wrap gap-2" data-testid="genres">
+      <span
+        v-for="genre in genres"
+        :key="genre.id"
+        class="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
+      >
+        {{ genre.name }}
       </span>
-      {{ directors.map((d) => d.name).join(', ') }}
     </div>
 
-    <!-- Writers -->
-    <div v-if="writers.length > 0" class="text-slate-400" data-testid="writers">
-      <span class="font-medium text-slate-300">
-        {{ writers.length === 1 ? t('details.metadata.writer') : t('details.metadata.writers') }}:
-      </span>
-      {{ writers.map((w) => w.name).join(', ') }}
+    <!-- Credits grid -->
+    <div v-if="directors.length > 0 || writers.length > 0" class="grid gap-3 sm:grid-cols-2">
+      <!-- Directors -->
+      <div v-if="directors.length > 0" data-testid="directors">
+        <p
+          class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
+        >
+          {{
+            directors.length === 1
+              ? t('details.metadata.director')
+              : t('details.metadata.directors')
+          }}
+        </p>
+        <p class="mt-0.5 text-sm font-medium text-slate-700 dark:text-slate-200">
+          {{ directors.map((d) => d.name).join(', ') }}
+        </p>
+      </div>
+
+      <!-- Writers -->
+      <div v-if="writers.length > 0" data-testid="writers">
+        <p
+          class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
+        >
+          {{ writers.length === 1 ? t('details.metadata.writer') : t('details.metadata.writers') }}
+        </p>
+        <p class="mt-0.5 text-sm font-medium text-slate-700 dark:text-slate-200">
+          {{ writers.map((w) => w.name).join(', ') }}
+        </p>
+      </div>
     </div>
 
     <!-- Spoken languages -->
-    <div v-if="languageList" class="text-slate-400" data-testid="languages">
-      ({{ languageList }})
+    <div v-if="languageList" data-testid="languages">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
+      >
+        {{ t('details.metadata.language') }}
+      </p>
+      <p class="mt-0.5 text-sm text-slate-600 dark:text-slate-300">
+        {{ languageList }}
+      </p>
     </div>
   </div>
 </template>
