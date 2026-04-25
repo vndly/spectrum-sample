@@ -10,6 +10,7 @@ export interface LibraryViewItem {
   mediaType: 'movie' | 'tv'
   title: string
   displayTitle: string
+  posterPath: string | null
   releaseDate?: string
   releaseYear?: number
   voteAverage?: number
@@ -30,6 +31,7 @@ export function toLibraryViewItem(entry: LibraryEntry): LibraryViewItem {
     mediaType: entry.mediaType,
     title: entry.title,
     displayTitle: entry.title.toLowerCase(),
+    posterPath: entry.posterPath,
     releaseDate: entry.releaseDate,
     releaseYear: entry.releaseDate ? new Date(entry.releaseDate).getFullYear() : undefined,
     voteAverage: entry.voteAverage,

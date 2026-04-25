@@ -30,6 +30,10 @@ export function useLibraryEntry(
     const stored = getLibraryEntry(id, mediaType)
     if (stored) {
       let changed = false
+      if (posterPath !== undefined && stored.posterPath !== posterPath) {
+        stored.posterPath = posterPath
+        changed = true
+      }
       if (runtime !== undefined && stored.runtime !== runtime) {
         stored.runtime = runtime
         changed = true

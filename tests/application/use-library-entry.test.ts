@@ -75,10 +75,27 @@ describe('useLibraryEntry', () => {
       saveSpy.mockRestore()
     })
 
+    it('synchronizes posterPath from the latest detail payload', () => {
+      const saveSpy = vi.spyOn(storageService, 'saveLibraryEntry')
+      saveLibraryEntry(
+        createEntry({
+          posterPath: '/old-poster.jpg',
+        }),
+      )
+
+      const { entry } = useLibraryEntry(550, 'movie', 'Fight Club', '/new-poster.jpg')
+
+      expect(entry.value?.posterPath).toBe('/new-poster.jpg')
+      expect(saveSpy).toHaveBeenCalled()
+
+      saveSpy.mockRestore()
+    })
+
     it('does not resave the entry when metadata already matches', () => {
       const saveSpy = vi.spyOn(storageService, 'saveLibraryEntry')
       saveLibraryEntry(
         createEntry({
+          posterPath: '/poster.jpg',
           runtime: 139,
           voteAverage: 8.4,
           releaseDate: '1999-10-15',
