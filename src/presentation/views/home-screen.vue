@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AlertCircle } from 'lucide-vue-next'
 import { useSearch } from '@/application/use-search'
@@ -52,12 +52,10 @@ const filteredPopularShows = computed(
   () => filterResults(popularShows.value, filters.value) as MediaResult[],
 )
 
-/** Reset filters when entering search mode. */
-watch(query, (newQuery) => {
-  if (newQuery.trim().length > 0) {
-    clearAll()
-  }
-})
+/** Filtered search results (persons excluded by filterResults). */
+const filteredSearchResults = computed(
+  () => filterResults(results.value, filters.value) as MediaResult[],
+)
 
 /**
  * Handles retry event from SearchResults.
@@ -80,15 +78,13 @@ function handleBrowseRetry() {
     <div class="sticky top-0 z-40 space-y-4 bg-slate-50 pb-2 dark:bg-bg-primary">
       <SearchBar v-model="query" autofocus />
 
-      <div v-if="!isSearchMode">
-        <FilterBar class="flex-1" />
-      </div>
+      <FilterBar />
     </div>
 
     <!-- Search Mode: Show results -->
     <SearchResults
       v-if="isSearchMode"
-      :results="results"
+      :results="filteredSearchResults"
       :loading="searchLoading"
       :error="searchError"
       :has-searched="hasSearched"
