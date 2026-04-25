@@ -80,7 +80,8 @@ function renderMovieScreen() {
       stubs: {
         HeroBackdrop: {
           props: ['title', 'tagline'],
-          template: '<div data-testid="hero-backdrop">{{ title }}|{{ tagline }}</div>',
+          template:
+            '<div data-testid="hero-backdrop">{{ title }}|{{ tagline }}<slot name="actions" /></div>',
         },
         ProviderRatingBadge: {
           props: ['voteAverage'],

@@ -12,6 +12,8 @@
   "details.boxOffice.revenue": "Recaudación",
   "details.boxOffice.title": "Taquilla",
   "details.cast.title": "Reparto",
+  "details.cast.scrollPrevious": "Desplazar reparto hacia la izquierda",
+  "details.cast.scrollNext": "Desplazar reparto hacia la derecha",
   "details.error.retry": "Reintentar",
   "details.error.title": "Algo salió mal",
   "details.loading": "Cargando...",

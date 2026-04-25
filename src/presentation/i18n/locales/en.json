@@ -12,6 +12,8 @@
   "details.boxOffice.revenue": "Revenue",
   "details.boxOffice.title": "Box Office",
   "details.cast.title": "Cast",
+  "details.cast.scrollPrevious": "Scroll cast left",
+  "details.cast.scrollNext": "Scroll cast right",
   "details.error.retry": "Retry",
   "details.error.title": "Something went wrong",
   "details.loading": "Loading...",

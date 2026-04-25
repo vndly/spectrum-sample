@@ -143,11 +143,18 @@ function goHome() {
 
     <!-- Content -->
     <template v-else-if="show">
-      <HeroBackdrop
-        :backdrop-path="show.backdrop_path"
-        :title="show.name"
-        :tagline="show.tagline"
-      />
+      <HeroBackdrop :backdrop-path="show.backdrop_path" :title="show.name" :tagline="show.tagline">
+        <template #actions>
+          <ActionButtons
+            :status="watchStatus"
+            :imdb-id="null"
+            :share-url="shareUrl"
+            :share-title="show.name"
+            @update-status="handleUpdateStatus"
+            @share="handleShare"
+          />
+        </template>
+      </HeroBackdrop>
 
       <div class="space-y-6 px-4 py-4 md:px-6 md:py-6">
         <!-- Rating badge -->
@@ -165,16 +172,6 @@ function goHome() {
 
         <!-- Synopsis -->
         <Synopsis :overview="show.overview" />
-
-        <!-- Action buttons (no IMDB for TV shows) -->
-        <ActionButtons
-          :status="watchStatus"
-          :imdb-id="null"
-          :share-url="shareUrl"
-          :share-title="show.name"
-          @update-status="handleUpdateStatus"
-          @share="handleShare"
-        />
 
         <!-- Cast carousel -->
         <CastCarousel :cast="show.credits.cast" />

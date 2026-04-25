@@ -148,7 +148,18 @@ function goHome() {
         :backdrop-path="movie.backdrop_path"
         :title="movie.title"
         :tagline="movie.tagline"
-      />
+      >
+        <template #actions>
+          <ActionButtons
+            :status="watchStatus"
+            :imdb-id="movie.imdb_id"
+            :share-url="shareUrl"
+            :share-title="movie.title"
+            @update-status="handleUpdateStatus"
+            @share="handleShare"
+          />
+        </template>
+      </HeroBackdrop>
 
       <div class="space-y-6 px-4 py-4 md:px-6 md:py-6">
         <!-- Rating badge -->
@@ -168,16 +179,6 @@ function goHome() {
 
         <!-- Box Office -->
         <BoxOffice :budget="movie.budget" :revenue="movie.revenue" />
-
-        <!-- Action buttons -->
-        <ActionButtons
-          :status="watchStatus"
-          :imdb-id="movie.imdb_id"
-          :share-url="shareUrl"
-          :share-title="movie.title"
-          @update-status="handleUpdateStatus"
-          @share="handleShare"
-        />
 
         <!-- Cast carousel -->
         <CastCarousel :cast="movie.credits.cast" />

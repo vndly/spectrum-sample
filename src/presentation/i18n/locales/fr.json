@@ -12,6 +12,8 @@
   "details.boxOffice.revenue": "Recettes",
   "details.boxOffice.title": "Box-office",
   "details.cast.title": "Distribution",
+  "details.cast.scrollPrevious": "Faire défiler la distribution vers la gauche",
+  "details.cast.scrollNext": "Faire défiler la distribution vers la droite",
   "details.error.retry": "Réessayer",
   "details.error.title": "Une erreur est survenue",
   "details.loading": "Chargement...",

@@ -28,6 +28,8 @@ const EXPECTED_KEYS = [
   'details.boxOffice.budget',
   'details.boxOffice.revenue',
   'details.boxOffice.title',
+  'details.cast.scrollNext',
+  'details.cast.scrollPrevious',
   'details.cast.title',
   'details.error.retry',
   'details.error.title',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { User } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { User, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { CastMember } from '@/domain/shared.schema'
 import { buildImageUrl } from '@/infrastructure/image.helper'
@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const carouselRef = ref<HTMLElement | null>(null)
 
 /** Limits cast to first 20 members, sorted by order. */
 const displayCast = computed(() => {
@@ -21,15 +22,53 @@ const displayCast = computed(() => {
 function getProfileUrl(profilePath: string | null): string | null {
   return buildImageUrl(profilePath, IMAGE_SIZES.profile.medium)
 }
+
+/** Scrolls the carousel in the requested direction. */
+function scrollCarousel(direction: 'previous' | 'next') {
+  if (!carouselRef.value) {
+    return
+  }
+
+  const offset = Math.max(carouselRef.value.clientWidth * 0.75, 200)
+  carouselRef.value.scrollBy({
+    left: direction === 'next' ? offset : -offset,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <template>
   <section v-if="cast.length > 0" data-testid="cast-carousel">
-    <h2 class="mb-3 text-lg font-semibold text-slate-950 dark:text-white">
-      {{ t('details.cast.title') }}
-    </h2>
+    <div class="mb-3 flex items-center justify-between gap-4">
+      <h2 class="text-lg font-semibold text-slate-950 dark:text-white">
+        {{ t('details.cast.title') }}
+      </h2>
+
+      <div v-if="displayCast.length > 3" class="flex items-center gap-2">
+        <button
+          data-testid="cast-scroll-previous"
+          type="button"
+          :aria-label="t('details.cast.scrollPrevious')"
+          class="flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:border-teal-500/50 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-surface dark:text-slate-300 dark:shadow-none dark:hover:bg-surface-hover dark:hover:text-white"
+          @click="scrollCarousel('previous')"
+        >
+          <ChevronLeft class="size-4" />
+        </button>
+        <button
+          data-testid="cast-scroll-next"
+          type="button"
+          :aria-label="t('details.cast.scrollNext')"
+          class="flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:border-teal-500/50 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:bg-surface dark:text-slate-300 dark:shadow-none dark:hover:bg-surface-hover dark:hover:text-white"
+          @click="scrollCarousel('next')"
+        >
+          <ChevronRight class="size-4" />
+        </button>
+      </div>
+    </div>
+
     <div
-      class="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      ref="carouselRef"
+      class="flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       data-testid="cast-scroll-container"
     >
       <div
