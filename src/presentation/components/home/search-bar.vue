@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from 'vue'
+import { computed, onActivated, onMounted, useTemplateRef } from 'vue'
 import { Search, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 
@@ -24,6 +24,12 @@ const searchInput = useTemplateRef<HTMLInputElement>('searchInput')
 const showClear = computed(() => props.modelValue.length > 0)
 
 onMounted(() => {
+  if (props.autofocus) {
+    searchInput.value?.focus()
+  }
+})
+
+onActivated(() => {
   if (props.autofocus) {
     searchInput.value?.focus()
   }
