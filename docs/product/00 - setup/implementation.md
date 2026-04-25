@@ -12,7 +12,7 @@ All setup was implemented as specified in the [plan](./plan.md), fulfilling ever
 
 ### package.json
 
-Created with `name: "plot-twisted"`, `version: "1.0.0"`, `private: true`, `type: "module"`.
+Created with `name: "plot-twisted"`, `version: "1.1.0"`, `private: true`, `type: "module"`.
 
 **Scripts defined:**
 
