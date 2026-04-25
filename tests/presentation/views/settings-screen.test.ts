@@ -142,7 +142,7 @@ describe('SettingsScreen', () => {
     expect(wrapper.text()).toContain('Export')
     expect(wrapper.text()).toContain('Import')
     expect(wrapper.text()).toContain('Delete all data')
-    expect(wrapper.text()).toContain('Plot Twisted v0.0.1')
+    expect(wrapper.text()).toContain('Plot Twisted v1.0.0')
     expect(wrapper.text()).not.toContain('Preferred Region')
     expect(wrapper.text()).not.toContain('Navigation')
   })
