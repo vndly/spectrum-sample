@@ -20,7 +20,7 @@ defineEmits<{
       :class="
         activeTab === tab.id
           ? 'bg-accent text-white shadow-sm'
-          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'
+          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white'
       "
       @click="$emit('update:activeTab', tab.id)"
     >

@@ -19,7 +19,7 @@ const { t } = useI18n()
 const isOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 
-const sortFields: SortField[] = ['dateAdded', 'title', 'releaseYear', 'userRating']
+const sortFields: SortField[] = ['dateAdded', 'title', 'releaseYear']
 
 /**
  * Handles field selection.
@@ -66,7 +66,7 @@ function getOrderLabel(field: SortField, order: SortOrder) {
     <div class="relative">
       <button
         type="button"
-        class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-950 shadow-sm transition-colors hover:bg-slate-100 dark:border-transparent dark:bg-surface dark:text-white dark:shadow-none dark:hover:bg-surface-hover"
+        class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-950 shadow-sm transition-colors hover:bg-slate-100 dark:border-transparent dark:bg-surface dark:text-white dark:shadow-none dark:hover:bg-slate-700"
         @click="isOpen = !isOpen"
       >
         <span class="text-slate-500 dark:text-slate-400">{{ t('library.sort.label') }}:</span>
@@ -97,7 +97,7 @@ function getOrderLabel(field: SortField, order: SortOrder) {
 
     <button
       type="button"
-      class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-950 shadow-sm transition-colors hover:bg-slate-100 dark:border-transparent dark:bg-surface dark:text-white dark:shadow-none dark:hover:bg-surface-hover"
+      class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-950 shadow-sm transition-colors hover:bg-slate-100 dark:border-transparent dark:bg-surface dark:text-white dark:shadow-none dark:hover:bg-slate-700"
       @click="toggleOrder"
     >
       {{ getOrderLabel(modelValue, order) }}
