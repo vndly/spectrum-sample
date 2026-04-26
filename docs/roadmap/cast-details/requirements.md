@@ -1,7 +1,7 @@
 ---
 id: R-09
 title: Cast Information
-status: approved
+status: planned
 importance: medium
 type: functional
 tags: [details, api, navigation, ui]
@@ -105,11 +105,11 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 
 ### Responsive Design
 
-| ID        | Requirement              | Threshold                                          |
-| --------- | ------------------------ | -------------------------------------------------- |
-| CI-NFR-01 | Profile image sizing     | 160×160px on mobile, 200×200px on desktop          |
+| ID        | Requirement              | Threshold                                                                                  |
+| --------- | ------------------------ | ------------------------------------------------------------------------------------------ |
+| CI-NFR-01 | Profile image sizing     | 160×160px on mobile, 200×200px on desktop                                                  |
 | CI-NFR-02 | Filmography grid columns | 2 columns at max-sm, 3 columns at max-md, 4 columns at max-lg, 6 columns at base (desktop) |
-| CI-NFR-03 | Biography text width     | Full width, readable line length with 16px padding |
+| CI-NFR-03 | Biography text width     | Full width, readable line length with 16px padding                                         |
 
 ### Performance
 
