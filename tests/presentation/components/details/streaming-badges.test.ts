@@ -1,6 +1,21 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createI18n } from 'vue-i18n'
 import StreamingBadges from '@/presentation/components/details/streaming-badges.vue'
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  messages: {
+    en: {
+      details: {
+        streaming: {
+          title: 'Streaming',
+        },
+      },
+    },
+  },
+})
 
 describe('StreamingBadges', () => {
   const mockProviders = {
@@ -21,6 +36,7 @@ describe('StreamingBadges', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'US' },
+      global: { plugins: [i18n] },
     })
 
     // Assert
@@ -34,6 +50,7 @@ describe('StreamingBadges', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'JP' },
+      global: { plugins: [i18n] },
     })
 
     // Assert - section should not be rendered at all
@@ -44,6 +61,7 @@ describe('StreamingBadges', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: {}, region: 'US' },
+      global: { plugins: [i18n] },
     })
 
     // Assert - section should not be rendered at all
@@ -64,6 +82,7 @@ describe('StreamingBadges', () => {
     // Act
     const wrapper = mount(StreamingBadges, {
       props: { providers, region: 'US' },
+      global: { plugins: [i18n] },
     })
 
     // Assert - section should not be rendered at all
@@ -74,6 +93,7 @@ describe('StreamingBadges', () => {
     // Arrange & Act
     const wrapper = mount(StreamingBadges, {
       props: { providers: mockProviders, region: 'US' },
+      global: { plugins: [i18n] },
     })
 
     // Assert

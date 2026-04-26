@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { WatchProviderRegion } from '@/domain/shared.schema'
 import { buildImageUrl } from '@/infrastructure/image.helper'
 
@@ -7,6 +8,8 @@ const props = defineProps<{
   providers: Record<string, WatchProviderRegion>
   region: string
 }>()
+
+const { t } = useI18n()
 
 /** Gets the flatrate providers for the user's region. */
 const regionProviders = computed(() => {
@@ -23,6 +26,12 @@ function getLogoUrl(logoPath: string): string | null {
 
 <template>
   <section v-if="regionProviders.length > 0" data-testid="streaming-badges">
+    <h2
+      class="mb-3 text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
+    >
+      {{ t('details.streaming.title') }}
+    </h2>
+
     <div class="flex flex-wrap gap-2">
       <img
         v-for="provider in regionProviders"

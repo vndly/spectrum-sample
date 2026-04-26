@@ -167,7 +167,6 @@ function goHome() {
         <template #actions>
           <ActionButtons
             :status="watchStatus"
-            :imdb-id="movie.imdb_id"
             :share-url="shareUrl"
             :share-title="movie.title"
             @update-status="handleUpdateStatus"

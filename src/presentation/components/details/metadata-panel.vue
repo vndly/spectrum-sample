@@ -45,11 +45,6 @@ const directors = computed(() => {
   return props.crew.filter((c) => c.job === 'Director')
 })
 
-/** Extracts writers from crew. */
-const writers = computed(() => {
-  return props.crew.filter((c) => c.department === 'Writing')
-})
-
 /** Formats spoken languages as comma-separated list. */
 const languageList = computed(() => {
   if (props.spokenLanguages.length === 0) return null
@@ -113,35 +108,18 @@ const originalLanguageName = computed(() => {
       </span>
     </div>
 
-    <!-- Credits grid -->
-    <div v-if="directors.length > 0 || writers.length > 0" class="grid gap-3 sm:grid-cols-2">
-      <!-- Directors -->
-      <div v-if="directors.length > 0" data-testid="directors">
-        <p
-          class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
-        >
-          {{
-            directors.length === 1
-              ? t('details.metadata.director')
-              : t('details.metadata.directors')
-          }}
-        </p>
-        <p class="mt-0.5 text-sm font-medium text-slate-700 dark:text-slate-200">
-          {{ directors.map((d) => d.name).join(', ') }}
-        </p>
-      </div>
-
-      <!-- Writers -->
-      <div v-if="writers.length > 0" data-testid="writers">
-        <p
-          class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
-        >
-          {{ writers.length === 1 ? t('details.metadata.writer') : t('details.metadata.writers') }}
-        </p>
-        <p class="mt-0.5 text-sm font-medium text-slate-700 dark:text-slate-200">
-          {{ writers.map((w) => w.name).join(', ') }}
-        </p>
-      </div>
+    <!-- Directors -->
+    <div v-if="directors.length > 0" data-testid="directors">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500"
+      >
+        {{
+          directors.length === 1 ? t('details.metadata.director') : t('details.metadata.directors')
+        }}
+      </p>
+      <p class="mt-0.5 text-sm font-medium text-slate-700 dark:text-slate-200">
+        {{ directors.map((d) => d.name).join(', ') }}
+      </p>
     </div>
 
     <!-- Spoken languages -->

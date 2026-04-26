@@ -46,6 +46,7 @@ const EXPECTED_KEYS = [
   'details.notFound.message',
   'details.notFound.title',
   'details.share.copied',
+  'details.streaming.title',
   'details.streaming.notAvailable',
   'details.trailer.play',
   'details.trailer.title',

@@ -152,33 +152,7 @@ describe('MetadataPanel', () => {
     expect(directors.text()).toContain('Director')
   })
 
-  it('renders writers list (ED-02-05)', () => {
-    // Arrange & Act
-    const wrapper = mount(MetadataPanel, {
-      props: {
-        ...defaultProps,
-        crew: [
-          { id: 1, name: 'Jim Uhls', job: 'Screenplay', department: 'Writing', profile_path: null },
-          {
-            id: 2,
-            name: 'Chuck Palahniuk',
-            job: 'Novel',
-            department: 'Writing',
-            profile_path: null,
-          },
-        ],
-      },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    const writers = wrapper.find('[data-testid="writers"]')
-    expect(writers.exists()).toBe(true)
-    expect(writers.text()).toContain('Jim Uhls')
-    expect(writers.text()).toContain('Writers')
-  })
-
-  it('renders plural directors and singular writer labels', () => {
+  it('renders plural directors label', () => {
     const wrapper = mount(MetadataPanel, {
       props: {
         ...defaultProps,
@@ -200,13 +174,6 @@ describe('MetadataPanel', () => {
             department: 'Directing',
             profile_path: null,
           },
-          {
-            id: 3,
-            name: 'Writer One',
-            job: 'Screenplay',
-            department: 'Writing',
-            profile_path: null,
-          },
         ],
       },
       global: { plugins: [i18n] },
@@ -214,7 +181,6 @@ describe('MetadataPanel', () => {
 
     expect(wrapper.text()).toContain('2010')
     expect(wrapper.get('[data-testid="directors"]').text()).toContain('Directors')
-    expect(wrapper.get('[data-testid="writers"]').text()).toContain('Writer')
   })
 
   it('renders spoken languages (ED-02-06)', () => {
@@ -249,7 +215,6 @@ describe('MetadataPanel', () => {
     expect(wrapper.find('[data-testid="runtime"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="genres"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="directors"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="writers"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="languages"]').exists()).toBe(false)
   })
 })

@@ -25,7 +25,6 @@ const i18n = createI18n({
 describe('ActionButtons', () => {
   const defaultProps = {
     status: 'none' as const,
-    imdbId: null,
     shareUrl: '/movie/550',
     shareTitle: 'Fight Club',
   }
@@ -95,43 +94,6 @@ describe('ActionButtons', () => {
     // Assert
     const btn = wrapper.find('[data-testid="watched-button"]')
     expect(btn.classes()).toContain('bg-accent')
-  })
-
-  it('IMDB button renders when imdb_id present (ED-09-01)', () => {
-    // Arrange & Act
-    const wrapper = mount(ActionButtons, {
-      props: { ...defaultProps, imdbId: 'tt0137523' },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    const link = wrapper.find('[data-testid="imdb-link"]')
-    expect(link.exists()).toBe(true)
-    expect(link.attributes('href')).toBe('https://www.imdb.com/title/tt0137523')
-  })
-
-  it('IMDB button not rendered when imdb_id null (ED-09-02)', () => {
-    // Arrange & Act
-    const wrapper = mount(ActionButtons, {
-      props: { ...defaultProps, imdbId: null },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    expect(wrapper.find('[data-testid="imdb-link"]').exists()).toBe(false)
-  })
-
-  it('IMDB link has rel="noopener noreferrer" (ED-NFR-09)', () => {
-    // Arrange & Act
-    const wrapper = mount(ActionButtons, {
-      props: { ...defaultProps, imdbId: 'tt0137523' },
-      global: { plugins: [i18n] },
-    })
-
-    // Assert
-    const link = wrapper.find('[data-testid="imdb-link"]')
-    expect(link.attributes('rel')).toBe('noopener noreferrer')
-    expect(link.attributes('target')).toBe('_blank')
   })
 
   it('share button has aria-label="Share" (ED-NFR-08)', () => {

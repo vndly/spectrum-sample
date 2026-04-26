@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Bookmark, Eye, Share2, ExternalLink } from 'lucide-vue-next'
+import { Bookmark, Eye, Share2 } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { WatchStatus } from '@/domain/library.schema'
 
 const props = defineProps<{
   status: WatchStatus
-  imdbId: string | null
   shareUrl: string
   shareTitle: string
 }>()
@@ -74,19 +73,5 @@ function handleStatusClick(newStatus: WatchStatus) {
     >
       <Share2 class="size-5" />
     </button>
-
-    <!-- IMDB link -->
-    <a
-      v-if="imdbId"
-      :href="`https://www.imdb.com/title/${imdbId}`"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex size-11 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:bg-surface dark:text-slate-400 dark:hover:text-white"
-      :aria-label="t('details.actions.imdb')"
-      :title="t('details.actions.imdb')"
-      data-testid="imdb-link"
-    >
-      <ExternalLink class="size-5" />
-    </a>
   </div>
 </template>
