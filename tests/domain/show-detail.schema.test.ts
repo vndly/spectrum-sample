@@ -124,6 +124,13 @@ describe('ShowDetailSchema', () => {
           { iso_3166_1: 'GB', rating: '18' },
         ],
       },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -182,6 +189,13 @@ describe('ShowDetailSchema', () => {
       videos: { results: [] },
       'watch/providers': { results: {} },
       content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -243,6 +257,13 @@ describe('ShowDetailSchema', () => {
       videos: { results: [] },
       'watch/providers': { results: {} },
       content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0944947',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -292,6 +313,13 @@ describe('ShowDetailSchema', () => {
       videos: { results: [] },
       'watch/providers': { results: {} },
       content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: null,
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act

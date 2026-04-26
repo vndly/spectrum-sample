@@ -13,8 +13,11 @@ import TrailerEmbed from '@/presentation/components/details/trailer-embed.vue'
 import StreamingBadges from '@/presentation/components/details/streaming-badges.vue'
 import BoxOffice from '@/presentation/components/details/box-office.vue'
 import ProviderRatingBadge from '@/presentation/components/details/provider-rating-badge.vue'
+import ContentRatingBadge from '@/presentation/components/details/content-rating-badge.vue'
 import Synopsis from '@/presentation/components/details/synopsis.vue'
 import ActionButtons from '@/presentation/components/details/action-buttons.vue'
+import ExternalLinks from '@/presentation/components/details/external-links.vue'
+import ImagesGallery from '@/presentation/components/details/images-gallery.vue'
 import DetailSkeleton from '@/presentation/components/details/detail-skeleton.vue'
 import EmptyState from '@/presentation/components/common/empty-state.vue'
 import { AlertCircle } from 'lucide-vue-next'
@@ -63,6 +66,18 @@ const isNotFound = computed(() => error.value?.message?.includes('404'))
 /** Share URL for this movie. */
 const shareUrl = computed(() => {
   return `${window.location.origin}/movie/${movieId.value}`
+})
+
+/** Extracts content rating (certification) for the preferred region. */
+const contentRating = computed(() => {
+  if (!movie.value) return null
+  const regionData = movie.value.release_dates.results.find(
+    (r) => r.iso_3166_1 === preferredRegion.value,
+  )
+  if (!regionData) return null
+  // Find the first release with a certification
+  const releaseWithCert = regionData.release_dates.find((rd) => rd.certification)
+  return releaseWithCert?.certification ?? null
 })
 
 /** Handles status change. */
@@ -162,8 +177,11 @@ function goHome() {
       </HeroBackdrop>
 
       <div class="space-y-6 px-4 py-4 md:px-6 md:py-6">
-        <!-- Rating badge -->
-        <ProviderRatingBadge :vote-average="movie.vote_average" />
+        <!-- Rating badges -->
+        <div class="flex flex-wrap items-center gap-2">
+          <ProviderRatingBadge :vote-average="movie.vote_average" />
+          <ContentRatingBadge :rating="contentRating" />
+        </div>
 
         <!-- Metadata -->
         <MetadataPanel
@@ -172,6 +190,7 @@ function goHome() {
           :genres="movie.genres"
           :crew="movie.credits.crew"
           :spoken-languages="movie.spoken_languages"
+          :original-language="movie.original_language"
         />
 
         <!-- Synopsis -->
@@ -188,6 +207,18 @@ function goHome() {
 
         <!-- Streaming providers -->
         <StreamingBadges :providers="movie['watch/providers'].results" :region="preferredRegion" />
+
+        <!-- External links -->
+        <ExternalLinks
+          :imdb-id="movie.imdb_id"
+          :homepage="movie.homepage"
+          :facebook-id="movie.external_ids.facebook_id"
+          :instagram-id="movie.external_ids.instagram_id"
+          :twitter-id="movie.external_ids.twitter_id"
+        />
+
+        <!-- Images gallery -->
+        <ImagesGallery :posters="movie.images.posters" :backdrops="movie.images.backdrops" />
       </div>
     </template>
   </div>

@@ -2,7 +2,9 @@ import { z } from 'zod'
 import {
   CastMemberSchema,
   CrewMemberSchema,
+  ExternalIdsSchema,
   GenreSchema,
+  ImageSchema,
   SpokenLanguageSchema,
   VideoSchema,
   WatchProviderRegionSchema,
@@ -122,6 +124,11 @@ export const MovieDetailSchema = z.object({
   release_dates: z.object({
     results: z.array(ReleaseDatesResultSchema),
   }),
+  images: z.object({
+    backdrops: z.array(ImageSchema),
+    posters: z.array(ImageSchema),
+  }),
+  external_ids: ExternalIdsSchema,
 })
 
 /** Inferred type for movie detail. */

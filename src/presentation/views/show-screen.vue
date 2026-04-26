@@ -12,8 +12,11 @@ import CastCarousel from '@/presentation/components/details/cast-carousel.vue'
 import TrailerEmbed from '@/presentation/components/details/trailer-embed.vue'
 import StreamingBadges from '@/presentation/components/details/streaming-badges.vue'
 import ProviderRatingBadge from '@/presentation/components/details/provider-rating-badge.vue'
+import ContentRatingBadge from '@/presentation/components/details/content-rating-badge.vue'
 import Synopsis from '@/presentation/components/details/synopsis.vue'
 import ActionButtons from '@/presentation/components/details/action-buttons.vue'
+import ExternalLinks from '@/presentation/components/details/external-links.vue'
+import ImagesGallery from '@/presentation/components/details/images-gallery.vue'
 import DetailSkeleton from '@/presentation/components/details/detail-skeleton.vue'
 import EmptyState from '@/presentation/components/common/empty-state.vue'
 import { AlertCircle } from 'lucide-vue-next'
@@ -62,6 +65,15 @@ const isNotFound = computed(() => error.value?.message?.includes('404'))
 /** Share URL for this show. */
 const shareUrl = computed(() => {
   return `${window.location.origin}/show/${showId.value}`
+})
+
+/** Extracts content rating for the preferred region. */
+const contentRating = computed(() => {
+  if (!show.value) return null
+  const regionRating = show.value.content_ratings.results.find(
+    (r) => r.iso_3166_1 === preferredRegion.value,
+  )
+  return regionRating?.rating ?? null
 })
 
 /** Handles status change. */
@@ -147,7 +159,7 @@ function goHome() {
         <template #actions>
           <ActionButtons
             :status="watchStatus"
-            :imdb-id="null"
+            :imdb-id="show.external_ids.imdb_id"
             :share-url="shareUrl"
             :share-title="show.name"
             @update-status="handleUpdateStatus"
@@ -157,8 +169,11 @@ function goHome() {
       </HeroBackdrop>
 
       <div class="space-y-6 px-4 py-4 md:px-6 md:py-6">
-        <!-- Rating badge -->
-        <ProviderRatingBadge :vote-average="show.vote_average" />
+        <!-- Rating badges -->
+        <div class="flex flex-wrap items-center gap-2">
+          <ProviderRatingBadge :vote-average="show.vote_average" />
+          <ContentRatingBadge :rating="contentRating" />
+        </div>
 
         <!-- Metadata -->
         <MetadataPanel
@@ -168,6 +183,7 @@ function goHome() {
           :genres="show.genres"
           :crew="show.credits.crew"
           :spoken-languages="show.spoken_languages"
+          :original-language="show.original_language"
         />
 
         <!-- Synopsis -->
@@ -181,6 +197,18 @@ function goHome() {
 
         <!-- Streaming providers -->
         <StreamingBadges :providers="show['watch/providers'].results" :region="preferredRegion" />
+
+        <!-- External links -->
+        <ExternalLinks
+          :imdb-id="show.external_ids.imdb_id"
+          :homepage="show.homepage"
+          :facebook-id="show.external_ids.facebook_id"
+          :instagram-id="show.external_ids.instagram_id"
+          :twitter-id="show.external_ids.twitter_id"
+        />
+
+        <!-- Images gallery -->
+        <ImagesGallery :posters="show.images.posters" :backdrops="show.images.backdrops" />
       </div>
     </template>
   </div>

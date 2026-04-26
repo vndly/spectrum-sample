@@ -89,6 +89,13 @@ describe('getShowDetail', () => {
     content_ratings: {
       results: [{ iso_3166_1: 'US', rating: 'TV-MA' }],
     },
+    images: { backdrops: [], posters: [] },
+    external_ids: {
+      imdb_id: 'tt0903747',
+      facebook_id: null,
+      instagram_id: null,
+      twitter_id: null,
+    },
   }
 
   it('constructs correct URL with append_to_response parameter (ED-12-01)', async () => {
@@ -106,7 +113,7 @@ describe('getShowDetail', () => {
     expect(url.pathname).toBe('/3/tv/1396')
     expect(url.searchParams.get('language')).toBe('en')
     expect(url.searchParams.get('append_to_response')).toBe(
-      'credits,videos,watch/providers,content_ratings',
+      'credits,videos,watch/providers,content_ratings,images,external_ids',
     )
   })
 

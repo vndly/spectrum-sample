@@ -12,6 +12,7 @@ const props = defineProps<{
   genres: Genre[]
   crew: CrewMember[]
   spokenLanguages: SpokenLanguage[]
+  originalLanguage?: string
 }>()
 
 const { t } = useI18n()
@@ -54,6 +55,17 @@ const languageList = computed(() => {
   if (props.spokenLanguages.length === 0) return null
   return props.spokenLanguages.map((l) => l.english_name).join(', ')
 })
+
+/** Converts ISO 639-1 language code to full language name. */
+const originalLanguageName = computed(() => {
+  if (!props.originalLanguage) return null
+  try {
+    const displayNames = new Intl.DisplayNames(['en'], { type: 'language' })
+    return displayNames.of(props.originalLanguage) ?? props.originalLanguage.toUpperCase()
+  } catch {
+    return props.originalLanguage.toUpperCase()
+  }
+})
 </script>
 
 <template>
@@ -80,6 +92,13 @@ const languageList = computed(() => {
         data-testid="season-info"
       >
         {{ seasonInfo }}
+      </span>
+      <span
+        v-if="originalLanguageName"
+        class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium tracking-wide text-slate-600 dark:bg-surface dark:text-slate-300"
+        data-testid="original-language"
+      >
+        {{ originalLanguageName }}
       </span>
     </div>
 

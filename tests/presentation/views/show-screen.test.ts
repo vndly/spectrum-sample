@@ -117,6 +117,16 @@ function renderShowScreen() {
           props: ['region'],
           template: '<div data-testid="streaming-badges">{{ region }}</div>',
         },
+        ContentRatingBadge: {
+          props: ['rating'],
+          template: '<div data-testid="content-rating-badge">{{ rating }}</div>',
+        },
+        ExternalLinks: {
+          template: '<div data-testid="external-links"></div>',
+        },
+        ImagesGallery: {
+          template: '<div data-testid="images-gallery"></div>',
+        },
         DetailSkeleton: {
           template: '<div data-testid="detail-skeleton"></div>',
         },
@@ -216,6 +226,16 @@ describe('ShowScreen', () => {
       'watch/providers': { results: {} },
       episode_run_time: [45],
       poster_path: '/poster.jpg',
+      content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
     }
 
     const wrapper = renderShowScreen()
@@ -247,6 +267,16 @@ describe('ShowScreen', () => {
       'watch/providers': { results: {} },
       episode_run_time: [45],
       poster_path: '/poster.jpg',
+      content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
     }
     const share = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(window.navigator, 'share', {
@@ -283,6 +313,16 @@ describe('ShowScreen', () => {
       'watch/providers': { results: {} },
       episode_run_time: [45],
       poster_path: '/poster.jpg',
+      content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
     }
     Object.defineProperty(window.navigator, 'share', {
       configurable: true,
@@ -330,6 +370,16 @@ describe('ShowScreen', () => {
       'watch/providers': { results: {} },
       episode_run_time: [],
       poster_path: '/poster.jpg',
+      content_ratings: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
     }
     vi.mocked(useLibraryEntry).mockReturnValue({
       ...libraryEntry,

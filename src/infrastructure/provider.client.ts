@@ -190,7 +190,7 @@ export async function getPopularShows(language: string): Promise<SearchResponse>
 export async function getMovieDetail(id: number, language: string): Promise<MovieDetail> {
   const params = new URLSearchParams({
     language,
-    append_to_response: 'credits,videos,watch/providers,release_dates',
+    append_to_response: 'credits,videos,watch/providers,release_dates,images,external_ids',
   })
 
   const url = `${API_BASE_URL}/movie/${id}?${params.toString()}`
@@ -210,7 +210,7 @@ export async function getMovieDetail(id: number, language: string): Promise<Movi
 export async function getShowDetail(id: number, language: string): Promise<ShowDetail> {
   const params = new URLSearchParams({
     language,
-    append_to_response: 'credits,videos,watch/providers,content_ratings',
+    append_to_response: 'credits,videos,watch/providers,content_ratings,images,external_ids',
   })
 
   const url = `${API_BASE_URL}/tv/${id}?${params.toString()}`

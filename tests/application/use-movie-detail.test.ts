@@ -76,6 +76,13 @@ describe('useMovieDetail', () => {
     },
     'watch/providers': { results: {} },
     release_dates: { results: [] },
+    images: { backdrops: [], posters: [] },
+    external_ids: {
+      imdb_id: 'tt0137523',
+      facebook_id: null,
+      instagram_id: null,
+      twitter_id: null,
+    },
   }
 
   beforeEach(() => {

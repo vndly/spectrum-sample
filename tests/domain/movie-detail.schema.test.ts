@@ -130,6 +130,13 @@ describe('MovieDetailSchema', () => {
           },
         ],
       },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -182,6 +189,13 @@ describe('MovieDetailSchema', () => {
       videos: { results: [] },
       'watch/providers': { results: {} },
       release_dates: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: null,
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -242,6 +256,13 @@ describe('MovieDetailSchema', () => {
       videos: { results: [] },
       'watch/providers': { results: {} },
       release_dates: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -308,6 +329,13 @@ describe('MovieDetailSchema', () => {
       },
       'watch/providers': { results: {} },
       release_dates: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act
@@ -365,6 +393,13 @@ describe('MovieDetailSchema', () => {
         },
       },
       release_dates: { results: [] },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
     }
 
     // Act

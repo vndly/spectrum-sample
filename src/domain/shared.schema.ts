@@ -80,6 +80,35 @@ export const WatchProviderRegionSchema = z.object({
 export type WatchProviderRegion = z.infer<typeof WatchProviderRegionSchema>
 
 /**
+ * Schema for an image (poster or backdrop).
+ */
+export const ImageSchema = z.object({
+  aspect_ratio: z.number(),
+  file_path: z.string(),
+  height: z.number(),
+  width: z.number(),
+  iso_639_1: z.string().nullable(),
+  vote_average: z.number(),
+  vote_count: z.number(),
+})
+
+/** Inferred type for an image. */
+export type Image = z.infer<typeof ImageSchema>
+
+/**
+ * Schema for external IDs (social media and database links).
+ */
+export const ExternalIdsSchema = z.object({
+  imdb_id: z.string().nullable(),
+  facebook_id: z.string().nullable(),
+  instagram_id: z.string().nullable(),
+  twitter_id: z.string().nullable(),
+})
+
+/** Inferred type for external IDs. */
+export type ExternalIds = z.infer<typeof ExternalIdsSchema>
+
+/**
  * Schema for a spoken language.
  */
 export const SpokenLanguageSchema = z.object({

@@ -82,6 +82,13 @@ describe('useShowDetail', () => {
     },
     'watch/providers': { results: {} },
     content_ratings: { results: [{ iso_3166_1: 'US', rating: 'TV-MA' }] },
+    images: { backdrops: [], posters: [] },
+    external_ids: {
+      imdb_id: 'tt0903747',
+      facebook_id: null,
+      instagram_id: null,
+      twitter_id: null,
+    },
   }
 
   beforeEach(() => {

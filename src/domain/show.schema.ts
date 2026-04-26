@@ -2,7 +2,9 @@ import { z } from 'zod'
 import {
   CastMemberSchema,
   CrewMemberSchema,
+  ExternalIdsSchema,
   GenreSchema,
+  ImageSchema,
   SpokenLanguageSchema,
   VideoSchema,
   WatchProviderRegionSchema,
@@ -141,6 +143,11 @@ export const ShowDetailSchema = z.object({
   content_ratings: z.object({
     results: z.array(ContentRatingSchema),
   }),
+  images: z.object({
+    backdrops: z.array(ImageSchema),
+    posters: z.array(ImageSchema),
+  }),
+  external_ids: ExternalIdsSchema,
 })
 
 /** Inferred type for TV show detail. */

@@ -90,6 +90,13 @@ describe('getMovieDetail', () => {
         },
       ],
     },
+    images: { backdrops: [], posters: [] },
+    external_ids: {
+      imdb_id: 'tt0137523',
+      facebook_id: null,
+      instagram_id: null,
+      twitter_id: null,
+    },
   }
 
   it('constructs correct URL with append_to_response parameter (ED-12-01)', async () => {
@@ -107,7 +114,7 @@ describe('getMovieDetail', () => {
     expect(url.pathname).toBe('/3/movie/550')
     expect(url.searchParams.get('language')).toBe('en')
     expect(url.searchParams.get('append_to_response')).toBe(
-      'credits,videos,watch/providers,release_dates',
+      'credits,videos,watch/providers,release_dates,images,external_ids',
     )
   })
 
