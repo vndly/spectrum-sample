@@ -25,11 +25,13 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 
 ### Dependencies
 
-- **R-02 (Home Screen)**: Detail pages with cast carousel. This feature modifies the existing `CastCarousel` component to make cast member cards clickable. The change is additive (click handler) with no breaking changes to existing usage.
+- **R-02 (Home Screen)**: Detail pages with cast carousel. This feature modifies the existing `CastCarousel` component to make cast member cards clickable. The change is additive (click handler) with no breaking changes to existing usage. Existing `CastCarousel` tests will need updates to verify click handlers and navigation behavior. The component's semantic HTML will change from `<div>` to `<RouterLink>` for cast member cards.
 
 ### Affected Documents
 
-- **docs/technical/api.md**: New Person endpoint (`/person/{id}` with `append_to_response=combined_credits,external_ids`) needs to be documented with response schema and usage patterns.
+- **docs/technical/api.md**: New Person endpoint (`/person/{id}` with `append_to_response=combined_credits,external_ids`) needs to be documented with response schema (`PersonDetail`, `PersonCredit`, `ExternalIds` types) and usage patterns.
+- **docs/technical/architecture.md**: Routing table updated with `/person/:id` route.
+- **src/domain/**: New `person.schema.ts` with `PersonDetailSchema` and related types following existing schema patterns.
 
 ## Scope
 
@@ -61,6 +63,9 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 - Filtering filmography by genre/year
 - Infinite scroll for filmography (display all results from single API call)
 - Other social links beyond IMDB, Instagram, Twitter (Facebook, TikTok, YouTube, etc. excluded for initial release)
+- Person data caching (fresh API request on each navigation per existing guardrails)
+- Filmography virtualization (render all items; performance testing may inform future optimizations)
+- Clicking directors/writers in MetadataPanel (only cast carousel navigation is in scope)
 
 ## Decisions
 
@@ -111,13 +116,18 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 
 ### Accessibility
 
-| ID        | Requirement            | Threshold                                                   |
-| --------- | ---------------------- | ----------------------------------------------------------- |
-| CI-NFR-07 | Semantic HTML          | Use `<article>`, `<section>`, `<a>` elements appropriately  |
-| CI-NFR-08 | External link behavior | Open in new tab with `rel="noopener noreferrer"`            |
-| CI-NFR-09 | Focus management       | Visible focus states on all interactive elements            |
-| CI-NFR-10 | Keyboard navigation    | Filmography grid navigable via keyboard (arrow keys, Enter) |
-| CI-NFR-11 | Screen reader support  | Loading/error states announced to screen readers            |
+| ID        | Requirement            | Threshold                                                                                                                               |
+| --------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| CI-NFR-07 | Semantic HTML          | Use `<article>`, `<section>`, `<a>` elements appropriately                                                                              |
+| CI-NFR-08 | External link behavior | Open in new tab with `rel="noopener noreferrer"`                                                                                        |
+| CI-NFR-09 | Focus management       | Visible focus states on all interactive elements                                                                                        |
+| CI-NFR-10 | Keyboard navigation    | Filmography grid navigable via Tab key; Enter activates focused item (browser-default navigation per ui-ux.md accessibility guidelines) |
+| CI-NFR-11 | Screen reader support  | Loading/error states announced to screen readers                                                                                        |
+
+## Definitions
+
+- **Person**: An individual (actor, director, etc.) in the TMDB database, identified by a unique person ID. Distinct from "cast member" which refers to a person's role in a specific production.
+- **Filmography**: The combined movie and TV credits for a person, sourced from the TMDB `combined_credits` API response.
 
 ## Constraints
 
@@ -126,6 +136,7 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 - Biography text may be empty for lesser-known actors
 - Some external IDs may be null (no Instagram, no Twitter, etc.)
 - Filmography may include entries with null release dates (sort these last, display as "TBA")
+- Filmography entries with duplicate media IDs (same person in multiple roles) should be deduplicated, showing only the primary role
 
 ## UI/UX Specs
 
@@ -155,7 +166,7 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 ### Filmography Section
 
 - Section heading: "Filmography" with count (e.g., "Filmography (42)")
-- Each item displays: poster thumbnail (with placeholder fallback), title, year (or "TBA"), media type badge, character name
+- Each item displays: poster thumbnail (with placeholder fallback), title, year (or "TBA"), media type badge (pill-shaped, `text-xs`, teal background for movies, purple for TV), character name
 - Items styled consistently with existing `MovieCard` component
 - Hover state: subtle scale-up consistent with card hover patterns
 - Empty state: "No credits available." centered message
@@ -168,6 +179,23 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 
 - **404**: "Person not found" centered message with link to Home
 - **Network error**: Toast notification with Retry action
+
+## Risks & Assumptions
+
+### Risks
+
+| Risk                                          | Likelihood | Impact | Mitigation                                                                       |
+| --------------------------------------------- | ---------- | ------ | -------------------------------------------------------------------------------- |
+| Empty biographies for many actors             | Medium     | Low    | UI handles gracefully with "No biography available" empty state                  |
+| Large filmographies (100+ entries)            | Medium     | Medium | Render all items initially; monitor performance and add virtualization if needed |
+| All external IDs null for lesser-known actors | Medium     | Low    | External links section hidden entirely when no links available                   |
+| TMDB rate limiting during rapid navigation    | Low        | Medium | Existing exponential backoff retry; user sees loading state                      |
+
+### Assumptions
+
+- TMDB `/person/{id}` endpoint with `append_to_response` is stable and returns consistent data structure
+- Profile images use the same image URL patterns as movie/show posters
+- `known_for_department` field is always a string (e.g., "Acting", "Directing")
 
 ## Acceptance Criteria
 
@@ -196,3 +224,7 @@ Currently, cast members are displayed in a carousel on movie/show detail pages w
 - [ ] All UI text uses i18n translation keys
 - [ ] Keyboard navigation works for filmography grid (CI-NFR-10)
 - [ ] Focus states are visible on interactive elements (CI-NFR-09)
+- [ ] Biography "Read more" button text uses i18n translation key
+- [ ] Empty biography message uses i18n translation key
+- [ ] `docs/technical/api.md` updated with `/person/{id}` endpoint documentation
+- [ ] `docs/technical/architecture.md` routing table includes `/person/:id`
