@@ -55,4 +55,14 @@ describe('ProviderRatingBadge', () => {
     expect(badge.classes()).toContain('bg-accent')
     expect(badge.classes()).toContain('text-white')
   })
+
+  it('does not render when vote average is 0', () => {
+    // Arrange & Act
+    const wrapper = mount(ProviderRatingBadge, {
+      props: { voteAverage: 0 },
+    })
+
+    // Assert
+    expect(wrapper.find('[data-testid="provider-rating-badge"]').exists()).toBe(false)
+  })
 })

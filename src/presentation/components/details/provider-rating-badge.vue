@@ -12,6 +12,7 @@ const formattedRating = computed(() => props.voteAverage.toFixed(1))
 
 <template>
   <div
+    v-if="voteAverage > 0"
     class="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-sm font-bold text-white"
     data-testid="provider-rating-badge"
   >

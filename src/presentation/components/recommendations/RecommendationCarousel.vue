@@ -63,7 +63,6 @@ function getPosterSrcSet(item: SearchResultItem) {
 }
 
 function getYear(item: SearchResultItem) {
-   
   const dateStr =
     item.media_type === 'movie' ? (item as any).release_date : (item as any).first_air_date
   if (!dateStr) return null
