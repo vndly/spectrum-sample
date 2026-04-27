@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import MovieCard from '@/presentation/components/common/movie-card.vue'
 import type { MovieListItem } from '@/domain/movie.schema'
 import type { ShowListItem } from '@/domain/show.schema'
+import * as imageHelper from '@/infrastructure/image.helper'
 
 describe('MovieCard', () => {
   it('renders a grid movie card with poster, year, and rating badge', () => {
@@ -210,5 +211,53 @@ describe('MovieCard', () => {
     // Should show placeholder instead of img
     expect(wrapper.find('img').exists()).toBe(false)
     expect(wrapper.text()).toContain('Test Movie')
+  })
+
+  describe('srcset fallback branch coverage', () => {
+    beforeEach(() => {
+      vi.spyOn(imageHelper, 'buildImageSrcSet').mockReturnValue(null)
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('renders grid img without srcset when buildImageSrcSet returns null', () => {
+      const wrapper = mount(MovieCard, {
+        props: {
+          item: {
+            id: 1,
+            media_type: 'movie',
+            title: 'Test Movie',
+            poster_path: '/poster.jpg',
+            vote_average: 8.0,
+          } as any,
+          variant: 'grid',
+        },
+      })
+
+      const img = wrapper.find('img')
+      expect(img.exists()).toBe(true)
+      expect(img.attributes('srcset')).toBeUndefined()
+    })
+
+    it('renders list img without srcset when buildImageSrcSet returns null', () => {
+      const wrapper = mount(MovieCard, {
+        props: {
+          item: {
+            id: 1,
+            media_type: 'movie',
+            title: 'Test Movie',
+            poster_path: '/poster.jpg',
+            vote_average: 8.0,
+          } as any,
+          variant: 'list',
+        },
+      })
+
+      const img = wrapper.find('img')
+      expect(img.exists()).toBe(true)
+      expect(img.attributes('srcset')).toBeUndefined()
+    })
   })
 })

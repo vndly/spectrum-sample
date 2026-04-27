@@ -382,5 +382,18 @@ describe('storage.service', () => {
       const region = getBrowserRegion()
       expect(region).toBe('DE')
     })
+
+    it('continues to next locale when catch regex does not match', () => {
+      // Uses '@' prefix which throws in Intl.Locale (invalid BCP 47)
+      // but doesn't match the regex fallback pattern (no 2-letter region code)
+      vi.stubGlobal('navigator', {
+        languages: ['@invalid', 'en-CA'],
+        language: '@invalid',
+      })
+
+      const region = getBrowserRegion()
+      // Falls through '@invalid' (throws, no regex match) and finds 'en-CA'
+      expect(region).toBe('CA')
+    })
   })
 })

@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import HeroBackdrop from '@/presentation/components/details/hero-backdrop.vue'
+import * as imageHelper from '@/infrastructure/image.helper'
 
 describe('HeroBackdrop', () => {
   it('renders backdrop image when backdrop_path provided (ED-01-01)', () => {
@@ -108,5 +109,28 @@ describe('HeroBackdrop', () => {
     // Assert
     const tagline = wrapper.find('[data-testid="tagline"]')
     expect(tagline.exists()).toBe(false)
+  })
+
+  describe('srcset fallback branch coverage', () => {
+    beforeEach(() => {
+      vi.spyOn(imageHelper, 'buildImageSrcSet').mockReturnValue(null)
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('renders backdrop img without srcset when buildImageSrcSet returns null', () => {
+      const wrapper = mount(HeroBackdrop, {
+        props: {
+          backdropPath: '/backdrop.jpg',
+          title: 'Fight Club',
+        },
+      })
+
+      const img = wrapper.find('[data-testid="backdrop-image"]')
+      expect(img.exists()).toBe(true)
+      expect(img.attributes('srcset')).toBeUndefined()
+    })
   })
 })
