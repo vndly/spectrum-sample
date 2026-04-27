@@ -127,6 +127,7 @@ const EXPECTED_KEYS = [
   'recommendations.becauseYouWatched',
   'recommendations.mediaType.movie',
   'recommendations.mediaType.tv',
+  'recommendations.noFilterResults',
   'recommendations.popular.movies.title',
   'recommendations.popular.shows.title',
   'recommendations.scrollNext',

@@ -8,7 +8,10 @@ const sections = ref([
   {
     titleKey: 'recommendations.section.one',
     titleParams: { name: 'Arrival' },
-    results: [],
+    results: [
+      { id: 101, media_type: 'movie', genre_ids: [28] },
+      { id: 102, media_type: 'tv', genre_ids: [35] },
+    ],
     loading: false,
     error: null,
     fetched: true,
@@ -17,7 +20,7 @@ const sections = ref([
   {
     titleKey: 'recommendations.section.two',
     titleParams: { name: 'Severance' },
-    results: [],
+    results: [{ id: 201, media_type: 'movie', genre_ids: [18] }],
     loading: false,
     error: null,
     fetched: true,
@@ -35,6 +38,27 @@ vi.mock('@/application/use-recommendations', () => ({
   }),
 }))
 
+vi.mock('@/application/use-recommendation-filters', () => ({
+  useRecommendationFilters: () => ({
+    filters: ref({ genres: [], mediaType: 'all', yearFrom: null, yearTo: null }),
+    activeFilterCount: ref(0),
+    clearFilters: vi.fn(),
+  }),
+}))
+
+vi.mock('@/application/use-genres', () => ({
+  useGenres: () => ({
+    genres: ref([]),
+    fetchGenres: vi.fn(),
+  }),
+}))
+
+vi.mock('@/application/use-settings', () => ({
+  useSettings: () => ({
+    language: ref('en'),
+  }),
+}))
+
 function createTestI18n(locale: 'en' | 'fr') {
   return createI18n({
     legacy: false,
@@ -46,11 +70,19 @@ function createTestI18n(locale: 'en' | 'fr') {
         'recommendations.title': 'Recommended for You',
         'recommendations.section.one': 'Because you liked Arrival',
         'recommendations.section.two': 'Because you liked Severance',
+        'home.filters.genre': 'Genre',
+        'home.filters.mediaType.all': 'All',
+        'home.filters.mediaType.movie': 'Movies',
+        'home.filters.mediaType.tv': 'Shows',
       },
       fr: {
         'recommendations.title': 'Recommandé pour vous',
         'recommendations.section.one': 'Parce que vous avez aimé Arrival',
         'recommendations.section.two': 'Parce que vous avez aimé Severance',
+        'home.filters.genre': 'Genre',
+        'home.filters.mediaType.all': 'Tout',
+        'home.filters.mediaType.movie': 'Films',
+        'home.filters.mediaType.tv': 'Séries',
       },
     },
   })
@@ -67,6 +99,10 @@ function renderRecommendationsScreen(locale: 'en' | 'fr' = 'en') {
           template:
             '<button data-testid="recommendation-carousel" @click="$emit(\'intersect\')">{{ titleKey }}-{{ fetched }}</button>',
         },
+        FilterBar: {
+          name: 'FilterBar',
+          template: '<div data-testid="filter-bar"></div>',
+        },
       },
     },
   })
@@ -79,7 +115,10 @@ describe('RecommendationsScreen', () => {
       {
         titleKey: 'recommendations.section.one',
         titleParams: { name: 'Arrival' },
-        results: [],
+        results: [
+          { id: 101, media_type: 'movie', genre_ids: [28] },
+          { id: 102, media_type: 'tv', genre_ids: [35] },
+        ],
         loading: false,
         error: null,
         fetched: true,
@@ -88,7 +127,7 @@ describe('RecommendationsScreen', () => {
       {
         titleKey: 'recommendations.section.two',
         titleParams: { name: 'Severance' },
-        results: [],
+        results: [{ id: 201, media_type: 'movie', genre_ids: [18] }],
         loading: false,
         error: null,
         fetched: true,
@@ -124,5 +163,10 @@ describe('RecommendationsScreen', () => {
   it('renders the localized title in French', () => {
     const wrapper = renderRecommendationsScreen('fr')
     expect(wrapper.get('h2').text()).toBe('Recommandé pour vous')
+  })
+
+  it('renders the filter bar', () => {
+    const wrapper = renderRecommendationsScreen()
+    expect(wrapper.find('[data-testid="filter-bar"]').exists()).toBe(true)
   })
 })

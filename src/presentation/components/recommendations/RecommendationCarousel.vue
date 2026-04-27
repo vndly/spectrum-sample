@@ -63,8 +63,9 @@ function getPosterSrcSet(item: SearchResultItem) {
 }
 
 function getYear(item: SearchResultItem) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dateStr = item.media_type === 'movie' ? (item as any).release_date : (item as any).first_air_date
+   
+  const dateStr =
+    item.media_type === 'movie' ? (item as any).release_date : (item as any).first_air_date
   if (!dateStr) return null
   const year = dateStr.slice(0, 4)
   return year && year !== '0000' ? year : null

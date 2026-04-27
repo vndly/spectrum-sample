@@ -90,6 +90,7 @@
   "recommendations.popular.shows.title": "Popular Shows",
   "recommendations.scrollNext": "Scroll recommendations right",
   "recommendations.scrollPrevious": "Scroll recommendations left",
+  "recommendations.noFilterResults": "No recommendations match your filters",
   "page.calendar.title": "Calendar",
   "page.home.title": "Home",
   "page.library.title": "Library",

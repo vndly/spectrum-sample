@@ -90,6 +90,7 @@
   "recommendations.popular.shows.title": "Series populares",
   "recommendations.scrollNext": "Desplazar recomendaciones hacia la derecha",
   "recommendations.scrollPrevious": "Desplazar recomendaciones hacia la izquierda",
+  "recommendations.noFilterResults": "No hay recomendaciones que coincidan con tus filtros",
   "page.calendar.title": "Calendario",
   "page.home.title": "Inicio",
   "page.library.title": "Biblioteca",
