@@ -217,4 +217,36 @@ describe('MetadataPanel', () => {
     expect(wrapper.find('[data-testid="directors"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="languages"]').exists()).toBe(false)
   })
+
+  it('renders original language name from ISO code', () => {
+    const wrapper = mount(MetadataPanel, {
+      props: { ...defaultProps, originalLanguage: 'en' },
+      global: { plugins: [i18n] },
+    })
+
+    const originalLang = wrapper.find('[data-testid="original-language"]')
+    expect(originalLang.exists()).toBe(true)
+    expect(originalLang.text()).toBe('English')
+  })
+
+  it('falls back to uppercase code for invalid language codes', () => {
+    const wrapper = mount(MetadataPanel, {
+      props: { ...defaultProps, originalLanguage: 'xx' },
+      global: { plugins: [i18n] },
+    })
+
+    const originalLang = wrapper.find('[data-testid="original-language"]')
+    expect(originalLang.exists()).toBe(true)
+    // Invalid codes fall back to uppercase
+    expect(originalLang.text()).toBe('XX')
+  })
+
+  it('does not render original language when not provided', () => {
+    const wrapper = mount(MetadataPanel, {
+      props: { ...defaultProps },
+      global: { plugins: [i18n] },
+    })
+
+    expect(wrapper.find('[data-testid="original-language"]').exists()).toBe(false)
+  })
 })

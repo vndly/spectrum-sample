@@ -398,4 +398,85 @@ describe('ShowScreen', () => {
     )
     expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('/show/1396|none')
   })
+
+  it('extracts content rating from content_ratings for preferred region', async () => {
+    mockLoading.value = false
+    mockShowData.value = {
+      id: 1396,
+      name: 'Breaking Bad',
+      tagline: '',
+      overview: '',
+      first_air_date: '2008-01-20',
+      number_of_seasons: 5,
+      number_of_episodes: 62,
+      backdrop_path: '/backdrop.jpg',
+      vote_average: 9.5,
+      genres: [],
+      spoken_languages: [],
+      credits: { cast: [], crew: [] },
+      videos: { results: [] },
+      'watch/providers': { results: {} },
+      episode_run_time: [45],
+      poster_path: '/poster.jpg',
+      content_ratings: {
+        results: [
+          { iso_3166_1: 'US', rating: 'TV-MA' },
+          { iso_3166_1: 'GB', rating: '18' },
+        ],
+      },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
+    }
+
+    const wrapper = renderShowScreen()
+
+    expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('TV-MA')
+  })
+
+  it('returns null content rating when preferred region not found', async () => {
+    mockLoading.value = false
+    preferredRegion.value = 'XX' // Non-existent region
+    mockShowData.value = {
+      id: 1396,
+      name: 'Breaking Bad',
+      tagline: '',
+      overview: '',
+      first_air_date: '2008-01-20',
+      number_of_seasons: 5,
+      number_of_episodes: 62,
+      backdrop_path: '/backdrop.jpg',
+      vote_average: 9.5,
+      genres: [],
+      spoken_languages: [],
+      credits: { cast: [], crew: [] },
+      videos: { results: [] },
+      'watch/providers': { results: {} },
+      episode_run_time: [45],
+      poster_path: '/poster.jpg',
+      content_ratings: {
+        results: [{ iso_3166_1: 'US', rating: 'TV-MA' }],
+      },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0903747',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
+    }
+
+    const wrapper = renderShowScreen()
+
+    expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('')
+    preferredRegion.value = 'US' // Reset
+  })
 })

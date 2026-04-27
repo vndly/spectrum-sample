@@ -238,4 +238,54 @@ describe('RecommendationCarousel', () => {
     // Assert - no error thrown, function handles null ref gracefully
     expect(true).toBe(true)
   })
+
+  it('does not display year when release_date is empty string', () => {
+    const itemWithNoDate = {
+      ...movieItem,
+      release_date: '',
+    }
+
+    const wrapper = renderCarousel({
+      items: [itemWithNoDate],
+    })
+
+    // Year should not be displayed
+    expect(wrapper.text()).not.toContain('·')
+  })
+
+  it('does not display year when date starts with 0000', () => {
+    const itemWithZeroDate = {
+      ...movieItem,
+      release_date: '0000-00-00',
+    }
+
+    const wrapper = renderCarousel({
+      items: [itemWithZeroDate],
+    })
+
+    // Year should not be displayed (0000 is filtered out)
+    expect(wrapper.text()).not.toContain('0000')
+    expect(wrapper.text()).not.toContain('·')
+  })
+
+  it('displays year for TV shows with valid first_air_date', () => {
+    const wrapper = renderCarousel({
+      items: [showItem],
+    })
+
+    expect(wrapper.text()).toContain('2022')
+  })
+
+  it('does not display year when first_air_date is empty for TV show', () => {
+    const showWithNoDate = {
+      ...showItem,
+      first_air_date: '',
+    }
+
+    const wrapper = renderCarousel({
+      items: [showWithNoDate],
+    })
+
+    expect(wrapper.text()).not.toContain('·')
+  })
 })

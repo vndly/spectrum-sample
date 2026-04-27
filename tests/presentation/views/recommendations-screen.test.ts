@@ -38,11 +38,15 @@ vi.mock('@/application/use-recommendations', () => ({
   }),
 }))
 
+const mockFilters = ref({ genres: [], mediaType: 'all' as const, yearFrom: null, yearTo: null })
+const mockActiveFilterCount = ref(0)
+const mockClearFilters = vi.fn()
+
 vi.mock('@/application/use-recommendation-filters', () => ({
   useRecommendationFilters: () => ({
-    filters: ref({ genres: [], mediaType: 'all', yearFrom: null, yearTo: null }),
-    activeFilterCount: ref(0),
-    clearFilters: vi.fn(),
+    filters: mockFilters,
+    activeFilterCount: mockActiveFilterCount,
+    clearFilters: mockClearFilters,
   }),
 }))
 
@@ -111,6 +115,9 @@ function renderRecommendationsScreen(locale: 'en' | 'fr' = 'en') {
 describe('RecommendationsScreen', () => {
   beforeEach(() => {
     loading.value = false
+    mockFilters.value = { genres: [], mediaType: 'all' as const, yearFrom: null, yearTo: null }
+    mockActiveFilterCount.value = 0
+    mockClearFilters.mockReset()
     sections.value = [
       {
         titleKey: 'recommendations.section.one',
@@ -168,5 +175,114 @@ describe('RecommendationsScreen', () => {
   it('renders the filter bar', () => {
     const wrapper = renderRecommendationsScreen()
     expect(wrapper.find('[data-testid="filter-bar"]').exists()).toBe(true)
+  })
+
+  it('shows empty state with clear button when all sections are empty after filtering', async () => {
+    // Set up empty results for all sections (simulating filtered out)
+    sections.value = [
+      {
+        titleKey: 'recommendations.section.one',
+        titleParams: { name: 'Arrival' },
+        results: [],
+        loading: false,
+        error: null,
+        fetched: true,
+        seed: { id: 1 },
+      },
+      {
+        titleKey: 'recommendations.section.two',
+        titleParams: { name: 'Severance' },
+        results: [],
+        loading: false,
+        error: null,
+        fetched: true,
+        seed: null,
+      },
+    ]
+    mockActiveFilterCount.value = 1
+
+    const i18n = createI18n({
+      legacy: false,
+      locale: 'en',
+      fallbackLocale: 'en',
+      flatJson: true,
+      messages: {
+        en: {
+          'recommendations.title': 'Recommended for You',
+          'recommendations.noFilterResults': 'No recommendations match your filters.',
+          'home.filters.clear': 'Clear Filters',
+        },
+      },
+    })
+
+    const wrapper = mount(RecommendationsScreen, {
+      global: {
+        plugins: [i18n],
+        stubs: {
+          RecommendationCarousel: {
+            name: 'RecommendationCarousel',
+            template: '<div></div>',
+          },
+          FilterBar: {
+            name: 'FilterBar',
+            template: '<div data-testid="filter-bar"></div>',
+          },
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('No recommendations match your filters.')
+    expect(wrapper.find('button').text()).toBe('Clear Filters')
+
+    await wrapper.find('button').trigger('click')
+    expect(mockClearFilters).toHaveBeenCalled()
+  })
+
+  it('does not show empty state when sections are not all fetched', () => {
+    sections.value = [
+      {
+        titleKey: 'recommendations.section.one',
+        titleParams: { name: 'Arrival' },
+        results: [],
+        loading: false,
+        error: null,
+        fetched: false, // Not yet fetched
+        seed: { id: 1 },
+      },
+    ]
+    mockActiveFilterCount.value = 1
+
+    const wrapper = renderRecommendationsScreen()
+
+    // Should show loading/skeleton state, not empty state
+    expect(wrapper.text()).not.toContain('No recommendations match your filters.')
+  })
+
+  it('shows sections that have loading or error state even when results are empty', () => {
+    sections.value = [
+      {
+        titleKey: 'recommendations.section.one',
+        titleParams: { name: 'Arrival' },
+        results: [],
+        loading: true,
+        error: null,
+        fetched: false,
+        seed: { id: 1 },
+      },
+      {
+        titleKey: 'recommendations.section.two',
+        titleParams: { name: 'Severance' },
+        results: [],
+        loading: false,
+        error: new Error('Failed'),
+        fetched: true,
+        seed: null,
+      },
+    ]
+
+    const wrapper = renderRecommendationsScreen()
+
+    // Both sections should be visible (loading + error state)
+    expect(wrapper.findAll('[data-testid="recommendation-carousel"]')).toHaveLength(2)
   })
 })

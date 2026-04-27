@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import {
   getLibraryEntry,
   saveLibraryEntry,
   getAllLibraryEntries,
   removeLibraryEntry,
   STORAGE_KEY,
+  getBrowserRegion,
 } from '@/infrastructure/storage.service'
 import type { LibraryEntry } from '@/domain/library.schema'
 
@@ -262,6 +263,81 @@ describe('storage.service', () => {
 
       // Assert
       expect(result).toEqual([])
+    })
+  })
+
+  describe('getBrowserRegion', () => {
+    const originalNavigator = globalThis.navigator
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('extracts region from valid locale with Intl.Locale', () => {
+      vi.stubGlobal('navigator', {
+        languages: ['en-US', 'en'],
+        language: 'en-US',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('US')
+    })
+
+    it('falls back to regex parsing when Intl.Locale throws', () => {
+      vi.stubGlobal('navigator', {
+        languages: ['invalid_GB', 'en'],
+        language: 'invalid_GB',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('GB')
+    })
+
+    it('tries multiple locales until finding a valid region', () => {
+      vi.stubGlobal('navigator', {
+        languages: ['en', 'fr-CA'],
+        language: 'en',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('CA')
+    })
+
+    it('returns default region when navigator is undefined', () => {
+      vi.stubGlobal('navigator', undefined)
+
+      const region = getBrowserRegion()
+      expect(region).toBe('US') // DEFAULT_SETTINGS.preferredRegion
+    })
+
+    it('returns default region when no valid locale candidates', () => {
+      vi.stubGlobal('navigator', {
+        languages: [],
+        language: '',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('US')
+    })
+
+    it('handles locale with underscore separator', () => {
+      vi.stubGlobal('navigator', {
+        languages: ['en_AU'],
+        language: 'en_AU',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('AU')
+    })
+
+    it('normalizes region to uppercase', () => {
+      vi.stubGlobal('navigator', {
+        languages: ['en-gb'],
+        language: 'en-gb',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('GB')
     })
   })
 })

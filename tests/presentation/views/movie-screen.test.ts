@@ -405,4 +405,145 @@ describe('MovieScreen', () => {
     )
     expect(wrapper.get('[data-testid="action-buttons"]').text()).toContain('/movie/550|none')
   })
+
+  it('extracts content rating from release_dates for preferred region', async () => {
+    mockLoading.value = false
+    mockMovieData.value = {
+      id: 550,
+      title: 'Fight Club',
+      tagline: '',
+      overview: '',
+      release_date: '1999-10-15',
+      runtime: 139,
+      backdrop_path: '/backdrop.jpg',
+      vote_average: 8.4,
+      imdb_id: 'tt0137523',
+      budget: 0,
+      revenue: 0,
+      genres: [],
+      spoken_languages: [],
+      credits: { cast: [], crew: [] },
+      videos: { results: [] },
+      'watch/providers': { results: {} },
+      poster_path: '/poster.jpg',
+      release_dates: {
+        results: [
+          {
+            iso_3166_1: 'US',
+            release_dates: [
+              { certification: '', type: 1 },
+              { certification: 'R', type: 3 },
+            ],
+          },
+        ],
+      },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
+    }
+
+    const wrapper = renderMovieScreen()
+
+    expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('R')
+  })
+
+  it('returns null content rating when preferred region not found', async () => {
+    mockLoading.value = false
+    preferredRegion.value = 'XX' // Non-existent region
+    mockMovieData.value = {
+      id: 550,
+      title: 'Fight Club',
+      tagline: '',
+      overview: '',
+      release_date: '1999-10-15',
+      runtime: 139,
+      backdrop_path: '/backdrop.jpg',
+      vote_average: 8.4,
+      imdb_id: 'tt0137523',
+      budget: 0,
+      revenue: 0,
+      genres: [],
+      spoken_languages: [],
+      credits: { cast: [], crew: [] },
+      videos: { results: [] },
+      'watch/providers': { results: {} },
+      poster_path: '/poster.jpg',
+      release_dates: {
+        results: [
+          {
+            iso_3166_1: 'US',
+            release_dates: [{ certification: 'R', type: 3 }],
+          },
+        ],
+      },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
+    }
+
+    const wrapper = renderMovieScreen()
+
+    // ContentRatingBadge should not render when rating is null
+    expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('')
+    preferredRegion.value = 'US' // Reset
+  })
+
+  it('returns null content rating when no release has certification', async () => {
+    mockLoading.value = false
+    mockMovieData.value = {
+      id: 550,
+      title: 'Fight Club',
+      tagline: '',
+      overview: '',
+      release_date: '1999-10-15',
+      runtime: 139,
+      backdrop_path: '/backdrop.jpg',
+      vote_average: 8.4,
+      imdb_id: 'tt0137523',
+      budget: 0,
+      revenue: 0,
+      genres: [],
+      spoken_languages: [],
+      credits: { cast: [], crew: [] },
+      videos: { results: [] },
+      'watch/providers': { results: {} },
+      poster_path: '/poster.jpg',
+      release_dates: {
+        results: [
+          {
+            iso_3166_1: 'US',
+            release_dates: [
+              { certification: '', type: 1 },
+              { certification: '', type: 3 },
+            ],
+          },
+        ],
+      },
+      images: { backdrops: [], posters: [] },
+      external_ids: {
+        imdb_id: 'tt0137523',
+        facebook_id: null,
+        instagram_id: null,
+        twitter_id: null,
+      },
+      original_language: 'en',
+      homepage: null,
+    }
+
+    const wrapper = renderMovieScreen()
+
+    expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('')
+  })
 })
