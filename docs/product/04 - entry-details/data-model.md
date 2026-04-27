@@ -218,12 +218,12 @@ When a user interacts with a detail page, the `LibraryEntry` is synced with meta
 ```ts
 // Fields synced from detail to library entry
 {
-  id: number              // TMDB ID
+  id: number // TMDB ID
   mediaType: 'movie' | 'tv'
-  title: string           // From title (movie) or name (show)
-  posterPath: string      // From poster_path
-  voteAverage: number     // From vote_average
-  releaseDate: string     // From release_date or first_air_date
+  title: string // From title (movie) or name (show)
+  posterPath: string // From poster_path
+  voteAverage: number // From vote_average
+  releaseDate: string // From release_date or first_air_date
 }
 ```
 

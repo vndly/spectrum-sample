@@ -4,7 +4,17 @@ import { createI18n } from 'vue-i18n'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import RecommendationsScreen from '@/presentation/views/recommendations-screen.vue'
 
-const sections = ref([
+const sections = ref<
+  {
+    titleKey: string
+    titleParams: { name: string }
+    results: { id: number; media_type: string; genre_ids: number[] }[]
+    loading: boolean
+    error: Error | null
+    fetched: boolean
+    seed: { id: number } | null
+  }[]
+>([
   {
     titleKey: 'recommendations.section.one',
     titleParams: { name: 'Arrival' },
@@ -105,7 +115,8 @@ function renderRecommendationsScreen(locale: 'en' | 'fr' = 'en') {
         },
         FilterBar: {
           name: 'FilterBar',
-          template: '<div data-testid="filter-bar"></div>',
+          template:
+            '<div data-testid="filter-bar"><button data-testid="update-filters" @click="$emit(\'update:modelValue\', { genres: [28], mediaType: \'movie\', yearFrom: null, yearTo: null })"></button></div>',
         },
       },
     },
@@ -284,5 +295,20 @@ describe('RecommendationsScreen', () => {
 
     // Both sections should be visible (loading + error state)
     expect(wrapper.findAll('[data-testid="recommendation-carousel"]')).toHaveLength(2)
+  })
+
+  it('updates filters when FilterBar emits update:modelValue', async () => {
+    const wrapper = renderRecommendationsScreen()
+
+    // Click the button in the stub that triggers filter update
+    await wrapper.find('[data-testid="update-filters"]').trigger('click')
+
+    // Verify the filters were updated via v-model
+    expect(mockFilters.value).toEqual({
+      genres: [28],
+      mediaType: 'movie',
+      yearFrom: null,
+      yearTo: null,
+    })
   })
 })

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import CalendarScreen from '@/presentation/views/calendar-screen.vue'
 
 const year = ref(2026)
@@ -85,6 +85,9 @@ function renderCalendarScreen(locale: 'en' | 'fr' = 'en') {
 }
 
 describe('CalendarScreen', () => {
+  // Store original Intl.DisplayNames to restore after tests that mock it
+  const originalDisplayNames = Intl.DisplayNames
+
   beforeEach(() => {
     year.value = 2026
     month.value = 3
@@ -98,6 +101,17 @@ describe('CalendarScreen', () => {
     previousMonth.mockReset()
     goToToday.mockReset()
     retry.mockReset()
+  })
+
+  afterEach(() => {
+    // Restore Intl.DisplayNames in case a test mocked it
+    if (Intl.DisplayNames !== originalDisplayNames) {
+      Object.defineProperty(Intl, 'DisplayNames', {
+        value: originalDisplayNames,
+        writable: true,
+        configurable: true,
+      })
+    }
   })
 
   it('renders the localized month header and passes props into CalendarGrid', () => {
@@ -181,5 +195,28 @@ describe('CalendarScreen', () => {
     // The region display name should return empty string for empty region
     // This exercises the !region early return branch
     expect(wrapper.find('header').exists()).toBe(true)
+  })
+
+  it('falls back to region code when Intl.DisplayNames.of() returns undefined', () => {
+    // Arrange - Replace Intl.DisplayNames (afterEach will restore)
+    const MockDisplayNames = class {
+      of() {
+        return undefined
+      }
+    } as unknown as typeof Intl.DisplayNames
+
+    Object.defineProperty(Intl, 'DisplayNames', {
+      value: MockDisplayNames,
+      writable: true,
+      configurable: true,
+    })
+
+    preferredRegion.value = 'ZZ'
+
+    const wrapper = renderCalendarScreen()
+
+    // Assert - Should show the raw region code when of() returns undefined
+    expect(wrapper.text()).toContain('ZZ')
+    // Cleanup handled by afterEach
   })
 })

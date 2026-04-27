@@ -89,28 +89,28 @@ Implement comprehensive detail pages for movies and TV shows, displaying rich me
 ## Phase 4: View Integration
 
 1. [x] **Implement `MovieScreen` View**: Create `src/presentation/views/movie-screen.vue`.
-    - Integrate all detail components.
-    - Initialize library entry on data load.
-    - Extract content rating for user's region.
-    - Generate shareable URL.
-    - Handle 404 and error states.
-    - (covering: `ED-01`, `EL-02`, `EL-03`)
+   - Integrate all detail components.
+   - Initialize library entry on data load.
+   - Extract content rating for user's region.
+   - Generate shareable URL.
+   - Handle 404 and error states.
+   - (covering: `ED-01`, `EL-02`, `EL-03`)
 2. [x] **Implement `ShowScreen` View**: Create `src/presentation/views/show-screen.vue`.
-    - Mirror movie screen structure for shows.
-    - Use show-specific fields (first_air_date, seasons, episodes).
-    - (covering: `ED-02`, `EL-02`, `EL-03`)
+   - Mirror movie screen structure for shows.
+   - Use show-specific fields (first_air_date, seasons, episodes).
+   - (covering: `ED-02`, `EL-02`, `EL-03`)
 3. [x] **Configure Routes**: Add routes in `src/presentation/router.ts`.
-    - `/movie/:id` → `MovieScreen`
-    - `/show/:id` → `ShowScreen`
-    - Numeric ID guard with redirect to home.
-    - (covering: `EL-04`)
+   - `/movie/:id` → `MovieScreen`
+   - `/show/:id` → `ShowScreen`
+   - Numeric ID guard with redirect to home.
+   - (covering: `EL-04`)
 
 ## Phase 5: Internationalization
 
 1. [x] **Add i18n Strings**: Update locale files in `src/presentation/i18n/locales/`.
-    - Detail page labels, button text, error messages.
-    - Share feedback messages.
-    - (covering: `EN-10`, `EN-11`)
+   - Detail page labels, button text, error messages.
+   - Share feedback messages.
+   - (covering: `EN-10`, `EN-11`)
 
 ## Phase 6: Testing
 

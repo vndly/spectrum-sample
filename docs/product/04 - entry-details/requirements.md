@@ -36,14 +36,14 @@ Users browsing or searching for media need a dedicated page to view complete inf
 
 ## Decisions
 
-| Decision | Choice | Rationale |
-| :------- | :----- | :-------- |
-| Routing | Separate routes for movies and shows | `/movie/:id` and `/show/:id` allow type-specific handling and clear URL semantics. |
-| Data Fetching | Composables with appended relations | Single API call fetches all related data (credits, videos, providers, images) to minimize network requests. |
-| Library Integration | Lazy initialization | Library entry is initialized only after detail data loads to ensure metadata sync. |
-| Share Functionality | Native Share API with clipboard fallback | Provides best UX on mobile while ensuring desktop compatibility. |
-| Image Gallery | Lightbox with keyboard navigation | Standard UX pattern for image viewing with accessibility support. |
-| Content Rating | Region-based extraction | Uses user's preferred region setting to show relevant certification. |
+| Decision            | Choice                                   | Rationale                                                                                                   |
+| :------------------ | :--------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| Routing             | Separate routes for movies and shows     | `/movie/:id` and `/show/:id` allow type-specific handling and clear URL semantics.                          |
+| Data Fetching       | Composables with appended relations      | Single API call fetches all related data (credits, videos, providers, images) to minimize network requests. |
+| Library Integration | Lazy initialization                      | Library entry is initialized only after detail data loads to ensure metadata sync.                          |
+| Share Functionality | Native Share API with clipboard fallback | Provides best UX on mobile while ensuring desktop compatibility.                                            |
+| Image Gallery       | Lightbox with keyboard navigation        | Standard UX pattern for image viewing with accessibility support.                                           |
+| Content Rating      | Region-based extraction                  | Uses user's preferred region setting to show relevant certification.                                        |
 
 ## Scope
 
@@ -75,93 +75,93 @@ Users browsing or searching for media need a dedicated page to view complete inf
 
 ### Data Display
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| ED-01 | Movie Metadata | The system SHALL display title, tagline, release year, runtime, original language, genres, and directors for movies. | P0 |
-| ED-02 | Show Metadata | The system SHALL display name, tagline, first air date year, season/episode counts, original language, genres, and creators for TV shows. | P0 |
-| ED-03 | Synopsis | The system SHALL display the full overview/synopsis text when available. | P0 |
-| ED-04 | Provider Rating | The system SHALL display the TMDB vote average as a rating badge when greater than zero. | P0 |
-| ED-05 | Content Rating | The system SHALL display the content certification (e.g., PG-13, R) for the user's preferred region when available. | P1 |
-| ED-06 | Box Office | The system SHALL display budget and revenue for movies when either value is greater than zero. | P2 |
+| ID    | Requirement     | Description                                                                                                                               | Priority |
+| :---- | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| ED-01 | Movie Metadata  | The system SHALL display title, tagline, release year, runtime, original language, genres, and directors for movies.                      | P0       |
+| ED-02 | Show Metadata   | The system SHALL display name, tagline, first air date year, season/episode counts, original language, genres, and creators for TV shows. | P0       |
+| ED-03 | Synopsis        | The system SHALL display the full overview/synopsis text when available.                                                                  | P0       |
+| ED-04 | Provider Rating | The system SHALL display the TMDB vote average as a rating badge when greater than zero.                                                  | P0       |
+| ED-05 | Content Rating  | The system SHALL display the content certification (e.g., PG-13, R) for the user's preferred region when available.                       | P1       |
+| ED-06 | Box Office      | The system SHALL display budget and revenue for movies when either value is greater than zero.                                            | P2       |
 
 ### Cast and Crew
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| EC-01 | Cast Display | The system SHALL display up to 20 cast members sorted by billing order. | P0 |
-| EC-02 | Cast Information | Each cast member SHALL show profile image, actor name, and character name. | P0 |
-| EC-03 | Cast Scrolling | The cast list SHALL be horizontally scrollable with navigation buttons when content overflows. | P1 |
-| EC-04 | Missing Profiles | The system SHALL display a placeholder icon for cast members without profile images. | P1 |
+| ID    | Requirement      | Description                                                                                    | Priority |
+| :---- | :--------------- | :--------------------------------------------------------------------------------------------- | :------- |
+| EC-01 | Cast Display     | The system SHALL display up to 20 cast members sorted by billing order.                        | P0       |
+| EC-02 | Cast Information | Each cast member SHALL show profile image, actor name, and character name.                     | P0       |
+| EC-03 | Cast Scrolling   | The cast list SHALL be horizontally scrollable with navigation buttons when content overflows. | P1       |
+| EC-04 | Missing Profiles | The system SHALL display a placeholder icon for cast members without profile images.           | P1       |
 
 ### Media Content
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| EM-01 | Trailer Display | The system SHALL display the first official YouTube trailer when available. | P0 |
-| EM-02 | Trailer Interaction | Clicking the trailer thumbnail SHALL embed the YouTube player (privacy-enhanced mode). | P0 |
-| EM-03 | Image Gallery | The system SHALL display a gallery with separate tabs for posters and backdrops. | P1 |
-| EM-04 | Gallery Lightbox | Clicking a gallery thumbnail SHALL open a full-size lightbox viewer. | P1 |
-| EM-05 | Lightbox Navigation | The lightbox SHALL support keyboard navigation (arrow keys, Escape to close). | P1 |
+| ID    | Requirement         | Description                                                                            | Priority |
+| :---- | :------------------ | :------------------------------------------------------------------------------------- | :------- |
+| EM-01 | Trailer Display     | The system SHALL display the first official YouTube trailer when available.            | P0       |
+| EM-02 | Trailer Interaction | Clicking the trailer thumbnail SHALL embed the YouTube player (privacy-enhanced mode). | P0       |
+| EM-03 | Image Gallery       | The system SHALL display a gallery with separate tabs for posters and backdrops.       | P1       |
+| EM-04 | Gallery Lightbox    | Clicking a gallery thumbnail SHALL open a full-size lightbox viewer.                   | P1       |
+| EM-05 | Lightbox Navigation | The lightbox SHALL support keyboard navigation (arrow keys, Escape to close).          | P1       |
 
 ### Streaming and Links
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| ES-01 | Streaming Providers | The system SHALL display streaming provider logos for the user's preferred region. | P1 |
-| ES-02 | Provider Filtering | Only subscription (flatrate) providers SHALL be displayed. | P1 |
-| ES-03 | External Links | The system SHALL display links to IMDb, official homepage, and social media profiles when available. | P1 |
+| ID    | Requirement         | Description                                                                                          | Priority |
+| :---- | :------------------ | :--------------------------------------------------------------------------------------------------- | :------- |
+| ES-01 | Streaming Providers | The system SHALL display streaming provider logos for the user's preferred region.                   | P1       |
+| ES-02 | Provider Filtering  | Only subscription (flatrate) providers SHALL be displayed.                                           | P1       |
+| ES-03 | External Links      | The system SHALL display links to IMDb, official homepage, and social media profiles when available. | P1       |
 
 ### User Actions
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| EA-01 | Watchlist Toggle | The user SHALL be able to add/remove a title from their watchlist. | P0 |
-| EA-02 | Watched Toggle | The user SHALL be able to mark/unmark a title as watched. | P0 |
-| EA-03 | Share Action | The user SHALL be able to share the title via native share API or clipboard copy. | P1 |
-| EA-04 | Status Persistence | Library status changes SHALL be persisted to localStorage immediately. | P0 |
-| EA-05 | Metadata Sync | When viewing a detail page, the library entry metadata (poster, rating, release date) SHALL be synced. | P1 |
+| ID    | Requirement        | Description                                                                                            | Priority |
+| :---- | :----------------- | :----------------------------------------------------------------------------------------------------- | :------- |
+| EA-01 | Watchlist Toggle   | The user SHALL be able to add/remove a title from their watchlist.                                     | P0       |
+| EA-02 | Watched Toggle     | The user SHALL be able to mark/unmark a title as watched.                                              | P0       |
+| EA-03 | Share Action       | The user SHALL be able to share the title via native share API or clipboard copy.                      | P1       |
+| EA-04 | Status Persistence | Library status changes SHALL be persisted to localStorage immediately.                                 | P0       |
+| EA-05 | Metadata Sync      | When viewing a detail page, the library entry metadata (poster, rating, release date) SHALL be synced. | P1       |
 
 ### Loading and Error States
 
-| ID | Requirement | Description | Priority |
-| :- | :---------- | :---------- | :------- |
-| EL-01 | Loading Skeleton | The system SHALL display a skeleton UI while fetching detail data. | P0 |
-| EL-02 | 404 Handling | The system SHALL display a "Not Found" message with navigation to home for invalid IDs. | P0 |
-| EL-03 | Error Recovery | The system SHALL display an error message with a retry button for API failures. | P0 |
-| EL-04 | Route Validation | The system SHALL redirect to home for non-numeric route IDs. | P1 |
+| ID    | Requirement      | Description                                                                             | Priority |
+| :---- | :--------------- | :-------------------------------------------------------------------------------------- | :------- |
+| EL-01 | Loading Skeleton | The system SHALL display a skeleton UI while fetching detail data.                      | P0       |
+| EL-02 | 404 Handling     | The system SHALL display a "Not Found" message with navigation to home for invalid IDs. | P0       |
+| EL-03 | Error Recovery   | The system SHALL display an error message with a retry button for API failures.         | P0       |
+| EL-04 | Route Validation | The system SHALL redirect to home for non-numeric route IDs.                            | P1       |
 
 ## Non-Functional Requirements
 
 ### Performance
 
-| ID | Requirement | Description |
-| :- | :---------- | :---------- |
-| EN-01 | Single Request | All detail data SHALL be fetched in a single API call using appended relations. |
-| EN-02 | Lazy Images | Cast profile images SHALL use lazy loading to improve initial render time. |
-| EN-03 | Responsive Images | Images SHALL use srcset for optimal loading on different screen densities. |
+| ID    | Requirement       | Description                                                                     |
+| :---- | :---------------- | :------------------------------------------------------------------------------ |
+| EN-01 | Single Request    | All detail data SHALL be fetched in a single API call using appended relations. |
+| EN-02 | Lazy Images       | Cast profile images SHALL use lazy loading to improve initial render time.      |
+| EN-03 | Responsive Images | Images SHALL use srcset for optimal loading on different screen densities.      |
 
 ### UI/UX Consistency
 
-| ID | Requirement | Description |
-| :- | :---------- | :---------- |
-| EN-04 | Visual Style | Components SHALL use existing Tailwind theme tokens and Lucide icons. |
+| ID    | Requirement       | Description                                                             |
+| :---- | :---------------- | :---------------------------------------------------------------------- |
+| EN-04 | Visual Style      | Components SHALL use existing Tailwind theme tokens and Lucide icons.   |
 | EN-05 | Responsive Layout | The detail page SHALL adapt gracefully to mobile and desktop viewports. |
-| EN-06 | Smooth Scrolling | Carousel navigation SHALL use smooth scroll behavior. |
+| EN-06 | Smooth Scrolling  | Carousel navigation SHALL use smooth scroll behavior.                   |
 
 ### Accessibility
 
-| ID | Requirement | Description |
-| :- | :---------- | :---------- |
+| ID    | Requirement         | Description                                             |
+| :---- | :------------------ | :------------------------------------------------------ |
 | EN-07 | Keyboard Navigation | Lightbox and carousels SHALL be navigable via keyboard. |
-| EN-08 | Focus Management | Modal dialogs SHALL trap focus appropriately. |
-| EN-09 | Alt Text | Images SHALL include descriptive alt text. |
+| EN-08 | Focus Management    | Modal dialogs SHALL trap focus appropriately.           |
+| EN-09 | Alt Text            | Images SHALL include descriptive alt text.              |
 
 ### Internationalization
 
-| ID | Requirement | Description |
-| :- | :---------- | :---------- |
-| EN-10 | Localized Labels | All UI labels and messages SHALL be localized via `vue-i18n`. |
-| EN-11 | Localized Data | Genre names and language names SHALL be displayed in the user's language. |
+| ID    | Requirement      | Description                                                                      |
+| :---- | :--------------- | :------------------------------------------------------------------------------- |
+| EN-10 | Localized Labels | All UI labels and messages SHALL be localized via `vue-i18n`.                    |
+| EN-11 | Localized Data   | Genre names and language names SHALL be displayed in the user's language.        |
 | EN-12 | Regional Content | Content ratings and streaming providers SHALL respect the user's region setting. |
 
 ## Constraints

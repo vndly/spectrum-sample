@@ -182,4 +182,48 @@ describe('SearchBar', () => {
 
     wrapper.unmount()
   })
+
+  it('does not focus the input on activation when autofocus is disabled', async () => {
+    // Arrange - Use KeepAlive to trigger onActivated with autofocus=false
+    const showSearch = ref(true)
+    const WrapperComponent = {
+      components: { SearchBar },
+      setup() {
+        return { showSearch }
+      },
+      template: `
+        <KeepAlive>
+          <SearchBar v-if="showSearch" modelValue="" :autofocus="false" />
+        </KeepAlive>
+      `,
+    }
+
+    const wrapper = mount(WrapperComponent, {
+      attachTo: document.body,
+      global: {
+        plugins: [i18n],
+      },
+    })
+
+    // Wait for initial mount
+    await nextTick()
+
+    // Deactivate the component
+    showSearch.value = false
+    await nextTick()
+
+    // Focus something else
+    document.body.focus()
+
+    // Reactivate the component (triggers onActivated)
+    showSearch.value = true
+    await nextTick()
+    await nextTick()
+
+    // Assert - input should NOT be focused (autofocus is false)
+    const input = wrapper.find('input')
+    expect(document.activeElement).not.toBe(input.element)
+
+    wrapper.unmount()
+  })
 })

@@ -546,4 +546,17 @@ describe('MovieScreen', () => {
 
     expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('')
   })
+
+  it('returns null content rating when movie data is null', () => {
+    mockLoading.value = false
+    mockMovieData.value = null
+    mockError.value = null
+
+    // Access the component to evaluate contentRating computed when movie is null
+    const wrapper = renderMovieScreen()
+    const vm = wrapper.vm as any
+
+    // The contentRating computed should return null when movie.value is null
+    expect(vm.contentRating).toBeNull()
+  })
 })

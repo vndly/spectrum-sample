@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import MetadataPanel from '@/presentation/components/details/metadata-panel.vue'
 import { createI18n } from 'vue-i18n'
@@ -29,6 +29,16 @@ describe('MetadataPanel', () => {
     crew: [],
     spokenLanguages: [],
   }
+
+  // Store original Intl.DisplayNames to restore after tests that mock it
+  const originalDisplayNames = globalThis.Intl.DisplayNames
+  afterEach(() => {
+    // Restore Intl.DisplayNames in case a test mocked it
+    if (globalThis.Intl.DisplayNames !== originalDisplayNames) {
+      // @ts-expect-error - restoring original
+      globalThis.Intl.DisplayNames = originalDisplayNames
+    }
+  })
 
   it('renders year from release_date (ED-02-01)', () => {
     // Arrange & Act
@@ -251,13 +261,14 @@ describe('MetadataPanel', () => {
   })
 
   it('falls back to uppercase when Intl.DisplayNames throws', () => {
-    const originalDisplayNames = globalThis.Intl.DisplayNames
-    // @ts-expect-error - mocking Intl.DisplayNames to throw
-    globalThis.Intl.DisplayNames = class {
+    // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+    const ThrowingDisplayNames = class {
       constructor() {
         throw new Error('Not supported')
       }
     }
+    // @ts-expect-error - mocking Intl.DisplayNames for testing
+    globalThis.Intl.DisplayNames = ThrowingDisplayNames
 
     const wrapper = mount(MetadataPanel, {
       props: { ...defaultProps, originalLanguage: 'en' },
@@ -267,8 +278,26 @@ describe('MetadataPanel', () => {
     const originalLang = wrapper.find('[data-testid="original-language"]')
     expect(originalLang.exists()).toBe(true)
     expect(originalLang.text()).toBe('EN')
+    // Cleanup handled by afterEach
+  })
 
-    // Restore
-    globalThis.Intl.DisplayNames = originalDisplayNames
+  it('falls back to uppercase when Intl.DisplayNames.of() returns undefined', () => {
+    const MockDisplayNames = class {
+      of() {
+        return undefined
+      }
+    }
+    // @ts-expect-error - mocking Intl.DisplayNames for testing
+    globalThis.Intl.DisplayNames = MockDisplayNames
+
+    const wrapper = mount(MetadataPanel, {
+      props: { ...defaultProps, originalLanguage: 'xyz' },
+      global: { plugins: [i18n] },
+    })
+
+    const originalLang = wrapper.find('[data-testid="original-language"]')
+    expect(originalLang.exists()).toBe(true)
+    expect(originalLang.text()).toBe('XYZ')
+    // Cleanup handled by afterEach
   })
 })

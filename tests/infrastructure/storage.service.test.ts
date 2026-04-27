@@ -267,8 +267,6 @@ describe('storage.service', () => {
   })
 
   describe('getBrowserRegion', () => {
-    const originalNavigator = globalThis.navigator
-
     afterEach(() => {
       vi.unstubAllGlobals()
     })
@@ -370,6 +368,19 @@ describe('storage.service', () => {
       const region = getBrowserRegion()
       // 'invalid' throws and doesn't match regex, falls back to default
       expect(region).toBe('US')
+    })
+
+    it('returns region from catch block regex when Intl.Locale throws but regex matches', () => {
+      // This specifically tests the path where Intl.Locale throws
+      // but the regex fallback inside the catch block succeeds
+      vi.stubGlobal('navigator', {
+        // Use a format that will throw on Intl.Locale but has extractable region
+        languages: ['x_DE_extra'],
+        language: 'x_DE_extra',
+      })
+
+      const region = getBrowserRegion()
+      expect(region).toBe('DE')
     })
   })
 })

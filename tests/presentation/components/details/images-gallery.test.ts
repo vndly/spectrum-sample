@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { nextTick } from 'vue'
 import ImagesGallery from '@/presentation/components/details/images-gallery.vue'
@@ -124,6 +124,21 @@ describe('ImagesGallery', () => {
 
     const posterTab = wrapper.find('[data-testid="tab-posters"]')
     expect(posterTab.classes()).toContain('bg-white')
+  })
+
+  it('switches back to backdrops tab when clicking on backdrops button', async () => {
+    const wrapper = renderImagesGallery({ posters: mockPosters, backdrops: mockBackdrops })
+
+    // First switch to posters
+    await wrapper.find('[data-testid="tab-posters"]').trigger('click')
+    await nextTick()
+
+    // Then switch back to backdrops
+    await wrapper.find('[data-testid="tab-backdrops"]').trigger('click')
+    await nextTick()
+
+    const backdropTab = wrapper.find('[data-testid="tab-backdrops"]')
+    expect(backdropTab.classes()).toContain('bg-white')
   })
 
   it('renders thumbnails for current tab', () => {
@@ -379,5 +394,23 @@ describe('ImagesGallery', () => {
     // By default, canScroll should be false (no overflow)
     expect(wrapper.find('[data-testid="images-scroll-previous"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="images-scroll-next"]').exists()).toBe(false)
+  })
+
+  it('handles scrollCarousel gracefully when carouselRef is null', async () => {
+    const wrapper = renderImagesGallery({ posters: mockPosters, backdrops: mockBackdrops })
+
+    // Get access to the component's internal scrollCarousel function
+    const vm = wrapper.vm as any
+
+    // Temporarily set carouselRef to null
+    const originalRef = vm.carouselRef
+    vm.carouselRef = null
+
+    // Call scrollCarousel - should return early without error
+    expect(() => vm.scrollCarousel('next')).not.toThrow()
+    expect(() => vm.scrollCarousel('previous')).not.toThrow()
+
+    // Restore
+    vm.carouselRef = originalRef
   })
 })

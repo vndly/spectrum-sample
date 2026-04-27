@@ -46,19 +46,23 @@ Detail View (movie-screen.vue / show-screen.vue)
 ### Created
 
 **Domain Layer:**
+
 - `src/domain/movie.schema.ts` — Zod schema for `MovieDetail` type with all appended relations.
 - `src/domain/show.schema.ts` — Zod schema for `ShowDetail` type with all appended relations.
 - `src/domain/shared.schema.ts` — Shared types: Genre, CastMember, CrewMember, Video, Image, ExternalIds, etc.
 
 **Infrastructure Layer:**
+
 - `src/infrastructure/provider.client.ts` — API functions `getMovieDetail()` and `getShowDetail()` with retry logic.
 - `src/infrastructure/image.helper.ts` — Image URL builders for TMDB images with srcset support.
 
 **Application Layer:**
+
 - `src/application/use-movie-detail.ts` — Composable for fetching movie details.
 - `src/application/use-show-detail.ts` — Composable for fetching show details.
 
 **Presentation Layer - Components:**
+
 - `src/presentation/components/details/hero-backdrop.vue` — Full-width backdrop with poster overlay.
 - `src/presentation/components/details/action-buttons.vue` — Watchlist, watched, and share toggles.
 - `src/presentation/components/details/provider-rating-badge.vue` — TMDB rating display.
@@ -74,10 +78,12 @@ Detail View (movie-screen.vue / show-screen.vue)
 - `src/presentation/components/details/detail-skeleton.vue` — Loading state skeleton.
 
 **Presentation Layer - Views:**
+
 - `src/presentation/views/movie-screen.vue` — Movie detail page view.
 - `src/presentation/views/show-screen.vue` — Show detail page view.
 
 **Tests:**
+
 - `tests/infrastructure/provider.client.movie-detail.test.ts`
 - `tests/infrastructure/provider.client.show-detail.test.ts`
 - `tests/application/use-movie-detail.test.ts`
@@ -112,6 +118,7 @@ Detail View (movie-screen.vue / show-screen.vue)
 ## Dependencies
 
 No new dependencies were added. The implementation uses existing libraries:
+
 - Vue 3 (composition API)
 - Vue Router
 - Vue I18n

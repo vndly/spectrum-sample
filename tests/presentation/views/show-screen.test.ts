@@ -479,4 +479,17 @@ describe('ShowScreen', () => {
     expect(wrapper.get('[data-testid="content-rating-badge"]').text()).toBe('')
     preferredRegion.value = 'US' // Reset
   })
+
+  it('returns null content rating when show data is null', () => {
+    mockLoading.value = false
+    mockShowData.value = null
+    mockError.value = null
+
+    // Access the component to evaluate contentRating computed when show is null
+    const wrapper = renderShowScreen()
+    const vm = wrapper.vm as any
+
+    // The contentRating computed should return null when show.value is null
+    expect(vm.contentRating).toBeNull()
+  })
 })

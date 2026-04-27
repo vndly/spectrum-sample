@@ -11,6 +11,7 @@ The entry details feature fetches comprehensive metadata from the TMDB API using
 **Endpoint:** `GET /movie/{id}`
 
 **Query Parameters:**
+
 - `language` — User's preferred language (e.g., `en-US`)
 - `append_to_response` — `credits,videos,watch/providers,release_dates,images,external_ids`
 
@@ -21,6 +22,7 @@ The entry details feature fetches comprehensive metadata from the TMDB API using
 **Endpoint:** `GET /tv/{id}`
 
 **Query Parameters:**
+
 - `language` — User's preferred language (e.g., `en-US`)
 - `append_to_response` — `credits,videos,watch/providers,content_ratings,images,external_ids`
 
@@ -37,12 +39,14 @@ async function getMovieDetail(id: number, language: string): Promise<MovieDetail
 ```
 
 **Parameters:**
+
 - `id` — TMDB movie ID
 - `language` — Locale string for localized content
 
 **Returns:** Validated `MovieDetail` object
 
 **Error Handling:**
+
 - Retries on 429 (rate limit) with exponential backoff
 - Throws on 404 (not found) or other HTTP errors
 
@@ -55,6 +59,7 @@ async function getShowDetail(id: number, language: string): Promise<ShowDetail>
 ```
 
 **Parameters:**
+
 - `id` — TMDB show ID
 - `language` — Locale string for localized content
 
@@ -80,6 +85,7 @@ function useMovieDetail(id: MaybeRef<number>) {
 ```
 
 **Behavior:**
+
 - Fetches immediately on composable creation
 - Respects user's language setting from `useSettings()`
 - Re-fetches when `id` changes (if reactive)
@@ -126,6 +132,7 @@ function useLibraryEntry(
 ```
 
 **Behavior:**
+
 - Loads entry from localStorage or creates default
 - Syncs metadata (poster, rating, release date) on load
 - `setStatus()` toggles between 'watchlist', 'watched', and 'none'
