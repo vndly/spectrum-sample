@@ -56,11 +56,6 @@ const routes = [
     meta: { titleKey: 'page.settings.title' },
   },
   {
-    path: '/stats',
-    component: { template: '<div data-testid="view-stats">Stats view</div>' },
-    meta: { titleKey: 'page.stats.title' },
-  },
-  {
     path: '/movie/:id',
     component: { template: '<div data-testid="view-movie">Movie view</div>' },
     meta: { titleKey: 'page.movie.title' },
@@ -243,7 +238,6 @@ describe('AppShell', () => {
   describe('new placeholder routes in shell', () => {
     it.each([
       { path: '/recommendations', testId: 'view-recommendations' },
-      { path: '/stats', testId: 'view-stats' },
       { path: '/movie/550', testId: 'view-movie' },
       { path: '/show/1396', testId: 'view-show' },
     ])('renders $path inside the shared AppShell content column', async ({ path, testId }) => {
@@ -295,7 +289,6 @@ describe('AppShell', () => {
 
     it.each([
       { path: '/recommendations', testId: 'view-recommendations' },
-      { path: '/stats', testId: 'view-stats' },
       { path: '/movie/550', testId: 'view-movie' },
       { path: '/show/1396', testId: 'view-show' },
     ])(

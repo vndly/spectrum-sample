@@ -19,7 +19,6 @@ export function useLibraryEntry(
   posterPath: string | null,
   voteAverage?: number,
   releaseDate?: string,
-  runtime?: number,
 ) {
   const entry: Ref<LibraryEntry | null> = ref(null)
 
@@ -32,10 +31,6 @@ export function useLibraryEntry(
       let changed = false
       if (posterPath !== undefined && stored.posterPath !== posterPath) {
         stored.posterPath = posterPath
-        changed = true
-      }
-      if (runtime !== undefined && stored.runtime !== runtime) {
-        stored.runtime = runtime
         changed = true
       }
       if (voteAverage !== undefined && stored.voteAverage !== voteAverage) {
@@ -72,7 +67,6 @@ export function useLibraryEntry(
       addedAt: new Date().toISOString(),
       voteAverage,
       releaseDate,
-      runtime,
     }
   }
 

@@ -44,7 +44,6 @@ watch(
         newShow.poster_path,
         newShow.vote_average,
         newShow.first_air_date,
-        newShow.episode_run_time?.[0],
       )
     } else {
       libraryEntryRef.value = null

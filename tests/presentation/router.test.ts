@@ -7,7 +7,6 @@ vi.mock('@/presentation/views/calendar-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/library-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/settings-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/recommendations-screen.vue', () => ({ default: {} }))
-vi.mock('@/presentation/views/stats-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/movie-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/show-screen.vue', () => ({ default: {} }))
 
@@ -34,7 +33,6 @@ describe('router', () => {
       { path: '/calendar', name: 'calendar' },
       { path: '/library', name: 'library' },
       { path: '/settings', name: 'settings' },
-      { path: '/stats', name: 'stats' },
     ])('resolves $path to named route "$name"', ({ path, name }) => {
       // Arrange & Act
       const resolved = router.resolve(path)
@@ -74,7 +72,7 @@ describe('router', () => {
       const namedRoutes = router.options.routes.filter((r) => 'name' in r && r.name)
 
       // Act & Assert
-      expect(namedRoutes).toHaveLength(8)
+      expect(namedRoutes).toHaveLength(7)
       for (const route of namedRoutes) {
         const component = 'component' in route ? route.component : undefined
         expect(typeof component, `${String(route.name)} component`).toBe('function')
@@ -98,7 +96,6 @@ describe('router', () => {
       { name: 'calendar', titleKey: 'page.calendar.title', params: {} },
       { name: 'library', titleKey: 'page.library.title', params: {} },
       { name: 'settings', titleKey: 'page.settings.title', params: {} },
-      { name: 'stats', titleKey: 'page.stats.title', params: {} },
       { name: 'movie', titleKey: 'page.movie.title', params: { id: '550' } },
       { name: 'show', titleKey: 'page.show.title', params: { id: '1396' } },
     ])('route "$name" has meta.titleKey "$titleKey"', ({ name, titleKey, params }) => {
@@ -190,7 +187,7 @@ describe('router', () => {
     })
 
     // R-01b-01-01, R-01b-03-01, R-01b-04-01
-    it.each(['/recommendations', '/stats', '/movie/550', '/show/1396'])(
+    it.each(['/recommendations', '/movie/550', '/show/1396'])(
       'keeps document.title fixed for %s',
       async (path) => {
         // Arrange & Act

@@ -62,12 +62,6 @@ const router = createRouter({
       meta: { titleKey: 'page.settings.title' },
     },
     {
-      path: '/stats',
-      name: 'stats',
-      component: () => import('./views/stats-screen.vue'),
-      meta: { titleKey: 'page.stats.title' },
-    },
-    {
       path: '/movie/:id',
       name: 'movie',
       component: () => import('./views/movie-screen.vue'),

@@ -47,11 +47,10 @@ describe('useLibraryEntry', () => {
       expect(entry.value?.favorite).toBe(true)
     })
 
-    it('synchronizes runtime, rating metadata, and release date from the latest detail payload', () => {
+    it('synchronizes rating metadata and release date from the latest detail payload', () => {
       const saveSpy = vi.spyOn(storageService, 'saveLibraryEntry')
       saveLibraryEntry(
         createEntry({
-          runtime: 90,
           voteAverage: 7,
           releaseDate: '1999-01-01',
         }),
@@ -64,10 +63,8 @@ describe('useLibraryEntry', () => {
         '/poster.jpg',
         8.4,
         '1999-10-15',
-        139,
       )
 
-      expect(entry.value?.runtime).toBe(139)
       expect(entry.value?.voteAverage).toBe(8.4)
       expect(entry.value?.releaseDate).toBe('1999-10-15')
       expect(saveSpy).toHaveBeenCalled()
@@ -96,14 +93,13 @@ describe('useLibraryEntry', () => {
       saveLibraryEntry(
         createEntry({
           posterPath: '/poster.jpg',
-          runtime: 139,
           voteAverage: 8.4,
           releaseDate: '1999-10-15',
         }),
       )
       saveSpy.mockClear()
 
-      useLibraryEntry(550, 'movie', 'Fight Club', '/poster.jpg', 8.4, '1999-10-15', 139)
+      useLibraryEntry(550, 'movie', 'Fight Club', '/poster.jpg', 8.4, '1999-10-15')
 
       expect(saveSpy).not.toHaveBeenCalled()
 

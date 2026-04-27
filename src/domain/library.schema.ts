@@ -35,10 +35,6 @@ export const LibraryEntrySchema = z.object({
   voteAverage: z.number().optional(),
   releaseDate: z.string().optional(),
   genreIds: z.array(z.number()).optional(),
-  runtime: z
-    .number()
-    .optional()
-    .describe('Runtime in minutes (movie duration or average episode duration)'),
 })
 
 /** Inferred type for a library entry. */

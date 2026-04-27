@@ -68,7 +68,7 @@ Design specification for the app's interface. All styling uses Tailwind utility 
 | `/library`         | Library         | Bookmark icon |
 | `/settings`        | Settings        | Gear/cog icon |
 
-`/movie/:id`, `/show/:id`, and `/stats` are not in the nav — accessed via card clicks and internal links. Stats is reached via a "View Stats" link on the Library screen (visible only when the user has at least one watched entry).
+`/movie/:id` and `/show/:id` are not in the nav — accessed via card clicks.
 
 ## 5. Component Patterns
 

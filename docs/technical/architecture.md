@@ -19,7 +19,6 @@ src/
 │   │   ├── home/              # Home screen, search results, trending/popular
 │   │   ├── details/           # Movie/show detail view and subcomponents
 │   │   ├── library/           # Watchlist and watched views
-│   │   ├── stats/             # Charts and analytics
 │   │   ├── recommendations/   # Recommendation views
 │   │   ├── calendar/          # Release calendar
 │   │   ├── settings/          # User preferences
@@ -130,7 +129,6 @@ Routes are defined in `src/presentation/router.ts` using Vue Router with `create
 | `/movie/:id`       | Movie details    | Full movie info, actions      |
 | `/show/:id`        | TV show details  | Full show info, actions       |
 | `/library`         | Library          | Watchlist and watched entries |
-| `/stats`           | Stats            | Viewing history analytics     |
 | `/recommendations` | Recommendations  | Personalized suggestions      |
 | `/calendar`        | Release calendar | Upcoming releases             |
 | `/settings`        | Settings         | Theme, language, data export  |
@@ -192,16 +190,9 @@ App.vue
         │
         ├── /library → LibraryScreen
         │       ├── TabToggle (watchlist / watched)
-        │       ├── ViewStatsLink (visible when watched entries exist)
         │       ├── FilterBar
         │       ├── SortDropdown
         │       └── EntryGrid → MovieCard[]
-        │
-        ├── /stats → StatsScreen
-        │       ├── StatCards
-        │       ├── GenreChart
-        │       ├── MonthlyChart
-        │       └── TopRatedList
         │
         ├── /recommendations → RecommendationsScreen
         │       ├── FilterBar
