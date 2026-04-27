@@ -56,14 +56,14 @@ function handleIntersect(originalIndex: number) {
 </script>
 
 <template>
-  <div class="space-y-8 px-2 pb-8 pt-2 md:px-3 md:pb-10">
-    <header class="space-y-2">
+  <div class="space-y-6 px-2 pb-8 pt-2 md:px-3 md:pb-10">
+    <header>
       <h2 class="text-2xl font-bold text-slate-950 dark:text-white">
         {{ t('recommendations.title') }}
       </h2>
     </header>
 
-    <div class="sticky top-0 z-20 -mx-2 bg-background px-2 md:-mx-3 md:px-3">
+    <div class="-mt-2 sticky top-0 z-20 -mx-2 bg-background px-2 md:-mx-3 md:px-3">
       <FilterBar
         v-model="filters"
         :genres="genres"
@@ -74,7 +74,7 @@ function handleIntersect(originalIndex: number) {
       />
     </div>
 
-    <div v-if="loading" class="space-y-10">
+    <div v-if="loading" class="space-y-8">
       <div v-for="n in 3" :key="n" class="space-y-4">
         <div class="h-6 w-48 animate-pulse rounded bg-slate-200 dark:bg-surface"></div>
         <div class="flex gap-4 overflow-hidden">
@@ -100,7 +100,7 @@ function handleIntersect(originalIndex: number) {
       </button>
     </div>
 
-    <div v-else class="space-y-10">
+    <div v-else class="space-y-8">
       <RecommendationCarousel
         v-for="section in visibleSections"
         :key="section.seed ? `seed-${section.seed.id}` : section.titleKey"
