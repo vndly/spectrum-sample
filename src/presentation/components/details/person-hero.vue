@@ -6,6 +6,8 @@ defineProps<{
   name: string
   knownForDepartment: string
   profileUrl: string | null
+  birthInfo: string | null
+  deathInfo: string | null
 }>()
 
 const { t } = useI18n()
@@ -35,6 +37,21 @@ const { t } = useI18n()
     <div class="pt-1 text-center md:text-left">
       <h1 class="text-2xl font-bold text-white">{{ name }}</h1>
       <p class="mt-2 text-sm text-slate-400">{{ knownForDepartment }}</p>
+
+      <dl
+        v-if="birthInfo || deathInfo"
+        class="mt-5 grid gap-3 text-sm text-slate-300 sm:grid-cols-2"
+        data-testid="person-hero-info"
+      >
+        <div v-if="birthInfo">
+          <dt class="text-xs text-slate-500">{{ t('person.born') }}</dt>
+          <dd class="mt-1">{{ birthInfo }}</dd>
+        </div>
+        <div v-if="deathInfo">
+          <dt class="text-xs text-slate-500">{{ t('person.died') }}</dt>
+          <dd class="mt-1">{{ deathInfo }}</dd>
+        </div>
+      </dl>
     </div>
   </section>
 </template>

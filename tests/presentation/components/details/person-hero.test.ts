@@ -9,6 +9,8 @@ const i18n = createI18n({
   flatJson: true,
   messages: {
     en: {
+      'person.born': 'Born',
+      'person.died': 'Died',
       'person.profileAlt': '{name} profile image',
     },
   },
@@ -22,6 +24,8 @@ describe('PersonHero', () => {
         name: 'Brad Pitt',
         knownForDepartment: 'Acting',
         profileUrl: 'https://image.tmdb.org/t/p/w185/profile.jpg',
+        birthInfo: null,
+        deathInfo: null,
       },
       global: { plugins: [i18n] },
     })
@@ -41,6 +45,8 @@ describe('PersonHero', () => {
         name: 'Brad Pitt',
         knownForDepartment: 'Acting',
         profileUrl: null,
+        birthInfo: null,
+        deathInfo: null,
       },
       global: { plugins: [i18n] },
     })
@@ -57,6 +63,8 @@ describe('PersonHero', () => {
         name: 'Brad Pitt',
         knownForDepartment: 'Acting',
         profileUrl: null,
+        birthInfo: null,
+        deathInfo: null,
       },
       global: { plugins: [i18n] },
     })
@@ -64,5 +72,26 @@ describe('PersonHero', () => {
     // Assert
     expect(wrapper.text()).toContain('Brad Pitt')
     expect(wrapper.text()).toContain('Acting')
+  })
+
+  it('renders birth and death metadata below the name and department', () => {
+    // Arrange & Act
+    const wrapper = mount(PersonHero, {
+      props: {
+        name: 'Brad Pitt',
+        knownForDepartment: 'Acting',
+        profileUrl: null,
+        birthInfo: 'December 18, 1963 - Shawnee, Oklahoma, USA',
+        deathInfo: 'January 1, 2020',
+      },
+      global: { plugins: [i18n] },
+    })
+
+    // Assert
+    const info = wrapper.get('[data-testid="person-hero-info"]')
+    expect(info.text()).toContain('Born')
+    expect(info.text()).toContain('December 18, 1963 - Shawnee, Oklahoma, USA')
+    expect(info.text()).toContain('Died')
+    expect(info.text()).toContain('January 1, 2020')
   })
 })

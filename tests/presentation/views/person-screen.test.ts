@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -57,16 +57,13 @@ function renderPersonScreen() {
       plugins: [i18n],
       stubs: {
         PersonHero: {
-          props: ['name', 'knownForDepartment', 'profileUrl'],
-          template: '<div data-testid="person-hero">{{ name }}|{{ knownForDepartment }}</div>',
+          props: ['name', 'knownForDepartment', 'profileUrl', 'birthInfo', 'deathInfo'],
+          template:
+            '<div data-testid="person-hero">{{ name }}|{{ knownForDepartment }}|{{ birthInfo }}|{{ deathInfo }}</div>',
         },
         PersonBio: {
           props: ['biography'],
           template: '<section data-testid="person-bio">{{ biography }}</section>',
-        },
-        PersonInfo: {
-          props: ['birthInfo', 'deathInfo'],
-          template: '<section data-testid="person-info">{{ birthInfo }}|{{ deathInfo }}</section>',
         },
         PersonLinks: {
           props: ['links'],
@@ -137,8 +134,10 @@ describe('PersonScreen', () => {
     // Assert
     expect(wrapper.find('article').exists()).toBe(true)
     expect(wrapper.text()).toContain('Brad Pitt')
+    expect(wrapper.find('[data-testid="person-hero"]').text()).toContain(
+      'December 18, 1963 - Shawnee, Oklahoma, USA',
+    )
     expect(wrapper.find('[data-testid="person-bio"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="person-info"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="filmography-grid"]').text()).toBe('1')
   })
 
@@ -207,11 +206,8 @@ describe('PersonScreen', () => {
     })
   })
 
-  it('uses route ID and back navigation with direct-entry fallback', async () => {
+  it('uses route ID and omits the previous back button', () => {
     // Arrange
-    vi.mocked(useRoute).mockReturnValue({
-      params: computed(() => ({ id: routeId.value })).value,
-    } as any)
     personData.value = {
       id: 287,
       name: 'Brad Pitt',
@@ -226,21 +222,11 @@ describe('PersonScreen', () => {
 
     // Act
     const wrapper = renderPersonScreen()
-    await wrapper.get('[data-testid="person-back-button"]').trigger('click')
 
     // Assert
     const personIdArg = vi.mocked(usePerson).mock.calls.at(-1)?.[0] as { value: number }
     expect(personIdArg.value).toBe(287)
-    expect(back).toHaveBeenCalled()
-
-    // Act
-    Object.defineProperty(window, 'history', {
-      configurable: true,
-      value: { length: 1 },
-    })
-    await wrapper.get('[data-testid="person-back-button"]').trigger('click')
-
-    // Assert
-    expect(push).toHaveBeenCalledWith('/')
+    expect(wrapper.find('[data-testid="person-back-button"]').exists()).toBe(false)
+    expect(back).not.toHaveBeenCalled()
   })
 })

@@ -20,13 +20,13 @@ const canExpand = computed(() => trimmedBiography.value.length > 280)
 
     <p
       v-if="hasBiography"
-      class="mt-3 max-w-prose px-0 text-sm leading-6 text-slate-300 max-md:px-4"
+      class="mt-3 max-w-4xl px-0 text-base leading-7 text-slate-300 md:text-lg md:leading-8"
       :class="{ 'line-clamp-6': canExpand && !expanded }"
       data-testid="person-biography"
     >
       {{ trimmedBiography }}
     </p>
-    <p v-else class="mt-3 text-sm text-slate-400">{{ t('person.biographyEmpty') }}</p>
+    <p v-else class="mt-3 text-base text-slate-400">{{ t('person.biographyEmpty') }}</p>
 
     <button
       v-if="canExpand"

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import { ArrowLeft, AlertCircle } from 'lucide-vue-next'
+import { AlertCircle } from 'lucide-vue-next'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePerson } from '@/application/use-person'
 import { useToast } from '@/presentation/composables/use-toast'
 import PersonHero from '@/presentation/components/details/person-hero.vue'
 import PersonBio from '@/presentation/components/details/person-bio.vue'
-import PersonInfo from '@/presentation/components/details/person-info.vue'
 import PersonLinks from '@/presentation/components/details/person-links.vue'
 import FilmographyGrid from '@/presentation/components/details/filmography-grid.vue'
 import PersonSkeleton from '@/presentation/components/details/person-skeleton.vue'
@@ -44,14 +43,6 @@ const isNetworkError = computed(
   () => error.value?.message.toLowerCase().includes('network') ?? false,
 )
 
-function goBack() {
-  if (window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/')
-  }
-}
-
 function goHome() {
   router.push('/')
 }
@@ -79,16 +70,6 @@ watch(
 
 <template>
   <article class="min-h-screen px-4 py-6 text-white md:px-6 md:py-8">
-    <button
-      type="button"
-      class="mb-6 flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-slate-300 transition-colors hover:text-white"
-      data-testid="person-back-button"
-      @click="goBack"
-    >
-      <ArrowLeft class="size-5" aria-hidden="true" />
-      <span>{{ t('person.back') }}</span>
-    </button>
-
     <div v-if="loading" aria-live="polite" data-testid="person-loading-region">
       <PersonSkeleton />
     </div>
@@ -128,18 +109,16 @@ watch(
           :name="person.name"
           :known-for-department="person.knownForDepartment"
           :profile-url="person.profileUrl"
+          :birth-info="person.birthInfo"
+          :death-info="person.deathInfo"
         />
 
-        <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
-          <div class="space-y-8">
-            <PersonBio :biography="person.biography" />
-            <FilmographyGrid :credits="person.filmography" />
-          </div>
-          <div class="space-y-6">
-            <PersonInfo :birth-info="person.birthInfo" :death-info="person.deathInfo" />
-            <PersonLinks :links="person.externalLinks" />
-          </div>
+        <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
+          <PersonBio :biography="person.biography" />
+          <PersonLinks :links="person.externalLinks" />
         </div>
+
+        <FilmographyGrid :credits="person.filmography" />
       </div>
     </template>
   </article>
