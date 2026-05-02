@@ -8,10 +8,23 @@ import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
 import type { SearchResultItem } from '@/domain/search.schema'
 
+type SearchMovieItem = SearchResultItem & {
+  media_type: 'movie'
+  title: string
+  release_date: string
+  poster_path: string | null
+}
+
+type SearchTvItem = SearchResultItem & {
+  media_type: 'tv'
+  name: string
+  first_air_date: string
+  poster_path: string | null
+}
+
 defineProps<{
   titleKey: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  titleParams?: Record<string, any>
+  titleParams?: Record<string, string>
   items: SearchResultItem[]
   loading: boolean
   error: Error | null
@@ -40,31 +53,65 @@ watch(isIntersecting, (val) => {
 })
 
 function handleItemClick(item: SearchResultItem) {
+  if (!isMovieItem(item) && !isTvItem(item)) {
+    return
+  }
+
   const path = item.media_type === 'movie' ? `/movie/${item.id}` : `/show/${item.id}`
   router.push(path)
 }
 
+function isMovieItem(item: SearchResultItem): item is SearchMovieItem {
+  return item.media_type === 'movie' && 'title' in item && 'poster_path' in item
+}
+
+function isTvItem(item: SearchResultItem): item is SearchTvItem {
+  return item.media_type === 'tv' && 'name' in item && 'poster_path' in item
+}
+
 function getTitle(item: SearchResultItem) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return 'title' in item ? (item as any).title : (item as any).name
+  if (isMovieItem(item)) {
+    return item.title
+  }
+  if (isTvItem(item)) {
+    return item.name
+  }
+  if ('name' in item && typeof item.name === 'string') {
+    return item.name
+  }
+
+  return String(item.id)
 }
 
 function getPosterUrl(item: SearchResultItem) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return buildImageUrl((item as any).poster_path, IMAGE_SIZES.poster.medium)
+  if (!isMovieItem(item) && !isTvItem(item)) {
+    return null
+  }
+
+  return buildImageUrl(item.poster_path, IMAGE_SIZES.poster.medium)
 }
 
 function getPosterSrcSet(item: SearchResultItem) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return buildImageSrcSet((item as any).poster_path, [
-    IMAGE_SIZES.poster.medium,
-    IMAGE_SIZES.poster.large,
-  ])
+  if (!isMovieItem(item) && !isTvItem(item)) {
+    return undefined
+  }
+
+  return (
+    buildImageSrcSet(item.poster_path, [IMAGE_SIZES.poster.medium, IMAGE_SIZES.poster.large]) ??
+    undefined
+  )
+}
+
+function hasPoster(item: SearchResultItem) {
+  return (isMovieItem(item) || isTvItem(item)) && Boolean(item.poster_path)
 }
 
 function getYear(item: SearchResultItem) {
-  const dateStr =
-    item.media_type === 'movie' ? (item as any).release_date : (item as any).first_air_date
+  const dateStr = isMovieItem(item)
+    ? item.release_date
+    : isTvItem(item)
+      ? item.first_air_date
+      : null
   if (!dateStr) return null
   const year = dateStr.slice(0, 4)
   return year && year !== '0000' ? year : null
@@ -96,8 +143,7 @@ function scrollCarousel(direction: 'previous' | 'next') {
   <section ref="sectionRef" class="space-y-4">
     <div class="flex items-center justify-between gap-4">
       <h3 class="text-lg font-bold text-slate-950 dark:text-white">
-        <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
-        {{ t(titleKey, titleParams as any) }}
+        {{ t(titleKey, titleParams ?? {}) }}
       </h3>
 
       <div v-if="!loading && !error && fetched && items.length > 1" class="flex items-center gap-2">
@@ -158,7 +204,7 @@ function scrollCarousel(direction: 'previous' | 'next') {
       class="flex gap-4 overflow-x-auto pb-4 pr-2 snap-x scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       <div
-        v-for="item in items as any[]"
+        v-for="item in items"
         :key="`${item.media_type}-${item.id}`"
         class="w-32 md:w-40 flex-shrink-0 cursor-pointer snap-start group"
         role="button"
@@ -171,9 +217,9 @@ function scrollCarousel(direction: 'previous' | 'next') {
           class="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-slate-200 transition-transform duration-200 group-hover:scale-105 dark:bg-surface"
         >
           <img
-            v-if="item.poster_path"
+            v-if="hasPoster(item)"
             :src="getPosterUrl(item)!"
-            :srcset="getPosterSrcSet(item)!"
+            :srcset="getPosterSrcSet(item)"
             sizes="(max-width: 768px) 128px, 160px"
             :alt="getTitle(item)"
             class="size-full object-cover"

@@ -1,6 +1,8 @@
 import { MAX_RETRY_ATTEMPTS, RETRY_BASE_DELAY_MS } from '@/domain/constants'
 import type { MovieDetail, MovieListItem } from '@/domain/movie.schema'
 import { MovieDetailSchema, MovieListItemSchema } from '@/domain/movie.schema'
+import type { PersonDetailWithCredits } from '@/domain/person.schema'
+import { PersonDetailWithCreditsSchema } from '@/domain/person.schema'
 import type { SearchResponse } from '@/domain/search.schema'
 import { SearchResponseSchema } from '@/domain/search.schema'
 import type { ShowDetail } from '@/domain/show.schema'
@@ -24,6 +26,29 @@ const GenreListResponseSchema = z.object({
 type GenreListResponse = z.infer<typeof GenreListResponseSchema>
 
 /**
+ * Error thrown for provider responses that include an HTTP status code.
+ */
+export class ProviderRequestError extends Error {
+  readonly status: number
+  readonly statusText: string
+  readonly url: string
+
+  /**
+   * Creates a status-aware provider request error.
+   * @param status - HTTP response status code
+   * @param statusText - HTTP response status text
+   * @param url - Full request URL
+   */
+  constructor(status: number, statusText: string, url: string) {
+    super(`API request failed: ${status} ${statusText} at ${url}`)
+    this.name = 'ProviderRequestError'
+    this.status = status
+    this.statusText = statusText
+    this.url = url
+  }
+}
+
+/**
  * Delays execution for the specified duration.
  * @param ms - Milliseconds to delay
  */
@@ -39,12 +64,19 @@ export function delay(ms: number): Promise<void> {
  * @throws Error if all retries are exhausted or a non-retryable error occurs
  */
 export async function fetchWithRetry(url: string, attempt = 1): Promise<Response> {
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${ACCESS_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  })
+  let response: Response
+
+  try {
+    response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    })
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Unknown connection failure'
+    throw new Error(`Network error: ${message}`, { cause: e })
+  }
 
   if (response.status === 429 && attempt <= MAX_RETRY_ATTEMPTS) {
     const delayMs = RETRY_BASE_DELAY_MS * Math.pow(2, attempt - 1)
@@ -53,9 +85,9 @@ export async function fetchWithRetry(url: string, attempt = 1): Promise<Response
   }
 
   if (!response.ok) {
-    const errorMsg = `API request failed: ${response.status} ${response.statusText} at ${url}`
-    console.error(errorMsg)
-    throw new Error(errorMsg)
+    const error = new ProviderRequestError(response.status, response.statusText, url)
+    console.error(error.message)
+    throw error
   }
 
   return response
@@ -218,6 +250,29 @@ export async function getShowDetail(id: number, language: string): Promise<ShowD
   const data = await response.json()
 
   return ShowDetailSchema.parse(data)
+}
+
+/**
+ * Fetches detailed information about a person including cast credits and external IDs.
+ * @param id - TMDB person ID
+ * @param language - ISO 639-1 language code (e.g., 'en')
+ * @returns Validated person detail response with appended credits and external IDs
+ * @throws ProviderRequestError if the API request fails with an HTTP status
+ */
+export async function getPersonDetail(
+  id: number,
+  language: string,
+): Promise<PersonDetailWithCredits> {
+  const params = new URLSearchParams({
+    language,
+    append_to_response: 'combined_credits,external_ids',
+  })
+
+  const url = `${API_BASE_URL}/person/${id}?${params.toString()}`
+  const response = await fetchWithRetry(url)
+  const data = await response.json()
+
+  return PersonDetailWithCreditsSchema.parse(data)
 }
 
 /**

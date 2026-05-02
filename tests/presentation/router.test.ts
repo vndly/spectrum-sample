@@ -9,6 +9,7 @@ vi.mock('@/presentation/views/settings-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/recommendations-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/movie-screen.vue', () => ({ default: {} }))
 vi.mock('@/presentation/views/show-screen.vue', () => ({ default: {} }))
+vi.mock('@/presentation/views/person-screen.vue', () => ({ default: {} }))
 
 import router from '@/presentation/router'
 
@@ -46,6 +47,7 @@ describe('router', () => {
     it.each([
       { path: '/movie/550', name: 'movie' },
       { path: '/show/1396', name: 'show' },
+      { path: '/person/287', name: 'person' },
     ])('resolves $path to named route "$name"', ({ path, name }) => {
       // Arrange & Act
       const resolved = router.resolve(path)
@@ -72,7 +74,7 @@ describe('router', () => {
       const namedRoutes = router.options.routes.filter((r) => 'name' in r && r.name)
 
       // Act & Assert
-      expect(namedRoutes).toHaveLength(7)
+      expect(namedRoutes).toHaveLength(8)
       for (const route of namedRoutes) {
         const component = 'component' in route ? route.component : undefined
         expect(typeof component, `${String(route.name)} component`).toBe('function')
@@ -98,6 +100,7 @@ describe('router', () => {
       { name: 'settings', titleKey: 'page.settings.title', params: {} },
       { name: 'movie', titleKey: 'page.movie.title', params: { id: '550' } },
       { name: 'show', titleKey: 'page.show.title', params: { id: '1396' } },
+      { name: 'person', titleKey: 'page.person.title', params: { id: '287' } },
     ])('route "$name" has meta.titleKey "$titleKey"', ({ name, titleKey, params }) => {
       // Arrange & Act
       const resolved = router.resolve({ name, params })
@@ -187,7 +190,7 @@ describe('router', () => {
     })
 
     // R-01b-01-01, R-01b-03-01, R-01b-04-01
-    it.each(['/recommendations', '/movie/550', '/show/1396'])(
+    it.each(['/recommendations', '/movie/550', '/show/1396', '/person/287'])(
       'keeps document.title fixed for %s',
       async (path) => {
         // Arrange & Act
@@ -201,17 +204,24 @@ describe('router', () => {
 
   // R-01b-05-01 — non-numeric detail IDs redirect to home
   describe('detail ID guards', () => {
-    it.each(['/movie/abc', '/show/abc', '/movie/', '/show/', '/movie/123ab', '/show/12.5'])(
-      'redirects %s to / because ID is not numeric',
-      async (path) => {
-        // Arrange & Act
-        await router.push(path)
+    it.each([
+      '/movie/abc',
+      '/show/abc',
+      '/person/abc',
+      '/movie/',
+      '/show/',
+      '/person/',
+      '/movie/123ab',
+      '/person/123ab',
+      '/show/12.5',
+    ])('redirects %s to / because ID is not numeric', async (path) => {
+      // Arrange & Act
+      await router.push(path)
 
-        // Assert
-        expect(router.currentRoute.value.name).toBe('home')
-        expect(router.currentRoute.value.path).toBe('/')
-      },
-    )
+      // Assert
+      expect(router.currentRoute.value.name).toBe('home')
+      expect(router.currentRoute.value.path).toBe('/')
+    })
 
     it('allows numeric movie ID', async () => {
       // Arrange & Act
@@ -227,6 +237,14 @@ describe('router', () => {
 
       // Assert
       expect(router.currentRoute.value.name).toBe('show')
+    })
+
+    it('allows numeric person ID', async () => {
+      // Arrange & Act
+      await router.push('/person/287')
+
+      // Assert
+      expect(router.currentRoute.value.name).toBe('person')
     })
   })
 })

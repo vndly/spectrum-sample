@@ -241,6 +241,59 @@ interface ShowDetail {
 }
 ```
 
+### PersonDetail
+
+Returned by `/person/{id}` with `append_to_response=combined_credits,external_ids`.
+
+```ts
+interface PersonDetail {
+  id: number
+  name: string
+  biography: string
+  birthday: string | null // "YYYY-MM-DD"
+  deathday: string | null // "YYYY-MM-DD"
+  place_of_birth: string | null
+  profile_path: string | null
+  known_for_department: string // e.g. "Acting"
+  also_known_as: string[]
+  homepage: string | null
+
+  // Appended relations
+  combined_credits: {
+    cast: PersonCredit[]
+  }
+  external_ids: ExternalIds
+}
+
+type PersonCredit = PersonMovieCredit | PersonTvCredit
+
+interface PersonMovieCredit {
+  id: number
+  media_type: 'movie'
+  title: string
+  character: string | null
+  release_date: string | null
+  poster_path: string | null
+  order: number | null
+}
+
+interface PersonTvCredit {
+  id: number
+  media_type: 'tv'
+  name: string
+  character: string | null
+  first_air_date: string | null
+  poster_path: string | null
+  order: number | null
+}
+
+interface ExternalIds {
+  imdb_id: string | null
+  instagram_id: string | null
+  twitter_id: string | null
+}
+```
+
 ### Shared Sub-types
 
 ```ts
@@ -500,6 +553,27 @@ The app requests `append_to_response=credits,videos,watch/providers,content_rati
 
 ```bash
 curl -s "https://api.themoviedb.org/3/tv/1396?append_to_response=credits,videos,watch/providers,content_ratings" \
+  -H "Authorization: Bearer <TMDB_ACCESS_TOKEN>"
+```
+
+#### GET /person/{id}
+
+Returns full details for a single person, including cast filmography and external social/profile IDs.
+
+**URL:** `https://api.themoviedb.org/3/person/{id}`
+
+| Parameter            | In    | Type   | Required | Default | Description                                   |
+| -------------------- | ----- | ------ | -------- | ------- | --------------------------------------------- |
+| `id`                 | path  | int    | Yes      | —       | TMDB person ID                                |
+| `language`           | query | string | No       | `en-US` | ISO 639-1 language code                       |
+| `append_to_response` | query | string | No       | —       | Comma-separated sub-requests (see note below) |
+
+The app requests `language={Settings.language}` and `append_to_response=combined_credits,external_ids` to fetch localized biography text, cast filmography, and external IDs in a single call.
+
+**Response:** `PersonDetailWithCredits` (`PersonDetail` plus appended `combined_credits` and `external_ids`)
+
+```bash
+curl -s "https://api.themoviedb.org/3/person/287?language=en&append_to_response=combined_credits,external_ids" \
   -H "Authorization: Bearer <TMDB_ACCESS_TOKEN>"
 ```
 

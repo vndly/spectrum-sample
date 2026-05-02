@@ -55,7 +55,7 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - `MetadataPanel` component showing year, runtime/seasons, language, genres, and directors.
 - `Synopsis` component for overview text.
 - `BoxOffice` component for budget and revenue (movies only).
-- `CastCarousel` component with scrollable cast list.
+- `CastCarousel` component with scrollable cast list; cast cards navigate to `/person/:id` while preserving the existing billing-order sort and 20-member cap.
 - `TrailerEmbed` component with YouTube integration.
 - `StreamingBadges` component showing regional streaming providers.
 - `ExternalLinks` component for IMDb, homepage, and social media links.
@@ -86,12 +86,12 @@ Users browsing or searching for media need a dedicated page to view complete inf
 
 ### Cast and Crew
 
-| ID    | Requirement      | Description                                                                                    | Priority |
-| :---- | :--------------- | :--------------------------------------------------------------------------------------------- | :------- |
-| EC-01 | Cast Display     | The system SHALL display up to 20 cast members sorted by billing order.                        | P0       |
-| EC-02 | Cast Information | Each cast member SHALL show profile image, actor name, and character name.                     | P0       |
-| EC-03 | Cast Scrolling   | The cast list SHALL be horizontally scrollable with navigation buttons when content overflows. | P1       |
-| EC-04 | Missing Profiles | The system SHALL display a placeholder icon for cast members without profile images.           | P1       |
+| ID    | Requirement      | Description                                                                                               | Priority |
+| :---- | :--------------- | :-------------------------------------------------------------------------------------------------------- | :------- |
+| EC-01 | Cast Display     | The system SHALL display up to 20 cast members sorted by billing order.                                   | P0       |
+| EC-02 | Cast Information | Each cast member SHALL show profile image, actor name, and character name, and navigate to `/person/:id`. | P0       |
+| EC-03 | Cast Scrolling   | The cast list SHALL be horizontally scrollable with navigation buttons when content overflows.            | P1       |
+| EC-04 | Missing Profiles | The system SHALL display a placeholder icon for cast members without profile images.                      | P1       |
 
 ### Media Content
 
@@ -189,6 +189,7 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - [ ] Movie detail page displays all metadata fields correctly.
 - [ ] Show detail page displays all metadata fields correctly.
 - [ ] Cast carousel shows up to 20 members with proper images and names.
+- [ ] Cast carousel cards navigate to the corresponding person detail page.
 - [ ] Trailer plays when thumbnail is clicked.
 - [ ] Image gallery shows posters and backdrops in separate tabs.
 - [ ] Lightbox opens on thumbnail click and supports keyboard navigation.

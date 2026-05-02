@@ -76,6 +76,13 @@ const router = createRouter({
       beforeEnter: numericIdGuard,
     },
     {
+      path: '/person/:id',
+      name: 'person',
+      component: () => import('./views/person-screen.vue'),
+      meta: { titleKey: 'page.person.title' },
+      beforeEnter: numericIdGuard,
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/',
     },

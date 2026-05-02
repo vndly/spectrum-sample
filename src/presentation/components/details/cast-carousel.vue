@@ -92,10 +92,11 @@ function scrollCarousel(direction: 'previous' | 'next') {
       class="flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       data-testid="cast-scroll-container"
     >
-      <div
+      <RouterLink
         v-for="member in displayCast"
         :key="member.id"
-        class="flex shrink-0 flex-col items-center"
+        :to="`/person/${member.id}`"
+        class="flex shrink-0 cursor-pointer flex-col items-center rounded-lg transition-transform duration-200 ease-in-out hover:scale-105"
         data-testid="cast-member"
       >
         <!-- Profile image -->
@@ -126,7 +127,7 @@ function scrollCarousel(direction: 'previous' | 'next') {
         <p class="w-20 truncate text-center text-xs text-slate-500 dark:text-slate-400 md:w-24">
           {{ member.character }}
         </p>
-      </div>
+      </RouterLink>
     </div>
   </section>
 </template>

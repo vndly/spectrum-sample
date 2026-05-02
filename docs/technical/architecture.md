@@ -128,6 +128,7 @@ Routes are defined in `src/presentation/router.ts` using Vue Router with `create
 | `/`                | Home             | Search bar, trending, popular |
 | `/movie/:id`       | Movie details    | Full movie info, actions      |
 | `/show/:id`        | TV show details  | Full show info, actions       |
+| `/person/:id`      | Person details   | Actor profile and filmography |
 | `/library`         | Library          | Watchlist and watched entries |
 | `/recommendations` | Recommendations  | Personalized suggestions      |
 | `/calendar`        | Release calendar | Upcoming releases             |
@@ -135,7 +136,9 @@ Routes are defined in `src/presentation/router.ts` using Vue Router with `create
 
 A catch-all route `/:pathMatch(.*)*` redirects unknown paths to `/`.
 
-Navigation guards on `/movie/:id` and `/show/:id` reject non-numeric IDs and redirect to `/`.
+Navigation guards on `/movie/:id`, `/show/:id`, and `/person/:id` reject non-numeric IDs and redirect to `/`.
+
+Person detail follows the same route-level behavior as movie and show details: lazy-loaded view component, skeleton while fetching, inline 404 state for missing IDs, and manual retry for network or server errors.
 
 **Navigation:** Sidebar on desktop, bottom navigation bar on mobile. Both link to the same routes.
 
@@ -153,10 +156,10 @@ Navigation guards on `/movie/:id` and `/show/:id` reject non-numeric IDs and red
 
 ### Deep Linking
 
-Every route is directly navigable via URL. Navigating to `/movie/550` or `/show/1396` works the same whether the user clicks a card or pastes the URL into the browser:
+Every route is directly navigable via URL. Navigating to `/movie/550`, `/show/1396`, or `/person/287` works the same whether the user clicks a card or pastes the URL into the browser:
 
 1. Vue Router matches the `:id` param and lazy-loads the detail view component.
-2. The view's composable (`useMovie(id)` or `useShow(id)`) fetches data from the media provider using the route param.
+2. The view's composable (`useMovie(id)`, `useShow(id)`, or `usePerson(id)`) fetches data from the media provider using the route param.
 3. While loading, the view renders skeleton placeholders.
 4. On success, the view renders the full detail screen.
 
@@ -164,7 +167,7 @@ Every route is directly navigable via URL. Navigating to `/movie/550` or `/show/
 
 - **The API returns 404 (ID not found)** — The view shows a "not found" message with a link back to Home.
 - **Network error** — Toast notification with a retry option; the view stays in its error state.
-- **Non-numeric ID (e.g. `/movie/abc`)** — A navigation guard rejects the route and redirects to Home.
+- **Non-numeric ID (e.g. `/movie/abc` or `/person/abc`)** — A navigation guard rejects the route and redirects to Home.
 
 ## Component Hierarchy
 
@@ -187,6 +190,13 @@ App.vue
         │       ├── StreamingBadges
         │       ├── RatingStars
         │       └── Gallery
+        │
+        ├── /person/:id → PersonScreen
+        │       ├── PersonHero
+        │       ├── PersonBio
+        │       ├── PersonInfo
+        │       ├── PersonLinks
+        │       └── FilmographyGrid → FilmographyCard[]
         │
         ├── /library → LibraryScreen
         │       ├── TabToggle (watchlist / watched)

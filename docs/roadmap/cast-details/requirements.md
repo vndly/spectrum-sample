@@ -1,7 +1,7 @@
 ---
 id: R-09
 title: Cast Information
-status: approved
+status: under_test
 importance: medium
 type: functional
 tags: [details, api, navigation, ui]
@@ -214,6 +214,8 @@ The English copy values in this specification are backed by these translation ke
 - `person.readLess`: "Read less"
 - `person.born`: "Born"
 - `person.died`: "Died"
+- `person.info`: "Personal info"
+- `person.externalLinks`: "External links"
 - `person.filmography`: "Filmography"
 - `person.filmographyCount`: "Filmography ({count})"
 - `person.creditsEmpty`: "No credits available."

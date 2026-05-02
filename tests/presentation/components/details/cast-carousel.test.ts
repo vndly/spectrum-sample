@@ -18,6 +18,18 @@ const i18n = createI18n({
   },
 })
 
+const routerLinkStub = {
+  props: ['to'],
+  template: '<a :href="to"><slot /></a>',
+}
+
+function globalWithI18n(plugin: typeof i18n) {
+  return {
+    plugins: [plugin],
+    stubs: { RouterLink: routerLinkStub },
+  }
+}
+
 describe('CastCarousel', () => {
   const createCastMember = (
     id: number,
@@ -35,7 +47,7 @@ describe('CastCarousel', () => {
     // Arrange & Act
     const wrapper = mount(CastCarousel, {
       props: { cast: [createCastMember(1, 0)] },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -51,7 +63,7 @@ describe('CastCarousel', () => {
     // Act
     const wrapper = mount(CastCarousel, {
       props: { cast },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -66,7 +78,7 @@ describe('CastCarousel', () => {
     // Arrange & Act
     const wrapper = mount(CastCarousel, {
       props: { cast: [createCastMember(1, 0, '/profile.jpg')] },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -79,7 +91,7 @@ describe('CastCarousel', () => {
     // Arrange & Act
     const wrapper = mount(CastCarousel, {
       props: { cast: [createCastMember(1, 0, null)] },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -101,7 +113,7 @@ describe('CastCarousel', () => {
           },
         ],
       },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -117,7 +129,7 @@ describe('CastCarousel', () => {
     // Act
     const wrapper = mount(CastCarousel, {
       props: { cast },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -129,7 +141,7 @@ describe('CastCarousel', () => {
     // Arrange & Act
     const wrapper = mount(CastCarousel, {
       props: { cast: [] },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert
@@ -143,7 +155,7 @@ describe('CastCarousel', () => {
     // Act
     const wrapper = mount(CastCarousel, {
       props: { cast },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
       attachTo: document.body,
     })
 
@@ -171,7 +183,7 @@ describe('CastCarousel', () => {
     // Act
     const wrapper = mount(CastCarousel, {
       props: { cast },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Assert - canScroll is false by default since scrollWidth <= clientWidth in jsdom
@@ -199,7 +211,7 @@ describe('CastCarousel', () => {
     })
     const wrapper = mount(CastCarousel, {
       props: { cast },
-      global: { plugins: [i18nWithScrollLabels] },
+      global: globalWithI18n(i18nWithScrollLabels),
       attachTo: document.body,
     })
 
@@ -243,7 +255,7 @@ describe('CastCarousel', () => {
     // Arrange - mount with empty cast so carousel container is not rendered
     const wrapper = mount(CastCarousel, {
       props: { cast: [] },
-      global: { plugins: [i18n] },
+      global: globalWithI18n(i18n),
     })
 
     // Access the internal scrollCarousel function
@@ -257,5 +269,31 @@ describe('CastCarousel', () => {
 
     // Assert - no error thrown, function handles null ref gracefully
     expect(true).toBe(true)
+  })
+
+  it('links each cast member to the person detail route (CI-01-01)', () => {
+    // Arrange & Act
+    const wrapper = mount(CastCarousel, {
+      props: { cast: [createCastMember(287, 0)] },
+      global: globalWithI18n(i18n),
+    })
+
+    // Assert
+    const member = wrapper.get('[data-testid="cast-member"]')
+    expect(member.element.tagName).toBe('A')
+    expect(member.attributes('href')).toBe('/person/287')
+  })
+
+  it('renders cast member cards as focusable links for keyboard activation (CI-01-02)', () => {
+    // Arrange & Act
+    const wrapper = mount(CastCarousel, {
+      props: { cast: [createCastMember(287, 0)] },
+      global: globalWithI18n(i18n),
+    })
+
+    // Assert
+    const member = wrapper.get('[data-testid="cast-member"]')
+    expect(member.element.tagName).toBe('A')
+    expect(member.attributes('href')).toBe('/person/287')
   })
 })
