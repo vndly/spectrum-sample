@@ -9,6 +9,8 @@ Feature: Profile hero
     And I am using a desktop viewport
     When I view the person page
     Then the profile image displays in a circular frame
+    And the image source is the Application-provided URL built from profile_path with IMAGE_SIZES.profile.medium
+    And the image has localized alt text containing the person's name
     And the image is 200x200px on desktop
 
   Scenario: CI-03-02 — Placeholder displays when no profile image

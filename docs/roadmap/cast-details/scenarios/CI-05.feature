@@ -26,7 +26,7 @@ Feature: Biography
   Scenario: CI-05-04 — Empty biography shows message
     Given a person with no biography
     When I view the person page
-    Then I see "No biography available."
+    Then I see the localized "person.biographyEmpty" message
 
   Scenario Outline: CI-05-05 — Biography controls use active locale
     Given my language setting is <locale>
@@ -41,3 +41,10 @@ Feature: Biography
       | "en"   | "Read more"    | "Read less"    |
       | "es"   | "Leer más"     | "Leer menos"   |
       | "fr"   | "Lire la suite" | "Lire moins"   |
+
+  Scenario: CI-05-06 — Biography has readable responsive width
+    Given a person with a biography
+    When I view the person page on a mobile viewport
+    Then the biography container has at least 16px horizontal padding
+    When I view the person page on a desktop viewport
+    Then the biography text width is no wider than max-w-prose or 72ch

@@ -7,6 +7,7 @@ Feature: Loading state
     And the API request is in progress
     Then a skeleton loader displays
     And the skeleton matches the page layout
+    And the loading region has aria-live="polite"
 
   Scenario: CI-11-02 — Skeleton respects reduced motion
     Given the app is running

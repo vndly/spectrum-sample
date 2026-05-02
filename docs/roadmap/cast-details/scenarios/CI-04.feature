@@ -14,4 +14,6 @@ Feature: Basic info
     Given my language setting is "fr"
     When I navigate to /person/500
     Then the person API request includes language "fr"
+    And the person API request includes append_to_response "combined_credits,external_ids"
+    And exactly one person detail API request is made for the navigation
     And localized person data displays when returned by the API

@@ -2,17 +2,18 @@
 
 ## Contents
 
-1. **[CI-01.feature](./CI-01.feature)**: Clickable cast cards (2 scenarios).
-2. **[CI-02.feature](./CI-02.feature)**: Person route (3 scenarios).
-3. **[CI-03.feature](./CI-03.feature)**: Profile hero (2 scenarios).
-4. **[CI-04.feature](./CI-04.feature)**: Basic info (2 scenarios).
-5. **[CI-05.feature](./CI-05.feature)**: Biography (5 scenarios).
-6. **[CI-06.feature](./CI-06.feature)**: Birth info (3 scenarios).
-7. **[CI-07.feature](./CI-07.feature)**: External links (4 scenarios).
-8. **[CI-08.feature](./CI-08.feature)**: Filmography grid (7 scenarios).
-9. **[CI-09.feature](./CI-09.feature)**: Filmography sorting (2 scenarios).
-10. **[CI-10.feature](./CI-10.feature)**: Filmography navigation (4 scenarios).
-11. **[CI-11.feature](./CI-11.feature)**: Loading state (2 scenarios).
-12. **[CI-12.feature](./CI-12.feature)**: Error handling (4 scenarios).
-13. **[CI-13.feature](./CI-13.feature)**: Back navigation (3 scenarios).
-14. **[CI-14.feature](./CI-14.feature)**: Empty filmography (1 scenario).
+1. **[Clickable Cast Cards](./CI-01.feature)**: Covers cast card navigation and keyboard access.
+2. **[Person Route](./CI-02.feature)**: Covers person route guards, metadata, and lazy loading.
+3. **[Profile Hero](./CI-03.feature)**: Covers profile image rendering and fallback behavior.
+4. **[Basic Info](./CI-04.feature)**: Covers person name, department, and localized request parameters.
+5. **[Biography](./CI-05.feature)**: Covers biography display, expansion, localization, and readable width.
+6. **[Birth Info](./CI-06.feature)**: Covers birth, death, missing data, and localized labels.
+7. **[External Links](./CI-07.feature)**: Covers external profile link visibility and security attributes.
+8. **[Filmography Grid](./CI-08.feature)**: Covers cast-credit grid rendering, deduplication, images, and focus.
+9. **[Filmography Sorting](./CI-09.feature)**: Covers date ordering and missing-date fallback text.
+10. **[Filmography Navigation](./CI-10.feature)**: Covers movie and TV credit navigation.
+11. **[Loading State](./CI-11.feature)**: Covers skeleton loading and reduced-motion behavior.
+12. **[Error Handling](./CI-12.feature)**: Covers not-found, retry, server, and rate-limit errors.
+13. **[Back Navigation](./CI-13.feature)**: Covers browser, header, touch, and fallback navigation.
+14. **[Empty Filmography](./CI-14.feature)**: Covers empty credit messaging and localization.
+15. **[Language Refresh](./CI-15.feature)**: Covers active person re-fetching on language changes.

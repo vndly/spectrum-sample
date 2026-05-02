@@ -18,3 +18,17 @@ Feature: Birth info
     Given a person with no birthday or birthplace
     When I view the person page
     Then the birth info section is not displayed
+
+  Scenario Outline: CI-06-04 — Birth and death labels use active locale
+    Given my language setting is <locale>
+    And a person born on "1956-07-09" who died on "2020-01-01"
+    When I view the person page
+    Then the birth label displays <bornLabel>
+    And the death label displays <diedLabel>
+    And the date month names are formatted for <locale>
+
+    Examples:
+      | locale | bornLabel | diedLabel |
+      | "en"   | "Born"    | "Died"    |
+      | "es"   | "Nacido"  | "Murió"   |
+      | "fr"   | "Né"      | "Décédé"  |
