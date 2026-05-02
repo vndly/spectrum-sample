@@ -57,17 +57,13 @@ function renderPersonScreen() {
       plugins: [i18n],
       stubs: {
         PersonHero: {
-          props: ['name', 'knownForDepartment', 'profileUrl', 'birthInfo', 'deathInfo'],
+          props: ['name', 'knownForDepartment', 'profileUrl', 'birthInfo', 'deathInfo', 'links'],
           template:
-            '<div data-testid="person-hero">{{ name }}|{{ knownForDepartment }}|{{ birthInfo }}|{{ deathInfo }}</div>',
+            '<div data-testid="person-hero">{{ name }}|{{ knownForDepartment }}|{{ birthInfo }}|{{ deathInfo }}|links:{{ links.length }}</div>',
         },
         PersonBio: {
           props: ['biography'],
           template: '<section data-testid="person-bio">{{ biography }}</section>',
-        },
-        PersonLinks: {
-          props: ['links'],
-          template: '<section data-testid="person-links">{{ links.length }}</section>',
         },
         FilmographyGrid: {
           props: ['credits'],
@@ -137,6 +133,7 @@ describe('PersonScreen', () => {
     expect(wrapper.find('[data-testid="person-hero"]').text()).toContain(
       'December 18, 1963 - Shawnee, Oklahoma, USA',
     )
+    expect(wrapper.find('[data-testid="person-hero"]').text()).toContain('links:1')
     expect(wrapper.find('[data-testid="person-bio"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="filmography-grid"]').text()).toBe('1')
   })

@@ -28,9 +28,12 @@ describe('PersonBio', () => {
 
     // Assert
     expect(wrapper.get('h2').text()).toBe('Biography')
+    expect(wrapper.get('[data-testid="person-biography"]').classes()).toContain('w-full')
+    expect(wrapper.get('[data-testid="person-biography"]').classes()).toContain('text-justify')
     expect(wrapper.get('[data-testid="person-biography"]').classes()).toContain('text-base')
     expect(wrapper.get('[data-testid="person-biography"]').classes()).toContain('md:text-lg')
     expect(wrapper.get('[data-testid="person-biography"]').classes()).toContain('line-clamp-6')
+    expect(wrapper.get('[data-testid="person-bio-toggle"]').classes()).toContain('text-base')
     expect(wrapper.get('[data-testid="person-bio-toggle"]').text()).toBe('Read more')
 
     // Act

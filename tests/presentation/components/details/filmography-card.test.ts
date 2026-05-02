@@ -11,7 +11,7 @@ const i18n = createI18n({
   messages: {
     en: {
       'person.media.movie': 'Movie',
-      'person.media.tv': 'TV',
+      'person.media.tv': 'Show',
       'person.posterAlt': '{title} poster',
       'person.tba': 'TBA',
     },
@@ -52,7 +52,7 @@ describe('FilmographyCard', () => {
     expect(wrapper.get('img').attributes('alt')).toBe('Fight Club poster')
   })
 
-  it('renders TV badge and TBA fallback for missing dates', () => {
+  it('renders Show badge and TBA fallback for missing dates', () => {
     // Arrange
     const credit: PersonCreditViewModel = {
       id: 1396,
@@ -71,7 +71,7 @@ describe('FilmographyCard', () => {
     })
 
     // Assert
-    expect(wrapper.text()).toContain('TV')
+    expect(wrapper.text()).toContain('Show')
     expect(wrapper.text()).toContain('TBA')
     expect(wrapper.find('[data-testid="filmography-poster-placeholder"]').exists()).toBe(true)
   })

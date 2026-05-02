@@ -7,7 +7,6 @@ import { usePerson } from '@/application/use-person'
 import { useToast } from '@/presentation/composables/use-toast'
 import PersonHero from '@/presentation/components/details/person-hero.vue'
 import PersonBio from '@/presentation/components/details/person-bio.vue'
-import PersonLinks from '@/presentation/components/details/person-links.vue'
 import FilmographyGrid from '@/presentation/components/details/filmography-grid.vue'
 import PersonSkeleton from '@/presentation/components/details/person-skeleton.vue'
 
@@ -111,12 +110,10 @@ watch(
           :profile-url="person.profileUrl"
           :birth-info="person.birthInfo"
           :death-info="person.deathInfo"
+          :links="person.externalLinks"
         />
 
-        <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
-          <PersonBio :biography="person.biography" />
-          <PersonLinks :links="person.externalLinks" />
-        </div>
+        <PersonBio :biography="person.biography" />
 
         <FilmographyGrid :credits="person.filmography" />
       </div>

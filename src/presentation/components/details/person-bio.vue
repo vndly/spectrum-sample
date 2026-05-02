@@ -20,7 +20,7 @@ const canExpand = computed(() => trimmedBiography.value.length > 280)
 
     <p
       v-if="hasBiography"
-      class="mt-3 max-w-4xl px-0 text-base leading-7 text-slate-300 md:text-lg md:leading-8"
+      class="mt-3 w-full text-justify text-base leading-7 text-slate-300 md:text-lg md:leading-8"
       :class="{ 'line-clamp-6': canExpand && !expanded }"
       data-testid="person-biography"
     >
@@ -31,7 +31,7 @@ const canExpand = computed(() => trimmedBiography.value.length > 280)
     <button
       v-if="canExpand"
       type="button"
-      class="mt-3 min-h-11 cursor-pointer rounded-md text-sm font-medium text-accent transition-colors hover:text-teal-300"
+      class="mt-3 min-h-11 cursor-pointer rounded-md text-base font-medium text-accent transition-colors hover:text-teal-300"
       data-testid="person-bio-toggle"
       @click="expanded = !expanded"
     >

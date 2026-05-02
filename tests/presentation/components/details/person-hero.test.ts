@@ -11,6 +11,10 @@ const i18n = createI18n({
     en: {
       'person.born': 'Born',
       'person.died': 'Died',
+      'person.external.imdb': 'Open IMDB profile',
+      'person.external.instagram': 'Open Instagram profile',
+      'person.external.twitter': 'Open Twitter profile',
+      'person.externalLinks': 'External links',
       'person.profileAlt': '{name} profile image',
     },
   },
@@ -26,6 +30,7 @@ describe('PersonHero', () => {
         profileUrl: 'https://image.tmdb.org/t/p/w185/profile.jpg',
         birthInfo: null,
         deathInfo: null,
+        links: [],
       },
       global: { plugins: [i18n] },
     })
@@ -47,6 +52,7 @@ describe('PersonHero', () => {
         profileUrl: null,
         birthInfo: null,
         deathInfo: null,
+        links: [],
       },
       global: { plugins: [i18n] },
     })
@@ -65,6 +71,7 @@ describe('PersonHero', () => {
         profileUrl: null,
         birthInfo: null,
         deathInfo: null,
+        links: [],
       },
       global: { plugins: [i18n] },
     })
@@ -83,6 +90,7 @@ describe('PersonHero', () => {
         profileUrl: null,
         birthInfo: 'December 18, 1963 - Shawnee, Oklahoma, USA',
         deathInfo: 'January 1, 2020',
+        links: [{ type: 'imdb', url: 'https://www.imdb.com/name/nm0000093' }],
       },
       global: { plugins: [i18n] },
     })
@@ -93,5 +101,9 @@ describe('PersonHero', () => {
     expect(info.text()).toContain('December 18, 1963 - Shawnee, Oklahoma, USA')
     expect(info.text()).toContain('Died')
     expect(info.text()).toContain('January 1, 2020')
+    expect(info.text().indexOf('Born')).toBeLessThan(info.text().indexOf('Died'))
+    expect(wrapper.get('[data-testid="person-link-imdb"]').attributes('href')).toBe(
+      'https://www.imdb.com/name/nm0000093',
+    )
   })
 })

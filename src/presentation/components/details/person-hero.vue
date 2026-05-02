@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { User } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
+import PersonLinks from '@/presentation/components/details/person-links.vue'
+import type { PersonExternalLinkViewModel } from '@/application/use-person'
 
 defineProps<{
   name: string
@@ -8,6 +10,7 @@ defineProps<{
   profileUrl: string | null
   birthInfo: string | null
   deathInfo: string | null
+  links: PersonExternalLinkViewModel[]
 }>()
 
 const { t } = useI18n()
@@ -38,20 +41,24 @@ const { t } = useI18n()
       <h1 class="text-2xl font-bold text-white">{{ name }}</h1>
       <p class="mt-2 text-sm text-slate-400">{{ knownForDepartment }}</p>
 
-      <dl
-        v-if="birthInfo || deathInfo"
-        class="mt-5 grid gap-3 text-sm text-slate-300 sm:grid-cols-2"
-        data-testid="person-hero-info"
-      >
-        <div v-if="birthInfo">
-          <dt class="text-xs text-slate-500">{{ t('person.born') }}</dt>
-          <dd class="mt-1">{{ birthInfo }}</dd>
-        </div>
-        <div v-if="deathInfo">
-          <dt class="text-xs text-slate-500">{{ t('person.died') }}</dt>
-          <dd class="mt-1">{{ deathInfo }}</dd>
-        </div>
-      </dl>
+      <div v-if="birthInfo || deathInfo || links.length > 0" class="mt-5 space-y-5">
+        <dl
+          v-if="birthInfo || deathInfo"
+          class="space-y-3 text-sm text-slate-300"
+          data-testid="person-hero-info"
+        >
+          <div v-if="birthInfo">
+            <dt class="text-xs text-slate-500">{{ t('person.born') }}</dt>
+            <dd class="mt-1">{{ birthInfo }}</dd>
+          </div>
+          <div v-if="deathInfo">
+            <dt class="text-xs text-slate-500">{{ t('person.died') }}</dt>
+            <dd class="mt-1">{{ deathInfo }}</dd>
+          </div>
+        </dl>
+
+        <PersonLinks :links="links" />
+      </div>
     </div>
   </section>
 </template>
