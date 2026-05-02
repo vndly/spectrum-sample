@@ -27,6 +27,14 @@ describe('getPersonDetail', () => {
           poster_path: '/fight-club.jpg',
           order: 1,
         },
+        {
+          id: 456,
+          media_type: 'tv',
+          name: 'The Simpsons',
+          character: 'Jenny',
+          first_air_date: '1989-12-17',
+          poster_path: '/simpsons.jpg',
+        },
       ],
       crew: [],
     },
@@ -82,6 +90,11 @@ describe('getPersonDetail', () => {
     expect(result.combined_credits.cast[0]).toMatchObject({
       media_type: 'movie',
       title: 'Fight Club',
+    })
+    expect(result.combined_credits.cast[1]).toMatchObject({
+      media_type: 'tv',
+      name: 'The Simpsons',
+      order: null,
     })
   })
 

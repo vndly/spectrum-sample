@@ -93,6 +93,24 @@ describe('PersonDetailWithCreditsSchema', () => {
     expect(parsedTv).toMatchObject({ name: 'Breaking Bad' })
   })
 
+  it('defaults missing cast-credit order to null', () => {
+    // Arrange
+    const tvCredit = {
+      id: 456,
+      media_type: 'tv',
+      name: 'The Simpsons',
+      character: 'Jenny',
+      first_air_date: '1989-12-17',
+      poster_path: '/simpsons.jpg',
+    }
+
+    // Act
+    const parsedTv = PersonCreditSchema.parse(tvCredit)
+
+    // Assert
+    expect(parsedTv.order).toBeNull()
+  })
+
   it('parses null profile, null external IDs, null dates, and empty credits', () => {
     // Arrange
     const personDetail = {
