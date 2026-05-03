@@ -13,7 +13,7 @@ import EntryGrid from '@/presentation/components/common/entry-grid.vue'
 import EmptyState from '@/presentation/components/common/empty-state.vue'
 import FilterBar from '@/presentation/components/common/filter-bar.vue'
 import SortDropdown from '@/presentation/components/common/sort-dropdown.vue'
-import LibrarySearchBar from '@/presentation/components/library/library-search-bar.vue'
+import SearchBar from '@/presentation/components/common/search-bar.vue'
 
 const { t } = useI18n()
 const { filters, activeFilterCount, clearFilters } = useLibraryFilters()
@@ -117,28 +117,41 @@ function handleClearAll() {
 <template>
   <div class="flex flex-col gap-6 px-4 pb-4 pt-2 md:px-6 md:pb-6">
     <!-- Library Controls -->
-    <div class="sticky top-0 z-40 -mx-4 bg-slate-50 px-4 pb-2 md:-mx-6 md:px-6 dark:bg-bg-primary">
-      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-        <!-- Search and Filters Group -->
-        <div class="flex w-full flex-col gap-x-4 gap-y-3 md:flex-row md:items-center lg:flex-1">
-          <LibrarySearchBar v-model="query" class="md:w-64 lg:w-80" @clear="clearSearch" />
+    <div
+      class="sticky top-0 z-40 -mx-4 flex flex-col gap-4 bg-slate-50 px-4 pb-4 md:-mx-6 md:px-6 dark:bg-bg-primary"
+    >
+      <!-- Full-width Search -->
+      <SearchBar v-model="query" @clear="clearSearch" />
+
+      <!-- Other Controls Row -->
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <!-- Left: Genre and Media Type -->
+        <div class="flex flex-wrap items-center gap-4">
+          <FilterBar
+            v-model="filters"
+            :genres="genres"
+            :active-filter-count="activeFilterCount"
+            show-genre
+            show-media-type
+            compact-clear
+            hide-clear
+            @clear="clearFilters"
+          />
+        </div>
+
+        <!-- Right: Sort and Rating (Other Filters) -->
+        <div class="ml-auto flex flex-wrap items-center gap-4">
+          <SortDropdown v-model="sortField" v-model:order="sortOrder" />
 
           <FilterBar
             v-model="filters"
             :genres="genres"
             :active-filter-count="activeFilterCount"
-            class="min-w-0 flex-1"
-            show-genre
-            show-media-type
+            show-rating-range
             compact-clear
             @clear="clearFilters"
           />
-        </div>
 
-        <div
-          class="ml-auto flex w-full flex-wrap items-center justify-start gap-3 lg:w-auto lg:justify-end"
-        >
-          <SortDropdown v-model="sortField" v-model:order="sortOrder" />
           <div class="w-full sm:w-64">
             <TabToggle :tabs="tabs" :active-tab="activeTab" @update:active-tab="handleTabChange" />
           </div>

@@ -90,6 +90,8 @@ function createTestI18n() {
         'library.empty.watched.title': 'Nothing watched yet',
         'library.empty.watched.description': 'Titles you finish will appear here.',
         'home.filters.clear': 'Clear filters',
+        'home.search.placeholder': 'Search movies and shows...',
+        'home.search.clear': 'Clear search',
         'library.search.clear': 'Clear search',
         'library.search.clearAll': 'Clear all',
       },
@@ -126,8 +128,8 @@ function renderLibraryScreen() {
           template:
             '<div data-testid="empty-state"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>',
         },
-        LibrarySearchBar: {
-          name: 'LibrarySearchBar',
+        SearchBar: {
+          name: 'SearchBar',
           props: ['modelValue'],
           template: '<div data-testid="search-bar">{{ modelValue }}</div>',
         },
@@ -241,7 +243,7 @@ describe('LibraryScreen', () => {
       const searchBar = wrapper.find('[data-testid="search-bar"]')
       expect(searchBar.exists()).toBe(true)
 
-      wrapper.findComponent({ name: 'LibrarySearchBar' }).vm.$emit('update:modelValue', 'batman')
+      wrapper.findComponent({ name: 'SearchBar' }).vm.$emit('update:modelValue', 'batman')
       expect(query.value).toBe('batman')
     })
 

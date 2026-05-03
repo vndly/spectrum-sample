@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { ref, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import SearchBar from '@/presentation/components/home/search-bar.vue'
+import SearchBar from '@/presentation/components/common/search-bar.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -25,6 +25,7 @@ describe('SearchBar', () => {
       global: {
         plugins: [i18n],
       },
+      attachTo: document.body,
     })
   }
 
@@ -59,7 +60,7 @@ describe('SearchBar', () => {
     expect(wrapper.find('[aria-label="Clear search"]').exists()).toBe(false)
   })
 
-  it('emits empty string when clear button is clicked (HS-11-03)', async () => {
+  it('emits empty string and clear event when clear button is clicked (HS-11-03, LBS-06-01)', async () => {
     // Arrange
     const wrapper = mountComponent({ modelValue: 'test query' })
     const clearButton = wrapper.find('[aria-label="Clear search"]')
@@ -68,10 +69,53 @@ describe('SearchBar', () => {
     await clearButton.trigger('click')
 
     // Assert
-    const emitted = wrapper.emitted('update:modelValue')
-    expect(emitted).toBeDefined()
-    expect(emitted?.[0]).toEqual([''])
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([''])
+    expect(wrapper.emitted('clear')).toBeTruthy()
   })
+
+  it('returns focus to input after clear button click (LBS-06-02)', async () => {
+    // Arrange
+    const wrapper = mountComponent({ modelValue: 'test query' })
+    const clearButton = wrapper.find('[aria-label="Clear search"]')
+    const input = wrapper.find('input').element
+
+    // Act
+    await clearButton.trigger('click')
+
+    // Assert
+    expect(document.activeElement).toBe(input)
+  })
+
+  it('emits clear and empty string on escape key (LBS-10-01)', async () => {
+    const wrapper = mountComponent({ modelValue: 'test' });
+    const input = wrapper.find('input');
+    await input.trigger('keydown.escape');
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['']);
+    expect(wrapper.emitted('clear')).toBeTruthy();
+  });
+
+  it('prevents enter key from submitting form (LBS-10-01)', async () => {
+    const wrapper = mountComponent();
+    const input = wrapper.find('input');
+    const preventDefault = vi.fn();
+    await input.trigger('keydown.enter', { preventDefault });
+    expect(preventDefault).toHaveBeenCalled();
+  });
+
+  it('has custom placeholder support', () => {
+    const wrapper = mountComponent({ placeholder: 'Custom' });
+    expect(wrapper.find('input').attributes('placeholder')).toBe('Custom');
+  });
+
+  it('has default placeholder from i18n', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('input').attributes('placeholder')).toBe('Search movies and shows...');
+  });
+
+  it('has maxlength support', () => {
+    const wrapper = mountComponent({ maxlength: 50 });
+    expect(wrapper.find('input').attributes('maxlength')).toBe('50');
+  });
 
   it('has correct aria-label on clear button for accessibility', () => {
     // Arrange

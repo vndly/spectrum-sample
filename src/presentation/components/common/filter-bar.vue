@@ -26,6 +26,7 @@ const props = defineProps<{
   showYearRange?: boolean
   showRatingRange?: boolean
   compactClear?: boolean
+  hideClear?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -444,7 +445,7 @@ watch(isGenreOpen, async (open) => {
 
     <!-- Clear All -->
     <button
-      v-if="activeFilterCount > 0"
+      v-if="!hideClear && activeFilterCount > 0"
       type="button"
       class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white font-medium text-slate-950 shadow-sm transition-colors hover:border-teal-500/60 hover:bg-slate-100 dark:border-transparent dark:bg-slate-800 dark:text-white dark:shadow-none dark:hover:bg-slate-700"
       :class="compactClear ? 'h-8 px-3 text-xs' : 'ml-auto px-4 py-2 text-sm'"
