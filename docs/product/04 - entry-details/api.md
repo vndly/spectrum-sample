@@ -28,6 +28,17 @@ The entry details feature fetches comprehensive metadata from the TMDB API using
 
 **Response:** See `ShowDetail` schema in [Data Model](./data-model.md).
 
+### Person Detail
+
+**Endpoint:** `GET /person/{id}`
+
+**Query Parameters:**
+
+- `language` — User's preferred language (e.g., `en-US`)
+- `append_to_response` — `combined_credits,external_ids`
+
+**Response:** See `PersonDetailWithCredits` schema in [Data Model](./data-model.md).
+
 ## API Client Functions
 
 ### getMovieDetail
@@ -66,6 +77,27 @@ async function getShowDetail(id: number, language: string): Promise<ShowDetail>
 **Returns:** Validated `ShowDetail` object
 
 **Error Handling:** Same as `getMovieDetail`
+
+### getPersonDetail
+
+```ts
+// src/infrastructure/provider.client.ts
+
+async function getPersonDetail(id: number, language: string): Promise<PersonDetailWithCredits>
+```
+
+**Parameters:**
+
+- `id` — TMDB person ID
+- `language` — Locale string for localized person content
+
+**Returns:** Validated `PersonDetailWithCredits` object
+
+**Error Handling:**
+
+- Preserves 404 status for inline "person not found" handling
+- Retries 429 rate-limit responses with exponential backoff
+- Surfaces network and 500+ server errors for manual Retry actions
 
 ## Composables
 
@@ -107,6 +139,29 @@ function useShowDetail(id: MaybeRef<number>) {
 ```
 
 **Behavior:** Identical to `useMovieDetail` but for TV shows.
+
+### usePerson
+
+```ts
+// src/application/use-person.ts
+
+function usePerson(id: MaybeRef<number>) {
+  return {
+    data: Ref<PersonPageData | null>,
+    loading: Ref<boolean>,
+    error: Ref<Error | null>,
+    refresh: () => void
+  }
+}
+```
+
+**Behavior:**
+
+- Fetches localized person details, combined cast credits, and external IDs
+- Re-fetches when the person ID or active `Settings.language` changes
+- Deduplicates and sorts filmography before Presentation receives it
+- Exposes ready-to-render profile, poster, route, date, and external-link view models
+- `refresh()` manually re-attempts the current person request after recoverable errors
 
 ### useLibraryEntry
 

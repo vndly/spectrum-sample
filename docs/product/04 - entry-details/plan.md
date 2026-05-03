@@ -125,3 +125,43 @@ Implement comprehensive detail pages for movies and TV shows, displaying rich me
 2. [x] **Accessibility Check**: Verify keyboard navigation and focus management.
 3. [x] **Localization Check**: Verify all labels in multiple languages.
 4. [x] **Error Handling Check**: Verify 404 and API error states.
+
+## Phase 8: Cast Information Extension - Domain and Infrastructure
+
+1. [x] **Create Person Domain Tests**: Add `tests/domain/person.schema.test.ts` and `tests/domain/person.logic.test.ts` for person schema parsing, mixed movie/TV credits, null fields, date sorting, credit deduplication, date normalization, and supported external-link URL building.
+2. [x] **Implement Person Domain Types**: Add `src/domain/person.schema.ts` with `PersonDetail`, `PersonExternalIds`, movie/TV `PersonCredit`, and `PersonDetailWithCredits` schemas.
+3. [x] **Implement Person Domain Logic**: Add pure helpers for credit sorting, deduplication by `(media_type, id)`, date normalization, external-link detection, and external URL construction.
+4. [x] **Create Person Provider Tests**: Add `tests/infrastructure/provider.client.person.test.ts` for endpoint URL construction, Zod parsing, 404 status preservation, 429 backoff, network errors, 500+ errors, and validation failures.
+5. [x] **Implement Person Provider API**: Add `getPersonDetail(id, language)` to `src/infrastructure/provider.client.ts`, using `/person/{id}` with `append_to_response=combined_credits,external_ids` and status-aware error handling.
+
+## Phase 9: Cast Information Extension - Application and Routing
+
+1. [x] **Create Person Application Tests**: Add `tests/application/use-person.test.ts` for loading transitions, error states, manual refresh, language-aware requests, language refetching, sorted/deduplicated filmography, and ready-to-render view-model fields.
+2. [x] **Implement `usePerson`**: Add `src/application/use-person.ts` to fetch localized person data, build profile/poster/external URLs, format birth/death dates, deduplicate and sort filmography, and refetch when ID or language changes.
+3. [x] **Create Person Route Tests**: Add `tests/presentation/router.person.test.ts` for valid numeric routes, invalid ID redirects, route metadata, and lazy loading.
+4. [x] **Add Person Route**: Update `src/presentation/router.ts` with named lazy route `/person/:id`, `meta.titleKey: 'page.person.title'`, and the existing numeric ID guard.
+
+## Phase 10: Cast Information Extension - i18n and Presentation
+
+1. [x] **Extend Locale Coverage Tests**: Require mirrored person page keys in `en.json`, `es.json`, and `fr.json`.
+2. [x] **Add Person Locale Keys**: Add labels, fallback copy, media labels, external-link labels, image alt text, page title, error copy, and retry/back labels for all supported locales.
+3. [x] **Create Person Component Tests**: Add component tests for `person-hero`, `person-bio`, `person-links`, and `filmography-card`, covering rendering, fallbacks, localization, accessibility, links, badges, lazy images, and keyboard access.
+4. [x] **Create Person View Tests**: Add `tests/presentation/views/person-screen.test.ts` for loading skeleton, success content, 404, network/server retry, empty filmography, back navigation, semantic structure, focus states, and live regions.
+5. [x] **Implement Person Components**: Add `person-hero.vue`, `person-bio.vue`, `person-info.vue`, `person-links.vue`, `filmography-card.vue`, `filmography-grid.vue`, and `person-skeleton.vue`.
+6. [x] **Implement Person Screen**: Add `src/presentation/views/person-screen.vue`, composing Application view models with loading, not-found, retry, content, and back-navigation states.
+
+## Phase 11: Cast Information Extension - Cast Links and Documentation
+
+1. [x] **Update CastCarousel Tests**: Extend `tests/presentation/components/details/cast-carousel.test.ts` for `/person/:id` links and keyboard activation.
+2. [x] **Update CastCarousel**: Convert cast member cards in `src/presentation/components/details/cast-carousel.vue` to `RouterLink` targets while preserving sorting, layout, and fallbacks.
+3. [x] **Update Technical API Docs**: Document `GET /person/{id}`, response types, query parameters, and localized usage.
+4. [x] **Update Architecture Docs**: Add `/person/:id` routing, deep linking, skeleton, inline 404, and retry behavior.
+5. [x] **Update Product and Glossary Docs**: Document cast card person navigation in entry details and align Person, Cast Member, and Filmography glossary terms.
+
+## Phase 12: Cast Information Extension - Verification
+
+1. [x] **Run Full Test Suite**: Run `npm run test`.
+2. [x] **Run Production Build**: Run `npm run build`.
+3. [x] **Run Type Check**: Run `npm run type-check`.
+4. [x] **Run Lint**: Run `npm run lint`.
+5. [x] **Manual Verification**: Verify movie-to-person navigation, person content, biography expansion, external links, filmography sorting and deduplication, responsive layout, skeletons, 404/redirect behavior, retry handling, 429 backoff, language refetching, back navigation, localized document title, and JSDoc on new exports.

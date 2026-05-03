@@ -4,12 +4,14 @@ title: 'Entry Details: Movie and Show Detail Pages'
 status: released
 importance: high
 type: functional
-tags: [details, movie, show, library, media]
+tags: [details, movie, show, library, media, api, navigation, ui]
 ---
 
 ## Intent
 
 Provide users with a comprehensive detail view for movies and TV shows, displaying rich metadata, cast information, trailers, streaming availability, and actions to manage their library.
+
+Enable users to explore detailed information about cast members directly from movie and TV show detail pages. Cast cards navigate to person detail pages with biography, career information, external links, and filmography.
 
 ## Context & Background
 
@@ -27,12 +29,16 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - As a user, I want to share a title with friends via a shareable link.
 - As a user, I want to navigate to external sites (IMDb, official homepage, social media) for more information.
 - As a user, I want to browse poster and backdrop images in a gallery.
+- As a user viewing a movie's cast, I want to click an actor to see their biography and career context.
+- As a user exploring an actor's profile, I want to see their filmography so that I can discover related movies and shows.
+- As a user viewing an actor's profile, I want supported external links so that I can find more information elsewhere.
 
 ### Dependencies
 
 - `R-01`: Search (provides navigation to detail pages from search results).
 - `R-05`: Library Management (provides library entry persistence for watchlist/watched status).
-- TMDB API: External data source for all movie and show metadata.
+- TMDB API: External data source for movie, show, and person metadata.
+- TMDB Person API: Provides localized person details, combined cast credits, and external IDs.
 
 ## Decisions
 
@@ -44,6 +50,10 @@ Users browsing or searching for media need a dedicated page to view complete inf
 | Share Functionality | Native Share API with clipboard fallback | Provides best UX on mobile while ensuring desktop compatibility.                                            |
 | Image Gallery       | Lightbox with keyboard navigation        | Standard UX pattern for image viewing with accessibility support.                                           |
 | Content Rating      | Region-based extraction                  | Uses user's preferred region setting to show relevant certification.                                        |
+| Person Routing      | Contextual `/person/:id` route           | Keeps person discovery deep-linkable without adding actors to primary navigation.                           |
+| Person API Strategy | Single localized call with credits       | Fetches person details, cast credits, and external IDs in one request.                                      |
+| Person Filmography  | Combined cast-credit grid                | Shows movie and TV cast work together, sorted by newest release date.                                       |
+| Person Credit Scope | `combined_credits.cast` only             | Matches cast-carousel discovery and avoids crew/job ambiguity in the first release.                         |
 
 ## Scope
 
@@ -56,6 +66,9 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - `Synopsis` component for overview text.
 - `BoxOffice` component for budget and revenue (movies only).
 - `CastCarousel` component with scrollable cast list; cast cards navigate to `/person/:id` while preserving the existing billing-order sort and 20-member cap.
+- Contextual `PersonScreen` route at `/person/:id`, lazy-loaded and guarded with the same numeric ID pattern as movie/show detail routes.
+- Person detail page with profile hero, biography, birth/death info, supported external links, and combined movie/TV cast filmography.
+- Filmography items that navigate back to `/movie/:id` and `/show/:id` detail pages.
 - `TrailerEmbed` component with YouTube integration.
 - `StreamingBadges` component showing regional streaming providers.
 - `ExternalLinks` component for IMDb, homepage, and social media links.
@@ -70,6 +83,10 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - Recommendations or similar titles.
 - Episode-level details for TV shows.
 - Download or offline viewing features.
+- Following or favoriting actors.
+- Actor-related notifications, awards, comparisons, galleries, or dedicated actor search.
+- Filtering or virtualizing person filmography.
+- Crew-only person filmography and director/writer navigation from the metadata panel.
 
 ## Functional Requirements
 
@@ -92,6 +109,26 @@ Users browsing or searching for media need a dedicated page to view complete inf
 | EC-02 | Cast Information | Each cast member SHALL show profile image, actor name, and character name, and navigate to `/person/:id`. | P0       |
 | EC-03 | Cast Scrolling   | The cast list SHALL be horizontally scrollable with navigation buttons when content overflows.            | P1       |
 | EC-04 | Missing Profiles | The system SHALL display a placeholder icon for cast members without profile images.                      | P1       |
+
+### Person Details
+
+| ID    | Requirement            | Description                                                                                                                                                              | Priority |
+| :---- | :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- |
+| CI-01 | Clickable cast cards   | Cast member cards in `CastCarousel` SHALL navigate to `/person/:id` when clicked or keyboard-activated.                                                                  | P0       |
+| CI-02 | Person route           | The system SHALL provide a named `/person/:id` route with numeric ID guard, lazy-loaded component, and `meta.titleKey: "page.person.title"`.                             | P0       |
+| CI-03 | Profile hero           | The person page SHALL display the person's profile image prominently and show a placeholder avatar when no profile image is available.                                   | P0       |
+| CI-04 | Basic info             | The person page SHALL display the person's name and known-for department.                                                                                                | P0       |
+| CI-05 | Biography              | The person page SHALL display biography text and handle empty biographies with a localized empty state.                                                                  | P0       |
+| CI-06 | Birth info             | The person page SHALL display birthday, place of birth, and death date when available.                                                                                   | P1       |
+| CI-07 | External links         | The person page SHALL display IMDb, Instagram, and Twitter links when available and hide missing links.                                                                  | P1       |
+| CI-08 | Filmography grid       | The person page SHALL display combined movie and TV cast credits as a responsive grid with poster, title, year, media type, and character.                               | P0       |
+| CI-09 | Filmography sorting    | Filmography SHALL be sorted by release date descending, with missing release dates at the end and localized "TBA" text.                                                  | P0       |
+| CI-10 | Filmography navigation | Each filmography item SHALL navigate to `/movie/:id` or `/show/:id` as appropriate.                                                                                      | P0       |
+| CI-11 | Loading state          | The person page SHALL show a skeleton loader while person data is fetched.                                                                                               | P0       |
+| CI-12 | Error handling         | The person page SHALL distinguish 404, 429 rate limits, network errors, and 500+ server errors; recoverable network/server failures SHALL provide a manual Retry action. | P0       |
+| CI-13 | Back navigation        | Browser back and the person page back button SHALL return users to the previous page, with Home fallback on direct entry.                                                | P1       |
+| CI-14 | Empty filmography      | The person page SHALL handle empty filmography with a localized empty message.                                                                                           | P1       |
+| CI-15 | Language refresh       | Changing `Settings.language` while the person page is mounted SHALL refetch the active person details without changing the route.                                        | P0       |
 
 ### Media Content
 
@@ -134,35 +171,49 @@ Users browsing or searching for media need a dedicated page to view complete inf
 
 ### Performance
 
-| ID    | Requirement       | Description                                                                     |
-| :---- | :---------------- | :------------------------------------------------------------------------------ |
-| EN-01 | Single Request    | All detail data SHALL be fetched in a single API call using appended relations. |
-| EN-02 | Lazy Images       | Cast profile images SHALL use lazy loading to improve initial render time.      |
-| EN-03 | Responsive Images | Images SHALL use srcset for optimal loading on different screen densities.      |
+| ID        | Requirement             | Description                                                                                                    |
+| :-------- | :---------------------- | :------------------------------------------------------------------------------------------------------------- |
+| EN-01     | Single Request          | All detail data SHALL be fetched in a single API call using appended relations.                                |
+| EN-02     | Lazy Images             | Cast profile images SHALL use lazy loading to improve initial render time.                                     |
+| EN-03     | Responsive Images       | Images SHALL use srcset for optimal loading on different screen densities.                                     |
+| CI-NFR-04 | Person API Efficiency   | Person details SHALL be fetched in one localized call with `append_to_response=combined_credits,external_ids`. |
+| CI-NFR-05 | Person Code Splitting   | The person route component SHALL be lazy-loaded through a dynamic import.                                      |
+| CI-NFR-06 | Filmography Lazy Images | Filmography poster images SHALL use lazy loading.                                                              |
 
 ### UI/UX Consistency
 
-| ID    | Requirement       | Description                                                             |
-| :---- | :---------------- | :---------------------------------------------------------------------- |
-| EN-04 | Visual Style      | Components SHALL use existing Tailwind theme tokens and Lucide icons.   |
-| EN-05 | Responsive Layout | The detail page SHALL adapt gracefully to mobile and desktop viewports. |
-| EN-06 | Smooth Scrolling  | Carousel navigation SHALL use smooth scroll behavior.                   |
+| ID        | Requirement              | Description                                                                                                |
+| :-------- | :----------------------- | :--------------------------------------------------------------------------------------------------------- |
+| EN-04     | Visual Style             | Components SHALL use existing Tailwind theme tokens and Lucide icons.                                      |
+| EN-05     | Responsive Layout        | The detail page SHALL adapt gracefully to mobile and desktop viewports.                                    |
+| EN-06     | Smooth Scrolling         | Carousel navigation SHALL use smooth scroll behavior.                                                      |
+| CI-NFR-01 | Profile Image Sizing     | Person profile images SHALL measure 160x160px below `md` and 200x200px at `md` and above.                  |
+| CI-NFR-02 | Filmography Grid Columns | Person filmography SHALL use 2 columns below `md`, 3 at `md`, 4 at `lg`, and 6 at `xl` and above.          |
+| CI-NFR-03 | Biography Width          | Person biography text SHALL use `max-w-prose` or max 72ch with at least 16px horizontal padding on mobile. |
 
 ### Accessibility
 
-| ID    | Requirement         | Description                                             |
-| :---- | :------------------ | :------------------------------------------------------ |
-| EN-07 | Keyboard Navigation | Lightbox and carousels SHALL be navigable via keyboard. |
-| EN-08 | Focus Management    | Modal dialogs SHALL trap focus appropriately.           |
-| EN-09 | Alt Text            | Images SHALL include descriptive alt text.              |
+| ID        | Requirement                     | Description                                                                                                          |
+| :-------- | :------------------------------ | :------------------------------------------------------------------------------------------------------------------- |
+| EN-07     | Keyboard Navigation             | Lightbox and carousels SHALL be navigable via keyboard.                                                              |
+| EN-08     | Focus Management                | Modal dialogs SHALL trap focus appropriately.                                                                        |
+| EN-09     | Alt Text                        | Images SHALL include descriptive alt text.                                                                           |
+| CI-NFR-07 | Person Semantic HTML            | Person page root SHALL use `<article>`; biography, info, links, and filmography SHALL use `<section>` with headings. |
+| CI-NFR-08 | Person External Link Security   | Person external links SHALL open in a new tab with `rel="noopener noreferrer"`.                                      |
+| CI-NFR-09 | Person Focus Visibility         | Person page interactive elements SHALL keep visible focus states.                                                    |
+| CI-NFR-10 | Filmography Keyboard Navigation | Filmography links SHALL be reachable by Tab and activatable with Enter.                                              |
+| CI-NFR-11 | Person Screen Reader Support    | Person loading and error states SHALL use live regions and alert semantics.                                          |
 
 ### Internationalization
 
-| ID    | Requirement      | Description                                                                      |
-| :---- | :--------------- | :------------------------------------------------------------------------------- |
-| EN-10 | Localized Labels | All UI labels and messages SHALL be localized via `vue-i18n`.                    |
-| EN-11 | Localized Data   | Genre names and language names SHALL be displayed in the user's language.        |
-| EN-12 | Regional Content | Content ratings and streaming providers SHALL respect the user's region setting. |
+| ID        | Requirement               | Description                                                                                                                                            |
+| :-------- | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EN-10     | Localized Labels          | All UI labels and messages SHALL be localized via `vue-i18n`.                                                                                          |
+| EN-11     | Localized Data            | Genre names and language names SHALL be displayed in the user's language.                                                                              |
+| EN-12     | Regional Content          | Content ratings and streaming providers SHALL respect the user's region setting.                                                                       |
+| CI-NFR-12 | Person i18n Coverage      | All person UI strings, media labels, external-link labels, image alt text, fallback text, and `page.person.title` SHALL have mirrored `en/es/fr` keys. |
+| CI-NFR-13 | Person Documentation Sync | API, architecture, entry-details, and glossary documentation SHALL document person detail behavior.                                                    |
+| CI-NFR-14 | Person Image URL Boundary | Person Application view models SHALL expose ready-to-render image URLs so Presentation does not call image helpers directly.                           |
 
 ## Constraints
 
@@ -170,6 +221,11 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - **Regional Data**: Streaming providers and content ratings may not be available for all regions.
 - **Video Availability**: Not all titles have official YouTube trailers.
 - **Image Availability**: Some titles may lack poster or backdrop images.
+- **Person API Rate Limits**: Person details share the TMDB rate limit and retry behavior with other API calls.
+- **Person Data Completeness**: Biography, dates, profile images, external IDs, and release dates may be missing.
+- **Filmography Source**: Person filmography uses `combined_credits.cast` only; crew credits are excluded.
+- **Filmography Deduplication**: Duplicate credits for the same `(media_type, id)` keep the lowest numeric billing `order`, falling back to first API response order when all orders are null.
+- **Image URL Boundary**: Person profile and poster URLs are built by Application view models before Presentation rendering.
 
 ## Risks & Assumptions
 
@@ -177,12 +233,17 @@ Users browsing or searching for media need a dedicated page to view complete inf
 
 - **Missing Metadata**: Some titles may have incomplete data (no synopsis, no cast, no trailer). _Mitigation_: Components gracefully hide when data is unavailable.
 - **API Changes**: TMDB API structure changes could break parsing. _Mitigation_: Zod schemas provide validation and clear error messages.
+- **Empty Biographies**: Some actors have no biography. _Mitigation_: The person page shows a localized empty state.
+- **Large Filmographies**: Some actors have 100+ credits. _Mitigation_: Credits are deduplicated and sorted once before rendering; virtualization is deferred.
+- **Missing External IDs**: Lesser-known actors may have no external links. _Mitigation_: Missing links and empty external-link sections are hidden.
 
 ### Assumptions
 
 - **TMDB Availability**: The TMDB API is available and responsive.
+- **TMDB Person Endpoint**: `/person/{id}` with `append_to_response=combined_credits,external_ids` remains stable.
 - **Browser Support**: Users have modern browsers supporting the Intersection Observer API for lazy loading.
 - **localStorage**: The browser allows localStorage for library persistence.
+- **Known-for Department**: `known_for_department` is returned as a string by the TMDB person endpoint.
 
 ## Acceptance Criteria
 
@@ -202,3 +263,16 @@ Users browsing or searching for media need a dedicated page to view complete inf
 - [ ] Error state displays with retry button on API failure.
 - [ ] All text is localized and responds to language changes.
 - [ ] Page is fully responsive on mobile and desktop.
+- [ ] Clicking a cast member card navigates to `/person/:id`.
+- [ ] `/person/:id` renders the person detail page and rejects non-numeric IDs.
+- [ ] Person route is named `person` and uses `meta.titleKey: "page.person.title"`.
+- [ ] Person profile image, placeholder, name, known-for department, biography, birth/death info, and external links display correctly.
+- [ ] Person profile and filmography image URLs are built before Presentation renders them.
+- [ ] Missing person biography, external links, profile images, and filmography display localized fallback or hidden states.
+- [ ] Person filmography displays combined movie and TV cast credits, deduplicated and sorted by release date descending.
+- [ ] Filmography items navigate to the correct movie or show detail page.
+- [ ] Person loading skeleton, 404 state, network retry toast, server retry toast, and 429 automatic backoff behave correctly.
+- [ ] Person page back navigation works for in-app and direct-entry flows.
+- [ ] Changing `Settings.language` while viewing `/person/:id` refetches the same person in the new language.
+- [ ] Person page layout, keyboard navigation, focus states, live regions, and localized copy meet the documented non-functional requirements.
+- [ ] Technical API, architecture, entry-details, and glossary documentation describe person detail behavior.

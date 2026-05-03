@@ -75,6 +75,78 @@ export const ShowDetailSchema = z.object({
 })
 ```
 
+## PersonDetailWithCredits Schema
+
+The `PersonDetailWithCredits` type represents a complete person record with appended cast credits and external IDs.
+
+```ts
+// src/domain/person.schema.ts
+export const PersonDetailWithCreditsSchema = PersonDetailSchema.extend({
+  combined_credits: z.object({
+    cast: z.array(PersonCreditSchema),
+  }),
+  external_ids: PersonExternalIdsSchema,
+})
+```
+
+### PersonDetail
+
+```ts
+export const PersonDetailSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  biography: z.string(),
+  birthday: z.string().nullable(),
+  deathday: z.string().nullable(),
+  place_of_birth: z.string().nullable(),
+  profile_path: z.string().nullable(),
+  known_for_department: z.string(),
+  also_known_as: z.array(z.string()),
+  homepage: z.string().nullable(),
+})
+```
+
+### PersonCredit
+
+```ts
+export const PersonMovieCreditSchema = z.object({
+  id: z.number(),
+  media_type: z.literal('movie'),
+  title: z.string(),
+  character: z.string().nullable(),
+  release_date: z.string().nullable(),
+  poster_path: z.string().nullable(),
+  order: z.number().nullable(),
+})
+
+export const PersonTvCreditSchema = z.object({
+  id: z.number(),
+  media_type: z.literal('tv'),
+  name: z.string(),
+  character: z.string().nullable(),
+  first_air_date: z.string().nullable(),
+  poster_path: z.string().nullable(),
+  order: z.number().nullable(),
+})
+
+export const PersonCreditSchema = z.discriminatedUnion('media_type', [
+  PersonMovieCreditSchema,
+  PersonTvCreditSchema,
+])
+```
+
+### PersonExternalIds
+
+```ts
+export const PersonExternalIdsSchema = z.object({
+  imdb_id: z.string().nullable(),
+  instagram_id: z.string().nullable(),
+  twitter_id: z.string().nullable(),
+})
+```
+
+Person filmography uses `combined_credits.cast` only. Crew credits are excluded from this release.
+
 ## Shared Types
 
 ### Genre
@@ -228,3 +300,23 @@ When a user interacts with a detail page, the `LibraryEntry` is synced with meta
 ```
 
 This ensures library entries always have up-to-date metadata when the detail page is visited.
+
+## PersonPageData Integration
+
+Person detail Presentation components receive Application-facing view models rather than raw API objects.
+
+```ts
+{
+  id: number
+  name: string
+  knownForDepartment: string
+  biography: string | null
+  profileUrl: string | null
+  birthInfo: string | null
+  deathInfo: string | null
+  externalLinks: PersonExternalLinkViewModel[]
+  filmography: PersonCreditViewModel[]
+}
+```
+
+The Application layer builds localized dates, profile image URLs, poster image URLs, external URLs, and `/movie/:id` or `/show/:id` routes before rendering.
