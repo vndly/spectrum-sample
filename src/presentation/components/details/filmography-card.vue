@@ -21,8 +21,8 @@ const displayRating = computed(() => {
     :to="credit.route"
     class="group block min-h-11 transition-transform duration-200 ease-in-out hover:scale-105"
   >
-    <div class="relative overflow-hidden rounded-lg bg-slate-800 shadow-lg">
-      <div class="aspect-[2/3] bg-slate-900">
+    <div class="relative overflow-hidden rounded-lg shadow-lg">
+      <div class="aspect-[2/3] bg-slate-200 dark:bg-surface">
         <img
           v-if="credit.posterUrl"
           :src="credit.posterUrl"

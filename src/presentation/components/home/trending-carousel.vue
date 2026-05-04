@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Film, Star } from 'lucide-vue-next'
 import type { MediaResult } from '@/application/use-browse'
 import { buildImageSrcSet, buildImageUrl } from '@/infrastructure/image.helper'
 import { IMAGE_SIZES } from '@/domain/constants'
@@ -177,9 +177,9 @@ function scrollCarousel(direction: 'previous' | 'next') {
           />
           <div
             v-else
-            class="size-full flex items-center justify-center text-slate-400 dark:text-slate-500"
+            class="flex size-full items-center justify-center text-slate-400 dark:text-slate-500"
           >
-            <span class="text-xs text-center px-2">{{ getTitle(item) }}</span>
+            <Film class="size-12" aria-hidden="true" />
           </div>
           <div
             v-if="getRating(item)"
