@@ -53,6 +53,9 @@ watch(
   () => props.items,
   async () => {
     await nextTick()
+    if (carouselRef.value) {
+      carouselRef.value.scrollLeft = 0
+    }
     updateCanScroll()
   },
 )
